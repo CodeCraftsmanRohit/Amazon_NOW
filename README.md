@@ -12,6 +12,11 @@ The current e-commerce paradigm is **Product-Centric** (User -> Search -> Browse
 
 Quick-commerce customers want a **Need-Centric** flow (User expresses need -> System builds cart -> Checkout). **Amazon Now AI** uses a 7-agent LangGraph pipeline and GPT-4o Vision to instantly generate the perfect 3-item cart based on natural language or a photo of your empty fridge.
 
+### 👤 The Customer Persona: Meet Priya
+Priya is a busy working professional. It's 6:00 PM, and she just realized she has to host a last-minute dinner for 4 friends at 7:30 PM. 
+- **The Old Way:** Priya opens an app, searches for pasta, compares 15 brands, adds to cart. Searches for sauce, compares 10 brands, adds to cart. Searches for drinks... *Time spent: 25 minutes.*
+- **The Amazon Now Way:** Priya presses the mic and says, *"I'm hosting an Italian dinner for 4 people tonight."* The 7-agent AI instantly builds the perfect, complementary cart. *Time spent: 5 seconds.*
+
 ---
 
 ## ⚡ Features
@@ -20,6 +25,15 @@ Quick-commerce customers want a **Need-Centric** flow (User expresses need -> Sy
 - 🤖 **7-Agent LangGraph Pipeline:** Advanced sequential orchestration ensuring accuracy, context, and semantic matching.
 - ✨ **Authentic Amazon UX:** High-trust, conversion-optimized interface mirroring the classic Amazon shopping experience.
 - 🚀 **1-Click Checkout:** Fake-order generation and tracking for immediate validation.
+
+---
+
+## 🔮 6-Month Futuristic Vision
+As requested by the judging panel, here is how Amazon Now AI scales across the Amazon Ecosystem over the next 6 months:
+1. **Alexa Smart Home Integration:** *"Alexa, look at my pantry camera and order what I need for breakfast tomorrow."*
+2. **Amazon Personalize:** Feeding 5 years of user purchase history into the "Consumption Agent" to ensure brand loyalty (e.g., automatically knowing Priya prefers organic marinara).
+3. **Amazon Prime Air (Drones):** Connecting the "Urgent Needs" Cart directly to autonomous drone dispatch for 15-minute fulfillment.
+4. **Zoox Delivery:** For larger urgent orders, routing fulfillment through Zoox autonomous vehicles.
 
 ---
 
