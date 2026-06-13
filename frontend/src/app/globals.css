@@ -88,4 +88,27 @@
     0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
+
+  /* ── Scrollbar hide (for horizontal nav scrolls) ── */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── Fade in ── */
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadein {
+    animation: fadein 0.3s ease both;
+  }
+
+  /* ── Responsive font scaling ── */
+  @media (max-width: 640px) {
+    html { font-size: 15px; }
+  }
 }
