@@ -1,4 +1,5 @@
-from typing import TypedDict, List, Dict, Optional
+from typing import TypedDict, List, Dict, Optional, Annotated
+import operator
 
 class CartItem(TypedDict):
     id: str
@@ -17,4 +18,5 @@ class ShoppingState(TypedDict):
     inventory_status: List[str]
     graph_knowledge: List[str]
     items: List[CartItem]
-    explainability: List[str]
+    explainability: Annotated[List[str], operator.add]
+    explainability_summary: List[str]

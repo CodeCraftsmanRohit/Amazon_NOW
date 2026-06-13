@@ -74,7 +74,7 @@ async def chat_interaction(req: MessageRequest):
         intent=result.get("intent", "unknown"),
         context=result.get("context", {}),
         items=mapped_items,
-        explainability=result.get("explainability", []),
+        explainability=result.get("explainability_summary", []),
     )
 
 @app.post("/api/inventory/upload", response_model=SmartCartResponse, tags=["vision"])

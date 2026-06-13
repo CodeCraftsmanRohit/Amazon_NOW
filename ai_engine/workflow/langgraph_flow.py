@@ -76,7 +76,7 @@ def intent_agent(state: ShoppingState) -> Dict:
     return {
         "intent": res.intent,
         "complexity": res.complexity,
-        "explainability": state.get("explainability", []) + [f"[Intent Agent]: {res.explanation}"]
+        "explainability": [f"[Intent Agent]: {res.explanation}"]
     }
 
 # --- Parallel agents (all run after intent, independently) ---
@@ -88,7 +88,7 @@ def context_agent(state: ShoppingState) -> Dict:
 
     return {
         "context": {"weather": res.weather, "time": res.time_of_day},
-        "explainability": state.get("explainability", []) + [f"[Context Agent]: {res.explanation}"]
+        "explainability": [f"[Context Agent]: {res.explanation}"]
     }
 
 def consumption_agent(state: ShoppingState) -> Dict:
@@ -98,7 +98,7 @@ def consumption_agent(state: ShoppingState) -> Dict:
 
     return {
         "consumption_predictions": res.predictions,
-        "explainability": state.get("explainability", []) + [f"[Consumption Agent]: {res.explanation}"]
+        "explainability": [f"[Consumption Agent]: {res.explanation}"]
     }
 
 def inventory_agent(state: ShoppingState) -> Dict:
@@ -108,7 +108,7 @@ def inventory_agent(state: ShoppingState) -> Dict:
 
     return {
         "inventory_status": res.status,
-        "explainability": state.get("explainability", []) + [f"[Inventory Agent]: {res.explanation}"]
+        "explainability": [f"[Inventory Agent]: {res.explanation}"]
     }
 
 def graph_agent(state: ShoppingState) -> Dict:
@@ -118,7 +118,7 @@ def graph_agent(state: ShoppingState) -> Dict:
 
     return {
         "graph_knowledge": res.knowledge,
-        "explainability": state.get("explainability", []) + [f"[Graph Agent]: {res.explanation}"]
+        "explainability": [f"[Graph Agent]: {res.explanation}"]
     }
 
 def cart_agent(state: ShoppingState) -> Dict:
@@ -153,7 +153,7 @@ Prefer products from the catalog. If needed, supplement with additional products
 
     return {
         "items": items_dict,
-        "explainability": state.get("explainability", []) + ["[Cart Agent]: Synthesized all signals into final cart using product catalog."]
+        "explainability": ["[Cart Agent]: Synthesized all signals into final cart using product catalog."]
     }
 
 def explainability_agent(state: ShoppingState) -> Dict:
@@ -165,9 +165,9 @@ def explainability_agent(state: ShoppingState) -> Dict:
     structured_llm = llm.with_structured_output(ExplainabilityOutput)
     res = structured_llm.invoke(prompt)
 
-    # Overwrite the explainability array with the final clean bullets
+    # Set the final clean bullets
     return {
-        "explainability": res.bullets
+        "explainability_summary": res.bullets
     }
 
 # ----------------- GRAPH COMPILATION -----------------
@@ -213,7 +213,8 @@ def process_message(message: str) -> Dict[str, Any]:
         "inventory_status": [],
         "graph_knowledge": [],
         "items": [],
-        "explainability": []
+        "explainability": [],
+        "explainability_summary": []
     }
     final_state = app_graph.invoke(initial_state)
     return final_state
