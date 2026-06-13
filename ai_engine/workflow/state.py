@@ -11,6 +11,7 @@ class CartItem(TypedDict):
 class ShoppingState(TypedDict):
     message: str
     intent: Optional[str]
+    complexity: str          # "low" | "medium" | "high"
     context: Dict[str, str]
     consumption_predictions: List[str]
     inventory_status: List[str]

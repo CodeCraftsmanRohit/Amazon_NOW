@@ -15,11 +15,12 @@
   body {
     background-color: var(--color-amazon-bg);
     color: #0F1111;
-    font-family: Arial, sans-serif;
+    font-family: "Inter", Arial, sans-serif;
   }
 }
 
 @layer utilities {
+  /* ── Buttons ── */
   .amazon-btn-primary {
     background-color: #FFD814;
     border-color: #FCD200;
@@ -37,6 +38,7 @@
     cursor: not-allowed;
   }
 
+  /* ── Inputs ── */
   .amazon-input {
     border: 1px solid #a6a6a6;
     border-top-color: #949494;
@@ -49,9 +51,41 @@
     box-shadow: 0 0 3px 2px rgba(228,121,17,.5);
   }
 
+  /* ── Cards ── */
   .amazon-card {
     background: #fff;
     border: 1px solid var(--color-amazon-border);
     border-radius: 8px;
+  }
+
+  /* ── Animations ── */
+  .animate-fadein {
+    animation: fadein 0.4s ease-out both;
+  }
+
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-bounce-in {
+    animation: bounce-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes bounce-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.9); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  }
+
+  /* ── Skeleton shimmer ── */
+  .shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
 }
