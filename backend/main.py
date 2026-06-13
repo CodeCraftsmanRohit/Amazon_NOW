@@ -11,28 +11,35 @@ import uvicorn
 # ─── Models ──────────────────────────────────────────────────────────────────
 
 class MessageRequest(BaseModel):
-    message: str
+    message:      str
+    budget:       Optional[float] = None   # INR — None means no limit
+    people_count: Optional[int]   = 1
 
 class CartItem(BaseModel):
-    id: str
-    name: str
-    price: float
-    quantity: int
-    image_url: str
-    reasoning: Optional[str] = None
+    id:             str
+    name:           str
+    price:          float           # discounted price
+    quantity:       int
+    image_url:      str
+    reasoning:      Optional[str]  = None
+    original_price: Optional[float] = None  # pre-discount
+    savings:        Optional[float] = 0.0   # per-unit saving
+    is_smart_saver: Optional[bool]  = False
 
 class SmartCartResponse(BaseModel):
-    intent: str
-    context: Dict[str, str]
-    items: List[CartItem]
+    intent:        str
+    context:       Dict[str, str]
+    items:         List[CartItem]
     explainability: List[str]
+    total_cost:    Optional[float] = 0.0
+    total_savings: Optional[float] = 0.0
 
 # ─── App ─────────────────────────────────────────────────────────────────────
 
 app = FastAPI(
     title="Amazon Now AI — Backend API",
-    description="7-Agent LangGraph pipeline for need-centric quick commerce.",
-    version="1.0.0",
+    description="7-Agent parallel LangGraph pipeline with budget constraints and Smart Saver deals.",
+    version="2.0.0",
 )
 
 app.add_middleware(
@@ -43,49 +50,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ─── Core routes ─────────────────────────────────────────────────────────────
+# ─── Core imports ─────────────────────────────────────────────────────────────
 
 from ai_engine.workflow.langgraph_flow import process_message
 from backend.services.inventory_service import analyze_inventory_image
 
+# ─── Routes ──────────────────────────────────────────────────────────────────
+
 @app.get("/", tags=["health"])
 def health_check():
-    return {"status": "healthy", "service": "Amazon Now AI", "version": "1.0.0"}
+    return {"status": "healthy", "service": "Amazon Now AI", "version": "2.0.0"}
+
 
 @app.post("/api/chat", response_model=SmartCartResponse, tags=["ai"])
 async def chat_interaction(req: MessageRequest):
     """
-    Primary endpoint: accepts a natural language message, runs the 7-agent
-    LangGraph pipeline (parallel execution), and returns a SmartCartResponse.
+    Primary endpoint: natural language → 7-agent parallel LangGraph pipeline.
+    Supports optional budget (INR) and people_count for scaling.
+    Smart Saver deals applied automatically for near-expiry catalog items.
     """
-    result = process_message(req.message)
-    mapped_items = [
-        CartItem(
-            id=item["id"],
-            name=item["name"],
-            price=item["price"],
-            quantity=item["quantity"],
-            image_url=item["image_url"],
-            reasoning=item.get("reasoning"),
-        )
-        for item in result.get("items", [])
-    ]
-    return SmartCartResponse(
-        intent=result.get("intent", "unknown"),
-        context=result.get("context", {}),
-        items=mapped_items,
-        explainability=result.get("explainability_summary", []),
+    result = process_message(
+        message=req.message,
+        budget=req.budget,
+        people_count=req.people_count or 1,
     )
-
-@app.post("/api/inventory/upload", response_model=SmartCartResponse, tags=["vision"])
-async def upload_inventory_photo(file: UploadFile = File(...)):
-    """
-    Vision endpoint: upload a fridge/pantry photo. GPT-4o Vision analyzes
-    the image, detects missing items, and builds a replenishment cart.
-    """
-    contents = await file.read()
-    result = await analyze_inventory_image(contents)
-
     items = [
         CartItem(
             id=i["id"],
@@ -93,6 +81,34 @@ async def upload_inventory_photo(file: UploadFile = File(...)):
             price=i["price"],
             quantity=i["quantity"],
             image_url=i["image_url"],
+            reasoning=i.get("reasoning"),
+            original_price=i.get("original_price"),
+            savings=i.get("savings", 0.0),
+            is_smart_saver=i.get("is_smart_saver", False),
+        )
+        for i in result.get("items", [])
+    ]
+    return SmartCartResponse(
+        intent=result.get("intent", "unknown"),
+        context=result.get("context", {}),
+        items=items,
+        explainability=result.get("explainability_summary", []),
+        total_cost=result.get("total_cost", 0.0),
+        total_savings=result.get("total_savings", 0.0),
+    )
+
+
+@app.post("/api/inventory/upload", response_model=SmartCartResponse, tags=["vision"])
+async def upload_inventory_photo(file: UploadFile = File(...)):
+    """
+    Vision endpoint: upload fridge/pantry photo → GPT-4o Vision → replenishment cart.
+    """
+    contents = await file.read()
+    result = await analyze_inventory_image(contents)
+    items = [
+        CartItem(
+            id=i["id"], name=i["name"], price=i["price"],
+            quantity=i["quantity"], image_url=i["image_url"],
             reasoning=i.get("reasoning"),
         )
         for i in result.get("items", [])
