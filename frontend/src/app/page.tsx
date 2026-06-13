@@ -397,7 +397,7 @@ export default function Home() {
                           <div className="text-xs text-[#565959] flex items-center gap-1 mb-2">
                             <span className="text-[#0F1111] font-bold">Prime</span>
                             <span>FREE Delivery by</span>
-                            <span className="font-bold text-[#0F1111]">Amazon Now Drone</span>
+                            <span className="font-bold text-[#0F1111]">Amazon Prime Air</span>
                           </div>
                           <div className="text-xs text-[#565959] flex items-center gap-1 mb-4">
                             <input type="checkbox" className="mr-1 cursor-pointer" defaultChecked />
@@ -460,12 +460,14 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* AI Reasoning Box */}
-              <div className="amazon-card p-5 border-t-[4px] border-t-[#007185] shadow-md bg-[#F8F9FA]">
-                <h3 className="font-bold text-[#0F1111] text-lg mb-3 flex items-center gap-2">
-                  <span className="bg-[#007185] text-white text-xs px-2 py-0.5 rounded font-mono">LANGGRAPH</span>
-                  AI Pipeline Trace
-                </h3>
+              {/* AI Reasoning Trace */}
+              <div className="bg-[#F7F7F7] border border-[#D5D9D9] p-4 rounded shadow-sm relative overflow-hidden animate-in slide-in-from-right-8 duration-700" style={{ animationDelay: '200ms' }}>
+                <div className="absolute top-0 left-0 w-1 h-full bg-[#007185]" />
+                <div className="flex items-center flex-wrap gap-2 mb-3">
+                  <span className="bg-[#007185] text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wide">LANGGRAPH</span>
+                  <span className="bg-[#232F3E] text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wide">AMAZON BEDROCK</span>
+                  <h4 className="font-bold text-[#0F1111] ml-1">AI Pipeline Trace</h4>
+                </div>
                 <div className="text-xs text-[#565959] mb-4 pb-3 border-b border-gray-200">
                   <span className="font-bold text-[#0F1111]">Intent:</span> {cart.intent.toUpperCase()}
                 </div>
