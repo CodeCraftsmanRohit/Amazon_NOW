@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --color-amazon-dark: #131921;
+  --color-amazon-light: #232F3E;
+  --color-amazon-orange: #FF9900;
+  --color-amazon-blue: #007185;
+  --color-amazon-red: #B12704;
+  --color-amazon-green: #007600;
+  --color-amazon-bg: #EAEDED;
+  --color-amazon-border: #D5D9D9;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-amazon-bg);
+    color: #0F1111;
+    font-family: Arial, sans-serif;
+  }
+}
+
+@layer utilities {
+  .amazon-btn-primary {
+    background-color: #FFD814;
+    border-color: #FCD200;
+    color: #0F1111;
+    border-width: 1px;
+    border-style: solid;
+    transition: all 0.2s ease;
+  }
+  .amazon-btn-primary:hover {
+    background-color: #F7CA00;
+    border-color: #F2C200;
+  }
+  .amazon-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .amazon-input {
+    border: 1px solid #a6a6a6;
+    border-top-color: #949494;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(255,255,255,.5), 0 1px 0 rgba(0,0,0,.07) inset;
+    outline: 0;
+  }
+  .amazon-input:focus {
+    border-color: #e77600;
+    box-shadow: 0 0 3px 2px rgba(228,121,17,.5);
+  }
+
+  .amazon-card {
+    background: #fff;
+    border: 1px solid var(--color-amazon-border);
+    border-radius: 8px;
+  }
+}
