@@ -1,40 +1,112 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
-  Camera, Search, ShoppingCart, MapPin, Menu,
-  ChevronRight, Mic, Sparkles, Zap, RefreshCw, X,
-  Truck, CheckCircle, Package, Clock, Users, IndianRupee, SlidersHorizontal,
+  Search, ShoppingCart, MapPin, Sparkles, Zap, X,
+  ArrowLeft, Mic, Camera, Users, IndianRupee,
+  SlidersHorizontal, Star, Truck, CheckCircle, Clock,
+  Menu, RefreshCw, Wand2, Plus, Minus, ChevronRight,
 } from "lucide-react";
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
 const toINR   = (usd: number) => Math.round(usd * 83.5);
 const fmtINR  = (usd: number) => `₹${toINR(usd).toLocaleString("en-IN")}`;
 const fmtINRv = (inr: number) => `₹${Math.round(inr).toLocaleString("en-IN")}`;
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image_url: string;
-  reasoning?: string;
-  original_price?: number;
-  savings?: number;
-  is_smart_saver?: boolean;
-}
-interface SmartCartResponse {
-  intent: string;
-  context: Record<string, string>;
-  items: CartItem[];
-  explainability: string[];
-  total_cost?: number;
-  total_savings?: number;
-}
-type LocalCart = Record<string, number>;
+// ═══════════════════════════════════════════════════════════════════
+// CURATED PRODUCT IMAGES (Unsplash)
+// ═══════════════════════════════════════════════════════════════════
+const PRODUCT_IMAGES: Record<string, string> = {
+  P001: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=300&h=300&fit=crop",
+  P002: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&h=300&fit=crop",
+  P003: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300&h=300&fit=crop",
+  P004: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=300&h=300&fit=crop",
+  P005: "https://images.unsplash.com/photo-1595981234058-a9302fb97229?w=300&h=300&fit=crop",
+  P006: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&h=300&fit=crop",
+  P007: "https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=300&h=300&fit=crop",
+  P008: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop",
+  P009: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=300&h=300&fit=crop",
+  P010: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=300&h=300&fit=crop",
+  P011: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300&h=300&fit=crop",
+  P012: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&h=300&fit=crop",
+  P013: "https://images.unsplash.com/photo-1629203851122-3726555cf5a2?w=300&h=300&fit=crop",
+  P014: "https://images.unsplash.com/photo-1548907040-4baa42d10919?w=300&h=300&fit=crop",
+  P015: "https://images.unsplash.com/photo-1536816579748-4ecb3f03d72a?w=300&h=300&fit=crop",
+  P016: "https://images.unsplash.com/photo-1551183053-bf91798d10bf?w=300&h=300&fit=crop",
+  P017: "https://images.unsplash.com/photo-1608039829572-76b5b6f2f88c?w=300&h=300&fit=crop",
+  P018: "https://images.unsplash.com/photo-1608039829572-76b5b6f2f88c?w=300&h=300&fit=crop",
+  P019: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=300&h=300&fit=crop",
+  P020: "https://images.unsplash.com/photo-1549931319-a545dcf3bc7f?w=300&h=300&fit=crop",
+  P021: "https://images.unsplash.com/photo-1542345812-d98b5cd6cf98?w=300&h=300&fit=crop",
+  P022: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300&h=300&fit=crop",
+  P023: "https://images.unsplash.com/photo-1548907040-4baa42d10919?w=300&h=300&fit=crop",
+  P024: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300&h=300&fit=crop",
+  P025: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&h=300&fit=crop",
+  P026: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&h=300&fit=crop",
+  P027: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&h=300&fit=crop",
+  P028: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&h=300&fit=crop",
+  P029: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&h=300&fit=crop",
+  P030: "https://images.unsplash.com/photo-1622542086073-5af5f53e9517?w=300&h=300&fit=crop",
+  P031: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=300&h=300&fit=crop",
+  P032: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop",
+  P033: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=300&fit=crop",
+  P034: "https://images.unsplash.com/photo-1549931319-a545dcf3bc7f?w=300&h=300&fit=crop",
+  P035: "https://images.unsplash.com/photo-1583531172565-1318d9e0e7fb?w=300&h=300&fit=crop",
+  P036: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=300&h=300&fit=crop",
+  P037: "https://images.unsplash.com/photo-1621506289937-a8e7ac0dfd3a?w=300&h=300&fit=crop",
+  P038: "https://images.unsplash.com/photo-1599398815647-6f4f48be39ac?w=300&h=300&fit=crop",
+  P039: "https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?w=300&h=300&fit=crop",
+  P040: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=300&h=300&fit=crop",
+  P041: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+  P042: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+  P043: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+  P044: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop",
+  P045: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=300&fit=crop",
+  P046: "https://images.unsplash.com/photo-1614087698640-27cbf92c4749?w=300&h=300&fit=crop",
+  P047: "https://images.unsplash.com/photo-1597393353415-b3730f3719fe?w=300&h=300&fit=crop",
+  P048: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=300&h=300&fit=crop",
+  P049: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=300&h=300&fit=crop",
+  P050: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=300&h=300&fit=crop",
+};
 
-// ─── Scenarios ───────────────────────────────────────────────────────────────
+function getImg(id: string): string {
+  return PRODUCT_IMAGES[id] || `https://source.unsplash.com/300x300/?grocery,food&sig=${id}`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// STATIC DATA
+// ═══════════════════════════════════════════════════════════════════
+const FEATURED = [
+  { id: "P010", name: "Movie Theater Butter Popcorn 6-Pack",  price: 4.49, category: "snacks",     rating: 4.5, reviews: 2847 },
+  { id: "P009", name: "Organic Valley Whole Milk (1 Gallon)", price: 4.49, category: "dairy",      rating: 4.7, reviews: 3412, ss: true, disc: 25 },
+  { id: "P014", name: "Ferrero Rocher Chocolate Box (24pc)",  price: 12.99, category: "candy",     rating: 4.9, reviews: 8921 },
+  { id: "P033", name: "Starbucks Pike Place Ground Coffee",   price: 9.99, category: "beverages",  rating: 4.7, reviews: 6234 },
+  { id: "P040", name: "Chobani Greek Yogurt Variety Pack",    price: 9.59, category: "dairy",      rating: 4.6, reviews: 5621, ss: true, disc: 20 },
+  { id: "P024", name: "DiGiorno Pepperoni Pizza (28oz)",      price: 5.59, category: "frozen",     rating: 4.4, reviews: 3120, ss: true, disc: 20 },
+  { id: "P048", name: "Ben & Jerry's Chunky Monkey Ice Cream", price: 5.09, category: "frozen",    rating: 4.8, reviews: 4521, ss: true, disc: 15 },
+  { id: "P026", name: "Advil Ibuprofen 200mg (50ct)",         price: 8.99, category: "medicine",   rating: 4.8, reviews: 12340 },
+];
+
+const SMART_SAVERS = [
+  { id: "P003", name: "Kerrygold Unsalted Butter (8oz)",  price: 3.19, orig: 3.99, disc: 20, category: "dairy" },
+  { id: "P004", name: "Vital Farms Eggs (12ct)",          price: 4.67, orig: 5.49, disc: 15, category: "dairy" },
+  { id: "P034", name: "Nature's Own Wheat Bread (20oz)",  price: 2.62, orig: 3.49, disc: 25, category: "bread" },
+  { id: "P020", name: "DeLallo Garlic Bread Loaf (16oz)", price: 2.79, orig: 3.99, disc: 30, category: "bread" },
+];
+
+const CATEGORIES = [
+  { name: "Vegetables",  emoji: "🥦", bg: "#e8f5e9" },
+  { name: "Fruits",      emoji: "🍎", bg: "#fce4ec" },
+  { name: "Dairy & Eggs", emoji: "🥛", bg: "#e3f2fd" },
+  { name: "Snacks",      emoji: "🍿", bg: "#fff9c4" },
+  { name: "Beverages",   emoji: "🥤", bg: "#e8eaf6" },
+  { name: "Staples",     emoji: "🌾", bg: "#fff3e0" },
+  { name: "Medicine",    emoji: "💊", bg: "#fce4ec" },
+  { name: "Baby Care",   emoji: "👶", bg: "#f3e5f5" },
+];
+
 const SCENARIOS = [
   { emoji: "🎂", label: "Bake a chocolate cake",     query: "I need to bake a chocolate cake right now" },
   { emoji: "🍿", label: "Movie night for 4",          query: "Hosting a movie night for 4 people" },
@@ -42,364 +114,790 @@ const SCENARIOS = [
   { emoji: "🍝", label: "Last-minute Italian dinner", query: "I'm hosting an Italian dinner for 6 people tonight" },
   { emoji: "🎉", label: "Party for 10",               query: "Hosting a party for 10 people, need snacks and drinks" },
   { emoji: "👶", label: "New parent essentials",      query: "I'm a new parent and need baby essentials" },
-  { emoji: "☕", label: "Morning breakfast run",       query: "I need a quick breakfast, coffee and essentials" },
+  { emoji: "☕", label: "Morning breakfast",           query: "I need a quick breakfast, coffee and essentials" },
   { emoji: "🥤", label: "BBQ weekend",               query: "Planning a backyard BBQ this weekend for 8 people" },
 ];
 
-// ─── Emoji mapper ─────────────────────────────────────────────────────────────
-function getProductEmoji(name: string): string {
-  const n = name.toLowerCase();
-  if (n.includes("chocolate") || n.includes("cocoa") || n.includes("ghirardelli")) return "🍫";
-  if (n.includes("flour") || n.includes("baking powder")) return "🌾";
-  if (n.includes("butter")) return "🧈";
-  if (n.includes("egg")) return "🥚";
-  if (n.includes("milk") || n.includes("dairy")) return "🥛";
-  if (n.includes("cheese")) return "🧀";
-  if (n.includes("chip") || n.includes("crisp") || n.includes("doritos") || n.includes("lay")) return "🥔";
-  if (n.includes("popcorn") || n.includes("orville")) return "🍿";
-  if (n.includes("cola") || n.includes("soda") || n.includes("pepsi") || n.includes("coca")) return "🥤";
-  if (n.includes("pasta") || n.includes("spaghetti") || n.includes("noodle")) return "🍝";
-  if (n.includes("sauce") || n.includes("marinara") || n.includes("ketchup")) return "🫙";
-  if (n.includes("coffee") || n.includes("starbucks") || n.includes("folger")) return "☕";
-  if (n.includes("tea") || n.includes("lipton")) return "🍵";
-  if (n.includes("bread") || n.includes("bun") || n.includes("toast")) return "🍞";
-  if (n.includes("soup") || n.includes("campbell")) return "🍲";
-  if (n.includes("sugar") || n.includes("honey")) return "🍯";
-  if (n.includes("juice") || n.includes("tropicana") || n.includes("orange")) return "🧃";
-  if (n.includes("water") || n.includes("sparkling") || n.includes("gatorade")) return "💧";
-  if (n.includes("ice cream") || n.includes("haagen") || n.includes("ben & jerry")) return "🍦";
-  if (n.includes("nut") || n.includes("almond") || n.includes("planters")) return "🥜";
-  if (n.includes("advil") || n.includes("tylenol") || n.includes("ibuprofen") || n.includes("dayquil")) return "💊";
-  if (n.includes("vicks")) return "🤧";
-  if (n.includes("diaper") || n.includes("pampers")) return "👶";
-  if (n.includes("baby") || n.includes("formula") || n.includes("enfamil") || n.includes("wipes")) return "🍼";
-  if (n.includes("candy") || n.includes("m&m") || n.includes("ferrero")) return "🍬";
-  if (n.includes("pizza") || n.includes("digiorno")) return "🍕";
-  if (n.includes("yogurt") || n.includes("chobani")) return "🥣";
-  if (n.includes("oat") || n.includes("quaker") || n.includes("cereal")) return "🥣";
-  if (n.includes("red bull") || n.includes("energy")) return "⚡";
-  if (n.includes("oil") || n.includes("olive")) return "🫒";
-  if (n.includes("rice")) return "🍚";
-  return "📦";
+// ═══════════════════════════════════════════════════════════════════
+// TYPES
+// ═══════════════════════════════════════════════════════════════════
+interface CartItem {
+  id: string; name: string; price: number; quantity: number;
+  image_url: string; reasoning?: string;
+  original_price?: number; savings?: number; is_smart_saver?: boolean;
 }
+interface SmartCartResponse {
+  intent: string; context: Record<string, string>;
+  items: CartItem[]; explainability: string[];
+  total_cost?: number; total_savings?: number;
+}
+type LocalCart = Record<string, number>;
+type PageMode  = "home" | "ai" | "results";
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
-function Toast({ message, onClose }: { message: string; onClose: () => void }) {
-  useEffect(() => { const t = setTimeout(onClose, 4500); return () => clearTimeout(t); }, [onClose]);
+// ═══════════════════════════════════════════════════════════════════
+// REUSABLE COMPONENTS
+// ═══════════════════════════════════════════════════════════════════
+
+function Toast({ msg, onClose }: { msg: string; onClose: () => void }) {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#CC0C39] text-white px-6 py-3 rounded shadow-xl flex items-center gap-3 font-bold animate-bounce-in">
-      ⚠️ <span>{message}</span>
+      ⚠️ <span>{msg}</span>
       <button onClick={onClose}><X size={16} /></button>
     </div>
   );
 }
 
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
-function CartSkeleton() {
+function StarRating({ rating, reviews }: { rating: number; reviews: number }) {
   return (
-    <div className="px-4 py-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
+    <div className="flex items-center gap-1 mt-1">
       {[1,2,3,4,5].map(i => (
-        <div key={i} className="amazon-card p-3 flex flex-col gap-3">
-          <div className="w-full aspect-square bg-gray-200 rounded animate-pulse" />
-          <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse" />
-          <div className="h-4 w-1/2 bg-gray-200 rounded animate-pulse" />
-          <div className="h-8 w-full bg-gray-200 rounded animate-pulse" />
-        </div>
+        <Star key={i} size={12} className={i <= Math.round(rating) ? "fill-[#FF9900] text-[#FF9900]" : "fill-gray-200 text-gray-200"} />
       ))}
+      <span className="text-[11px] text-[#007185] ml-1">{reviews.toLocaleString("en-IN")}</span>
     </div>
   );
 }
 
-// ─── Amazon Pay Modal ─────────────────────────────────────────────────────────
-function PaymentModal({ total, savings, itemCount, onSuccess, onClose }: {
-  total: number; savings: number; itemCount: number;
-  onSuccess: () => void; onClose: () => void;
+function AmazonNavbar({
+  mode, cartCount, onLogoClick, onCartClick,
+}: {
+  mode: PageMode; cartCount: number;
+  onLogoClick: () => void; onCartClick: () => void;
 }) {
-  const [payMethod, setPayMethod] = useState<"upi"|"card"|"cod">("upi");
-  const [upiId, setUpiId] = useState("9876543210@okaxis");
-  const [processing, setProcessing] = useState(false);
+  return (
+    <header className="w-full bg-[#131921] text-white sticky top-0 z-40 shadow-md">
+      <div className="flex items-center justify-between px-4 py-2 gap-4">
+        {/* Logo */}
+        <button onClick={onLogoClick} className="flex items-center hover:border-white border border-transparent p-1 rounded shrink-0">
+          <span className="font-bold text-xl tracking-tighter">amazon</span>
+          <span className="text-[#FF9900] font-bold text-xl">.in</span>
+          <span className="bg-[#FF9900] text-[#131921] text-[9px] font-black px-1 py-0.5 rounded ml-1">NOW AI</span>
+        </button>
+        {/* Deliver */}
+        <div className="hidden md:flex items-center hover:border-white border border-transparent p-1 rounded cursor-pointer shrink-0">
+          <MapPin size={16} className="mr-1 text-gray-300" />
+          <div className="flex flex-col">
+            <span className="text-[10px] text-gray-300 leading-3">Deliver to</span>
+            <span className="text-sm font-bold leading-4">Your Location</span>
+          </div>
+        </div>
+        {/* Search placeholder */}
+        <div className="flex-1 max-w-3xl">
+          <div className="flex h-10 rounded-md overflow-hidden">
+            <div className="bg-[#f3f3f3] flex-1 flex items-center px-4 text-gray-400 text-sm cursor-text">
+              Search amazon.in
+            </div>
+            <div className="bg-[#FEBD69] px-4 flex items-center">
+              <Search size={20} className="text-gray-800" />
+            </div>
+          </div>
+        </div>
+        {/* Account */}
+        <div className="hidden md:flex flex-col hover:border-white border border-transparent p-1 rounded cursor-pointer shrink-0 text-right">
+          <span className="text-[10px] text-gray-300 leading-3">Hello, Customer</span>
+          <span className="text-sm font-bold leading-4">Account &amp; Lists</span>
+        </div>
+        {/* Returns */}
+        <div className="hidden md:flex flex-col hover:border-white border border-transparent p-1 rounded cursor-pointer shrink-0 text-right">
+          <span className="text-[10px] text-gray-300 leading-3">Returns</span>
+          <span className="text-sm font-bold leading-4">&amp; Orders</span>
+        </div>
+        {/* Cart */}
+        <button onClick={onCartClick}
+          className="flex items-center hover:border-white border border-transparent p-1 rounded shrink-0 relative">
+          <div className="relative">
+            <ShoppingCart size={30} />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 left-3 text-[#FF9900] font-bold text-[15px] leading-4">{cartCount}</span>
+            )}
+          </div>
+          <span className="text-sm font-bold hidden md:block ml-1 mt-3">Cart</span>
+        </button>
+      </div>
+      {/* Nav strip */}
+      <div className="bg-[#232F3E] px-4 py-1.5 flex items-center gap-5 text-sm font-medium overflow-x-auto">
+        <div className="flex items-center gap-1 cursor-pointer hover:border-white border border-transparent p-1 rounded whitespace-nowrap">
+          <Menu size={16} /> All
+        </div>
+        {["Today's Deals","Prime","Customer Service","Electronics","Fashion","Grocery","Health"].map(n => (
+          <span key={n} className="cursor-pointer hover:border-white border border-transparent p-1 rounded whitespace-nowrap text-xs">{n}</span>
+        ))}
+        <span className="ml-auto flex items-center gap-1 text-[#FF9900] font-bold whitespace-nowrap text-xs">
+          <Zap size={12} /> 10-Min Delivery
+        </span>
+      </div>
+    </header>
+  );
+}
 
-  const handlePay = () => {
-    setProcessing(true);
-    setTimeout(() => { setProcessing(false); onSuccess(); }, 2200);
+// ═══════════════════════════════════════════════════════════════════
+// HOME VIEW — Amazon.in style
+// ═══════════════════════════════════════════════════════════════════
+function HomeView({ onAIClick }: { onAIClick: () => void }) {
+  return (
+    <div className="bg-[#EAEDED] min-h-screen pb-16">
+
+      {/* ── Hero Banners ── */}
+      <div className="relative w-full overflow-hidden">
+        <div className="grid grid-cols-2 gap-0 w-full h-[220px] md:h-[280px]">
+          <div className="relative flex flex-col justify-center px-8 py-6 overflow-hidden"
+            style={{ background: "linear-gradient(135deg, #FF9900 0%, #e47911 100%)" }}>
+            <div className="absolute right-0 top-0 w-40 h-full opacity-10"
+              style={{ backgroundImage: "radial-gradient(circle, white 2px, transparent 2px)", backgroundSize: "20px 20px" }} />
+            <div className="text-[#131921] font-black text-2xl leading-tight mb-2">Snack Store 🍿</div>
+            <div className="text-[#131921]/80 text-sm mb-4">Up to 40% off on your favourite munchies</div>
+            <div className="bg-[#131921] text-white text-xs px-4 py-1.5 rounded-full w-fit font-bold">Shop now →</div>
+          </div>
+          <div className="relative flex flex-col justify-center px-8 py-6 overflow-hidden"
+            style={{ background: "linear-gradient(135deg, #007185 0%, #005a6d 100%)" }}>
+            <div className="absolute right-0 top-0 w-40 h-full opacity-10"
+              style={{ backgroundImage: "radial-gradient(circle, white 2px, transparent 2px)", backgroundSize: "20px 20px" }} />
+            <div className="text-white font-black text-2xl leading-tight mb-2">Fresh Dairy 🥛</div>
+            <div className="text-white/80 text-sm mb-4">Farm to your door in 10 minutes</div>
+            <div className="bg-white text-[#007185] text-xs px-4 py-1.5 rounded-full w-fit font-bold">Shop now →</div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Shop by Category ── */}
+      <div className="bg-white mx-0 mt-0 px-6 py-6 border-b border-gray-100">
+        <h2 className="text-lg font-bold text-[#0F1111] mb-4">Shop by Category</h2>
+        <div className="flex gap-4 overflow-x-auto pb-2">
+          {CATEGORIES.map(cat => (
+            <div key={cat.name} className="flex flex-col items-center gap-2 cursor-pointer flex-shrink-0 group">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center text-3xl border-2 border-gray-100 group-hover:border-[#FF9900] transition-colors"
+                style={{ backgroundColor: cat.bg }}>
+                {cat.emoji}
+              </div>
+              <span className="text-[11px] text-[#0F1111] font-medium text-center w-16 leading-tight">{cat.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════ */}
+      {/* ★ THE SPECIAL AI BUTTON — Full-width, impossible to miss ★ */}
+      {/* ══════════════════════════════════════════════════════════ */}
+      <div className="mx-4 mt-4 rounded-2xl overflow-hidden relative cursor-pointer group" onClick={onAIClick}
+        style={{ background: "linear-gradient(135deg, #131921 0%, #1a2a3a 50%, #131921 100%)" }}>
+        {/* Animated glow border */}
+        <div className="absolute inset-0 rounded-2xl"
+          style={{ background: "linear-gradient(135deg, #FF9900, #007185, #FF9900)", padding: "2px" }}>
+          <div className="w-full h-full rounded-2xl"
+            style={{ background: "linear-gradient(135deg, #131921 0%, #1a2a3a 50%, #131921 100%)" }} />
+        </div>
+        <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 px-8 py-7">
+          {/* Left: Text */}
+          <div className="flex-1 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 bg-[#FF9900]/20 border border-[#FF9900]/40 rounded-full px-3 py-1 text-[#FF9900] text-xs font-bold mb-3">
+              <Sparkles size={12} /> Powered by LangGraph · GPT-4o · 7 Parallel AI Agents
+            </div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2 leading-tight">
+              Meet <span className="text-[#FF9900]">Amazon Now AI</span>
+            </h2>
+            <p className="text-gray-400 text-sm md:text-base max-w-lg">
+              Don't search for products. Just tell us <em className="text-gray-200">what you're doing</em>.
+              "I have a fever" → perfect cart in 10 seconds.
+            </p>
+            <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
+              {["🏷️ Smart Saver deals", "💰 Budget-aware", "👥 Scales by headcount", "📸 Vision AI"].map(f => (
+                <span key={f} className="bg-white/10 text-gray-300 text-[11px] px-2.5 py-1 rounded-full border border-white/20">{f}</span>
+              ))}
+            </div>
+          </div>
+          {/* Right: CTA Button */}
+          <div className="flex-shrink-0">
+            <button
+              id="ai-trigger-btn"
+              className="flex items-center gap-3 px-8 py-4 rounded-full font-extrabold text-lg transition-all duration-200 shadow-2xl group-hover:scale-105 group-hover:shadow-[0_0_40px_rgba(255,153,0,0.4)]"
+              style={{ background: "linear-gradient(135deg, #FF9900 0%, #e47911 100%)", color: "#131921" }}
+            >
+              <Wand2 size={22} />
+              Try AI Shopping
+            </button>
+            <p className="text-gray-500 text-xs text-center mt-2">No browsing needed. Just tell us.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Top Picks For You (with real images) ── */}
+      <div className="bg-white mx-0 mt-4 px-6 py-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-[#0F1111]">Top Picks For You</h2>
+          <span className="text-sm text-[#007185] hover:underline cursor-pointer">See all offers</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
+          {FEATURED.map(p => (
+            <div key={p.id} className="group cursor-pointer border border-gray-100 hover:shadow-md hover:border-gray-200 rounded-lg overflow-hidden transition-all">
+              <div className="relative">
+                <img src={getImg(p.id)} alt={p.name}
+                  className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={e => { (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${p.id}/300/300`; }}
+                />
+                {(p as any).ss && (
+                  <span className="absolute top-2 left-2 bg-[#FF9900] text-[#131921] text-[9px] font-black px-1.5 py-0.5 rounded-full">
+                    🏷️ {(p as any).disc}% OFF
+                  </span>
+                )}
+              </div>
+              <div className="p-3">
+                <p className="text-[12px] font-medium text-[#0F1111] line-clamp-2 leading-tight">{p.name}</p>
+                <StarRating rating={p.rating} reviews={p.reviews} />
+                <div className="mt-2 flex items-baseline gap-1">
+                  <span className="text-base font-bold text-[#B12704]">{fmtINR(p.price)}</span>
+                  {(p as any).ss && (
+                    <span className="text-xs text-gray-400 line-through">{fmtINR((p as any).orig || p.price * 1.2)}</span>
+                  )}
+                </div>
+                <div className="text-[10px] text-[#007600] mt-0.5">In Stock · FREE Delivery</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Smart Saver Deals ── */}
+      <div className="bg-white mx-0 mt-4 px-6 py-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-bold text-[#0F1111]">🏷️ Smart Saver Deals</h2>
+            <p className="text-xs text-gray-500">Near-expiry items — great quality, unbeatable price</p>
+          </div>
+          <span className="bg-[#CC0C39] text-white text-[10px] font-bold px-2 py-1 rounded">LIMITED TIME</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {SMART_SAVERS.map(p => (
+            <div key={p.id} className="group cursor-pointer border-2 border-[#FF9900]/30 hover:border-[#FF9900] rounded-lg overflow-hidden transition-all hover:shadow-md">
+              <div className="relative">
+                <img src={getImg(p.id)} alt={p.name}
+                  className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                  onError={e => { (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${p.id}/300/300`; }}
+                />
+                <div className="absolute top-0 right-0 bg-[#CC0C39] text-white text-xs font-black px-2 py-1 rounded-bl">
+                  -{p.disc}%
+                </div>
+              </div>
+              <div className="p-3">
+                <p className="text-[12px] font-medium text-[#0F1111] line-clamp-2 leading-tight">{p.name}</p>
+                <div className="mt-2 flex items-baseline gap-1">
+                  <span className="text-base font-bold text-[#B12704]">{fmtINR(p.price)}</span>
+                  <span className="text-xs text-gray-400 line-through">{fmtINR(p.orig)}</span>
+                </div>
+                <div className="text-[10px] text-[#007600] mt-0.5 font-bold">Save {fmtINR(p.orig - p.price)}</div>
+                <button className="mt-2 w-full bg-[#FFD814] hover:bg-[#F7CA00] border border-[#FCD200] text-[#0F1111] text-xs py-1.5 rounded font-bold transition-colors">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── AI CTA repeat (bottom) ── */}
+      <div className="mx-4 mt-4 bg-gradient-to-r from-[#131921] to-[#1a2a3a] rounded-xl p-6 flex items-center justify-between">
+        <div>
+          <div className="text-white font-bold text-lg">Didn't find what you need?</div>
+          <div className="text-gray-400 text-sm mt-1">Let our AI build the perfect cart in seconds</div>
+        </div>
+        <button onClick={onAIClick}
+          className="flex items-center gap-2 bg-[#FF9900] hover:bg-[#e47911] text-[#131921] font-bold px-6 py-3 rounded-full transition-colors shadow-lg">
+          <Sparkles size={16} /> Ask AI
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// AI INPUT VIEW — Centered prompt interface
+// ═══════════════════════════════════════════════════════════════════
+function AIInputView({
+  onSubmit, onBack,
+}: {
+  onSubmit: (q: string, b?: number, p?: number) => void;
+  onBack: () => void;
+}) {
+  const [query,       setQuery]       = useState("");
+  const [budget,      setBudget]      = useState("");
+  const [people,      setPeople]      = useState("1");
+  const [showPrefs,   setShowPrefs]   = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const submit = (q: string) => {
+    if (!q.trim()) return;
+    const b = budget.trim() ? parseFloat(budget) : undefined;
+    const p = Math.max(1, parseInt(people) || 1);
+    onSubmit(q, b, p);
+  };
+
+  const handleVoice = () => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) return;
+    const rec = new SR();
+    rec.onstart  = () => { setIsListening(true); setQuery(""); };
+    rec.onresult = (e: any) => { const t = e.results[0][0].transcript; setQuery(t); setIsListening(false); submit(t); };
+    rec.onerror  = () => setIsListening(false);
+    rec.onend    = () => setIsListening(false);
+    rec.start();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="bg-white rounded-lg w-full max-w-md mx-4 shadow-2xl overflow-hidden">
-        <div className="bg-[#131921] px-5 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-white font-bold text-lg">amazon</span>
-            <span className="bg-[#FF9900] text-[#131921] text-[10px] font-black px-1.5 py-0.5 rounded tracking-wide">Pay</span>
-          </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-white"><X size={20} /></button>
+    <div className="min-h-screen bg-gradient-to-b from-[#131921] via-[#1a2a3a] to-[#131921] flex flex-col">
+      {/* Back bar */}
+      <div className="px-6 pt-6">
+        <button onClick={onBack} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm">
+          <ArrowLeft size={16} /> Back to Amazon
+        </button>
+      </div>
+
+      {/* Hero */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+        <div className="inline-flex items-center gap-2 bg-[#FF9900]/20 border border-[#FF9900]/40 rounded-full px-4 py-1.5 text-[#FF9900] text-sm font-bold mb-6">
+          <Sparkles size={14} /> Need-Centric Shopping · 7-Agent AI Pipeline
         </div>
-        <div className="p-5">
-          <div className="bg-[#F7F7F7] border border-gray-200 rounded p-4 mb-5">
-            <div className="flex justify-between text-sm mb-1">
-              <span className="text-gray-600">Order total ({itemCount} items)</span>
-              <span className="font-bold">{fmtINRv(total)}</span>
+
+        <h1 className="text-5xl md:text-6xl font-extrabold text-white text-center mb-4 leading-tight">
+          What do you<br /><span className="text-[#FF9900]">need right now?</span>
+        </h1>
+        <p className="text-gray-400 text-center text-lg mb-10 max-w-xl">
+          Don't browse. Don't search. Just describe your situation — our AI builds the perfect cart instantly.
+        </p>
+
+        {/* ── BIG PROMPT INPUT ── */}
+        <div className="w-full max-w-2xl">
+          <div className="relative">
+            <textarea
+              id="ai-prompt-input"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(query); } }}
+              placeholder={isListening ? "🎤 Listening..." : "e.g. I'm hosting a birthday party for 10 kids tonight..."}
+              rows={3}
+              className="w-full bg-white/10 backdrop-blur border-2 border-white/20 focus:border-[#FF9900] rounded-2xl px-6 py-5 text-white text-lg placeholder-gray-500 resize-none focus:outline-none transition-colors"
+            />
+            {/* Voice + Camera icons inside textarea */}
+            <div className="absolute right-4 bottom-4 flex gap-2">
+              <button onClick={handleVoice}
+                className={`p-2 rounded-full transition-colors ${isListening ? "bg-red-500 text-white animate-pulse" : "bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white"}`}>
+                <Mic size={20} />
+              </button>
+              <button onClick={() => fileInputRef.current?.click()}
+                className="p-2 rounded-full bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white transition-colors">
+                <Camera size={20} />
+              </button>
+              <input type="file" ref={fileInputRef} className="hidden" accept="image/*"
+                onChange={() => {}} />
             </div>
-            {savings > 0 && (
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-[#007600]">🏷️ Smart Saver savings</span>
-                <span className="text-[#007600] font-bold">−{fmtINRv(savings)}</span>
+          </div>
+
+          {/* Preferences toggle */}
+          <button onClick={() => setShowPrefs(p => !p)}
+            className="flex items-center gap-2 text-gray-400 hover:text-[#FF9900] text-sm mt-3 transition-colors mx-auto">
+            <SlidersHorizontal size={14} />
+            {showPrefs ? "Hide" : "Add"} budget &amp; headcount preferences
+          </button>
+
+          {showPrefs && (
+            <div className="bg-white/5 border border-white/10 rounded-xl p-5 mt-3 grid grid-cols-2 gap-4 animate-fadein">
+              <div>
+                <label className="text-xs text-gray-400 block mb-1.5 flex items-center gap-1">
+                  <IndianRupee size={12} /> Budget (optional)
+                </label>
+                <div className="flex items-center bg-white/10 border border-white/20 rounded-lg overflow-hidden">
+                  <span className="px-3 text-gray-400 text-sm border-r border-white/20">₹</span>
+                  <input type="number" placeholder="No limit" value={budget} onChange={e => setBudget(e.target.value)}
+                    className="bg-transparent text-white text-sm py-2 px-3 flex-1 focus:outline-none placeholder-gray-600" />
+                </div>
+                {budget && <p className="text-[#FF9900] text-xs mt-1 font-bold">Max ₹{parseFloat(budget).toLocaleString("en-IN")}</p>}
               </div>
-            )}
-            <div className="flex justify-between text-sm mb-1">
-              <span className="text-gray-600">Delivery</span>
-              <span className="text-[#007600] font-bold">FREE</span>
-            </div>
-            <div className="border-t border-gray-300 mt-2 pt-2 flex justify-between font-bold text-[#B12704]">
-              <span className="text-[#0F1111]">Total payable</span>
-              <span>{fmtINRv(total)}</span>
-            </div>
-          </div>
-          <p className="text-sm font-bold text-[#0F1111] mb-3">Select payment method</p>
-          <div className="space-y-2 mb-5">
-            {[
-              { key: "upi",  icon: "📱", label: "UPI / Amazon Pay UPI" },
-              { key: "card", icon: "💳", label: "Credit / Debit Card" },
-              { key: "cod",  icon: "💵", label: "Cash on Delivery" },
-            ].map(m => (
-              <label key={m.key} className={`flex items-center gap-3 p-3 border rounded cursor-pointer transition-all ${payMethod === m.key ? "border-[#FF9900] bg-[#FFFBF0]" : "border-gray-200 hover:border-gray-400"}`}>
-                <input type="radio" name="pay" checked={payMethod === m.key as any} onChange={() => setPayMethod(m.key as any)} className="w-4 h-4 accent-[#FF9900]" />
-                <span className="text-lg">{m.icon}</span>
-                <span className="text-sm font-medium">{m.label}</span>
-              </label>
-            ))}
-          </div>
-          {payMethod === "upi" && (
-            <div className="mb-4">
-              <label className="text-xs text-gray-600 block mb-1">UPI ID</label>
-              <input className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-[#FF9900]" value={upiId} onChange={e => setUpiId(e.target.value)} />
+              <div>
+                <label className="text-xs text-gray-400 block mb-1.5 flex items-center gap-1">
+                  <Users size={12} /> Number of people
+                </label>
+                <div className="flex items-center bg-white/10 border border-white/20 rounded-lg overflow-hidden">
+                  <input type="number" min="1" max="50" value={people} onChange={e => setPeople(e.target.value)}
+                    className="bg-transparent text-white text-sm py-2 px-3 w-16 text-center focus:outline-none" />
+                  <span className="px-3 text-gray-400 text-sm border-l border-white/20">people</span>
+                </div>
+                {parseInt(people) > 1 && <p className="text-[#FF9900] text-xs mt-1 font-bold">Quantities will scale ×{people}</p>}
+              </div>
             </div>
           )}
-          <button onClick={handlePay} disabled={processing}
-            className="w-full bg-[#FFD814] hover:bg-[#F7CA00] disabled:opacity-70 border border-[#FCD200] text-[#0F1111] py-3 rounded-full font-bold text-base shadow transition-colors flex items-center justify-center gap-2">
-            {processing ? <><Sparkles size={18} className="animate-spin" /> Processing…</> : <>🔒 Pay {fmtINRv(total)} Securely</>}
+
+          {/* Submit button */}
+          <button
+            id="build-cart-btn"
+            onClick={() => submit(query)}
+            disabled={!query.trim()}
+            className="w-full mt-5 py-4 rounded-2xl font-extrabold text-xl transition-all duration-200 shadow-2xl disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: query.trim() ? "linear-gradient(135deg, #FF9900 0%, #e47911 100%)" : "#555", color: "#131921" }}
+          >
+            🤖 Build My Cart
           </button>
-          <p className="text-center text-[10px] text-gray-400 mt-3">Secured by Amazon Pay · 256-bit SSL Encryption</p>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-4 w-full max-w-2xl my-8">
+          <div className="flex-1 h-px bg-white/10" />
+          <span className="text-gray-600 text-sm">or try a quick scenario</span>
+          <div className="flex-1 h-px bg-white/10" />
+        </div>
+
+        {/* Scenario cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-2xl">
+          {SCENARIOS.map(s => (
+            <button key={s.query}
+              id={`scenario-${s.label.replace(/\s+/g, "-").toLowerCase()}`}
+              onClick={() => submit(s.query)}
+              className="bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#FF9900]/50 rounded-xl p-4 flex flex-col items-center gap-2 transition-all hover:-translate-y-0.5 cursor-pointer group">
+              <span className="text-3xl group-hover:scale-110 transition-transform">{s.emoji}</span>
+              <span className="text-xs text-gray-300 text-center leading-tight">{s.label}</span>
+            </button>
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-// ─── Order Tracking Modal ─────────────────────────────────────────────────────
-const ORDER_STAGES = [
-  { icon: CheckCircle, label: "Order Placed",     detail: "Your order has been confirmed",               delay: 0    },
-  { icon: Package,     label: "Picker Assigned",  detail: "Someone is picking your items right now",     delay: 1200 },
-  { icon: Package,     label: "Packing",          detail: "Your items are being carefully packed",       delay: 2500 },
-  { icon: Truck,       label: "Out for Delivery", detail: "Your order is on its way — ETA 10 minutes!", delay: 3800 },
-  { icon: CheckCircle, label: "Delivered ⚡",      detail: "Your Amazon Now order has arrived!",          delay: 5200 },
-];
-
-function OrderTrackingModal({ orderId, onClose }: { orderId: string; onClose: () => void }) {
-  const [stage, setStage] = useState(0);
-  useEffect(() => {
-    ORDER_STAGES.forEach((_, i) => {
-      if (i === 0) return;
-      setTimeout(() => setStage(i), ORDER_STAGES[i].delay);
-    });
-  }, []);
+// ═══════════════════════════════════════════════════════════════════
+// RESULTS VIEW — Products with real images + per-item Add to Cart
+// ═══════════════════════════════════════════════════════════════════
+function ResultsView({
+  cart, localCart, onAdd, onInc, onDec, onCheckout, onReset, budget, people,
+}: {
+  cart: SmartCartResponse;
+  localCart: LocalCart;
+  onAdd: (id: string) => void;
+  onInc: (id: string) => void;
+  onDec: (id: string) => void;
+  onCheckout: () => void;
+  onReset:    () => void;
+  budget:     number | undefined;
+  people:     number;
+}) {
+  const cartItems  = cart.items.filter(i => (localCart[i.id] ?? 0) > 0);
+  const totalQty   = Object.values(localCart).reduce((a, b) => a + b, 0);
+  const totalPrice = cartItems.reduce((a, i) => a + toINR(i.price) * (localCart[i.id] ?? 0), 0);
+  const totalSave  = cartItems.reduce((a, i) => a + toINR(i.savings ?? 0) * (localCart[i.id] ?? 0), 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="bg-white rounded-lg w-full max-w-md mx-4 shadow-2xl overflow-hidden">
-        <div className="bg-[#007185] px-5 py-4 flex items-center justify-between">
-          <div>
-            <div className="text-white font-bold text-lg">Order Tracking</div>
-            <div className="text-[#B2DFEB] text-xs font-mono">{orderId}</div>
+    <div className="min-h-screen bg-[#EAEDED] pb-40">
+      {/* Result header */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 max-w-7xl mx-auto">
+          <div className="flex flex-wrap items-center gap-2">
+            <button onClick={onReset} className="text-[#007185] text-sm hover:underline flex items-center gap-1 mr-2">
+              <ArrowLeft size={14} /> Back
+            </button>
+            <h2 className="text-xl font-bold text-[#0F1111]">AI-Built Cart</h2>
+            <span className="text-sm bg-[#007185]/10 text-[#007185] font-bold px-2 py-0.5 rounded border border-[#007185]/30">
+              {cart.intent.replace(/_/g, " ").toUpperCase()}
+            </span>
+            {budget && (
+              <span className="text-sm bg-[#E8F5E9] text-[#007600] font-bold px-2 py-0.5 rounded border border-[#C8E6C9]">
+                💰 Budget ₹{budget.toLocaleString("en-IN")}
+              </span>
+            )}
+            {people > 1 && (
+              <span className="text-sm bg-[#FFF8E1] text-[#E65100] font-bold px-2 py-0.5 rounded border border-[#FFE082]">
+                👥 {people} people
+              </span>
+            )}
           </div>
-          <button onClick={onClose} className="text-white/70 hover:text-white"><X size={20} /></button>
+          <div className="text-sm text-gray-500">
+            Tap <strong>Add</strong> on items you want, then checkout →
+          </div>
         </div>
-        <div className="bg-[#E8F5E9] border-b border-[#C8E6C9] px-5 py-3 flex items-center gap-2">
-          <Zap size={18} className="text-[#007600]" />
-          <span className="text-[#007600] font-bold text-sm">⚡ Estimated Delivery: 10 minutes</span>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 pt-6">
+        {/* AI Pipeline Trace (compact) */}
+        <div className="bg-[#131921] rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-4">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="bg-[#FF9900] text-[#131921] text-[10px] font-black px-2 py-0.5 rounded">LANGGRAPH</span>
+            <span className="text-white text-xs font-bold">AI Reasoning</span>
+          </div>
+          <div className="flex-1 space-y-1.5">
+            {cart.explainability.map((e, i) => (
+              <div key={i} className="text-xs text-gray-400 flex gap-2">
+                <ChevronRight size={12} className="text-[#FF9900] mt-0.5 shrink-0" />
+                <span>{e}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="p-6 space-y-0">
-          {ORDER_STAGES.map((s, i) => {
-            const Icon = s.icon;
-            const done   = i <= stage;
-            const active = i === stage;
+
+        {/* Products grid with REAL IMAGES */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          {cart.items.map((item, idx) => {
+            const qty = localCart[item.id] ?? 0;
+            const imgUrl = getImg(item.id);
+
             return (
-              <div key={s.label} className="flex gap-4">
-                <div className="flex flex-col items-center">
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-all duration-700 ${done ? "bg-[#007600] border-[#007600]" : "bg-white border-gray-300"} ${active ? "ring-4 ring-[#007600]/20 scale-110" : ""}`}>
-                    <Icon size={16} className={done ? "text-white" : "text-gray-300"} />
-                  </div>
-                  {i !== ORDER_STAGES.length - 1 && (
-                    <div className={`w-0.5 h-10 transition-colors duration-700 ${done && i < stage ? "bg-[#007600]" : "bg-gray-200"}`} />
+              <div key={item.id}
+                className={`bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-200 border-2 ${qty > 0 ? "border-[#007600]" : item.is_smart_saver ? "border-[#FF9900]/40" : "border-transparent"}`}
+                style={{ animationDelay: `${idx * 60}ms` }}>
+
+                {/* Image — PROMINENT, LARGE */}
+                <div className="relative overflow-hidden">
+                  <img
+                    src={imgUrl}
+                    alt={item.name}
+                    className="w-full h-52 object-cover hover:scale-105 transition-transform duration-300"
+                    onError={e => { (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${item.id}17/400/300`; }}
+                  />
+                  {item.is_smart_saver && (
+                    <div className="absolute top-3 left-3 bg-[#FF9900] text-[#131921] text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                      🏷️ Smart Saver
+                    </div>
+                  )}
+                  {qty > 0 && (
+                    <div className="absolute top-3 right-3 bg-[#007600] text-white text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                      ✓ In Cart ×{qty}
+                    </div>
                   )}
                 </div>
-                <div className="pt-1.5 pb-4">
-                  <div className={`font-bold text-sm transition-colors duration-700 ${done ? "text-[#0F1111]" : "text-gray-400"}`}>
-                    {s.label}
-                    {active && i < ORDER_STAGES.length - 1 && (
-                      <span className="ml-2 text-[10px] bg-[#FF9900] text-white px-1.5 py-0.5 rounded font-bold">LIVE</span>
+
+                {/* Info */}
+                <div className="p-4">
+                  <h3 className="font-semibold text-[#0F1111] text-sm leading-snug mb-2 line-clamp-2">{item.name}</h3>
+
+                  {/* Price row */}
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span className="text-xl font-bold text-[#B12704]">{fmtINR(item.price)}</span>
+                    {item.original_price && item.original_price > item.price && (
+                      <span className="text-sm text-gray-400 line-through">{fmtINR(item.original_price)}</span>
                     )}
                   </div>
-                  <div className={`text-xs mt-0.5 ${done ? "text-gray-500" : "text-gray-300"}`}>{s.detail}</div>
+
+                  {item.is_smart_saver && item.savings && item.savings > 0 && (
+                    <div className="text-xs text-[#007600] font-bold bg-[#E8F5E9] px-2 py-0.5 rounded mb-2 inline-block">
+                      Save {fmtINR(item.savings)}/unit
+                    </div>
+                  )}
+
+                  <div className="text-[11px] text-[#007600] mb-3">✓ In Stock &nbsp;·&nbsp; FREE 10-min delivery</div>
+
+                  {/* AI reasoning */}
+                  {item.reasoning && (
+                    <div className="bg-[#F0F8FF] border border-[#A6C8FF] rounded-lg px-3 py-2 mb-4">
+                      <div className="text-[11px] text-[#007185] flex gap-1.5 items-start">
+                        <span className="shrink-0 font-bold">🤖 AI:</span>
+                        <span className="leading-snug">{item.reasoning}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Add to Cart control */}
+                  {qty === 0 ? (
+                    <button onClick={() => onAdd(item.id)}
+                      id={`add-${item.id}`}
+                      className="w-full bg-[#FFD814] hover:bg-[#F7CA00] border border-[#FCD200] text-[#0F1111] py-2.5 rounded-lg font-bold transition-colors text-sm">
+                      Add to Cart
+                    </button>
+                  ) : (
+                    <div className="flex items-center justify-between bg-[#FFD814] border border-[#FCD200] rounded-lg overflow-hidden">
+                      <button onClick={() => onDec(item.id)} className="px-4 py-2.5 hover:bg-[#F7CA00] transition-colors font-bold text-lg">−</button>
+                      <span className="font-bold text-base">{qty}</span>
+                      <button onClick={() => onInc(item.id)} className="px-4 py-2.5 hover:bg-[#F7CA00] transition-colors font-bold text-lg">+</button>
+                    </div>
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
-        <div className="px-6 pb-6">
-          {stage === ORDER_STAGES.length - 1 ? (
-            <button onClick={onClose} className="w-full bg-[#FFD814] hover:bg-[#F7CA00] border border-[#FCD200] text-[#0F1111] py-2.5 rounded-full font-bold">
-              🛍️ Continue Shopping
-            </button>
-          ) : (
-            <div className="flex items-center justify-center gap-2 text-[#007185] text-sm">
-              <Clock size={14} className="animate-spin" /> Live tracking…
-            </div>
-          )}
-        </div>
       </div>
+
+      {/* Sticky checkout bar */}
+      {totalQty > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t-2 border-[#FF9900] px-6 py-4 flex items-center justify-between shadow-2xl">
+          <div className="flex items-center gap-4">
+            <div>
+              <span className="text-[#0F1111] font-bold">{totalQty} item{totalQty !== 1 ? "s" : ""} in cart</span>
+              <span className="text-[#B12704] font-bold text-xl ml-3">{fmtINRv(totalPrice)}</span>
+            </div>
+            {totalSave > 0 && (
+              <span className="text-[#007600] text-sm font-bold bg-[#E8F5E9] px-3 py-1 rounded-full border border-[#C8E6C9]">
+                🏷️ Saving {fmtINRv(totalSave)}
+              </span>
+            )}
+          </div>
+          <button id="proceed-checkout-btn" onClick={onCheckout}
+            className="bg-[#FF9900] hover:bg-[#e47911] text-white font-extrabold px-8 py-3 rounded-full shadow-lg transition-colors flex items-center gap-2">
+            <ShoppingCart size={18} />
+            Proceed to Checkout →
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
-// ─── Product Card ─────────────────────────────────────────────────────────────
-function ProductCard({ item, qty, onAdd, onInc, onDec }: {
-  item: CartItem; qty: number;
-  onAdd: () => void; onInc: () => void; onDec: () => void;
+// ═══════════════════════════════════════════════════════════════════
+// CHECKOUT MODAL (Amazon Pay → redirects to Amazon.in)
+// ═══════════════════════════════════════════════════════════════════
+function CheckoutModal({ total, savings, itemCount, onClose }: {
+  total: number; savings: number; itemCount: number; onClose: () => void;
 }) {
+  const [payMethod, setPayMethod] = useState<"upi"|"card"|"cod">("upi");
+  const [upiId, setUpiId]         = useState("9876543210@okaxis");
+  const [step, setStep]           = useState<"pay"|"processing"|"redirect">("pay");
+
+  const handlePay = () => {
+    setStep("processing");
+    setTimeout(() => {
+      setStep("redirect");
+      setTimeout(() => {
+        window.open("https://www.amazon.in/gp/cart/view.html?ref_=nav_cart", "_blank");
+        onClose();
+      }, 1500);
+    }, 2000);
+  };
+
   return (
-    <div className={`amazon-card p-3 flex flex-col gap-2 hover:shadow-md transition-shadow group relative ${item.is_smart_saver ? "ring-1 ring-[#FF9900]" : ""}`}>
-      {/* Smart Saver badge */}
-      {item.is_smart_saver && (
-        <div className="absolute top-2 left-2 z-10 bg-[#FF9900] text-[#131921] text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-0.5 shadow">
-          🏷️ Smart Saver
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div className="bg-white rounded-xl w-full max-w-md mx-4 shadow-2xl overflow-hidden">
+        {/* Header */}
+        <div className="bg-[#131921] px-5 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-white font-bold text-xl">amazon</span>
+            <span className="bg-[#FF9900] text-[#131921] text-[10px] font-black px-2 py-0.5 rounded tracking-wide">Pay</span>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-white"><X size={20} /></button>
         </div>
-      )}
-      {/* Emoji box */}
-      <div className="w-full aspect-square bg-[#F7F7F7] rounded-lg flex items-center justify-center group-hover:bg-[#F0F8FF] transition-colors pt-4">
-        <span className="text-5xl group-hover:scale-110 transition-transform duration-200">{getProductEmoji(item.name)}</span>
-      </div>
-      {/* Name */}
-      <p className="text-[12px] text-[#0F1111] font-medium leading-tight line-clamp-2 min-h-[32px]">{item.name}</p>
-      {/* Price */}
-      <div className="flex items-baseline gap-1 flex-wrap">
-        <span className="text-[16px] font-bold text-[#B12704]">{fmtINR(item.price)}</span>
-        {item.original_price && item.original_price > item.price && (
-          <span className="text-[11px] text-gray-400 line-through">{fmtINR(item.original_price)}</span>
+
+        {step === "pay" && (
+          <div className="p-6">
+            {/* Order summary */}
+            <div className="bg-[#F7F7F7] border border-gray-200 rounded-lg p-4 mb-5">
+              <div className="text-sm font-bold text-[#0F1111] mb-3">Order Summary</div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Items ({itemCount})</span>
+                  <span className="font-medium">{fmtINRv(total + savings)}</span>
+                </div>
+                {savings > 0 && (
+                  <div className="flex justify-between text-[#007600]">
+                    <span>🏷️ Smart Saver discount</span>
+                    <span className="font-bold">−{fmtINRv(savings)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Delivery</span>
+                  <span className="text-[#007600] font-bold">FREE</span>
+                </div>
+                <div className="border-t border-gray-200 pt-2 flex justify-between font-bold text-base">
+                  <span>Order Total</span>
+                  <span className="text-[#B12704]">{fmtINRv(total)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment methods */}
+            <p className="text-sm font-bold text-[#0F1111] mb-3">Choose payment method</p>
+            <div className="space-y-2 mb-4">
+              {[
+                { key: "upi",  icon: "📱", label: "UPI / Amazon Pay UPI", sub: "Instant, no extra charges" },
+                { key: "card", icon: "💳", label: "Credit / Debit Card",  sub: "Visa, Mastercard, Rupay" },
+                { key: "cod",  icon: "💵", label: "Cash on Delivery",     sub: "Pay when delivered" },
+              ].map(m => (
+                <label key={m.key} className={`flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all ${payMethod === m.key ? "border-[#FF9900] bg-[#FFFBF0]" : "border-gray-200 hover:border-gray-300"}`}>
+                  <input type="radio" name="pay" checked={payMethod === m.key as any} onChange={() => setPayMethod(m.key as any)} className="w-4 h-4 accent-[#FF9900]" />
+                  <span className="text-xl">{m.icon}</span>
+                  <div>
+                    <div className="text-sm font-semibold">{m.label}</div>
+                    <div className="text-xs text-gray-400">{m.sub}</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+
+            {payMethod === "upi" && (
+              <div className="mb-4">
+                <label className="text-xs text-gray-600 block mb-1 font-medium">Your UPI ID</label>
+                <input className="w-full border-2 border-gray-200 focus:border-[#FF9900] rounded-lg px-3 py-2 text-sm focus:outline-none transition-colors"
+                  value={upiId} onChange={e => setUpiId(e.target.value)} />
+              </div>
+            )}
+
+            <button onClick={handlePay}
+              className="w-full bg-[#FFD814] hover:bg-[#F7CA00] border border-[#FCD200] text-[#0F1111] py-3.5 rounded-xl font-bold text-base shadow transition-colors">
+              🔒 Pay {fmtINRv(total)} Securely
+            </button>
+            <p className="text-center text-[10px] text-gray-400 mt-3">
+              Secured by Amazon Pay · 256-bit SSL Encryption
+            </p>
+          </div>
+        )}
+
+        {step === "processing" && (
+          <div className="p-12 flex flex-col items-center">
+            <div className="w-16 h-16 border-4 border-[#FF9900] border-t-transparent rounded-full animate-spin mb-5" />
+            <div className="text-xl font-bold text-[#0F1111] mb-2">Processing Payment…</div>
+            <div className="text-gray-500 text-sm">Securing your transaction with Amazon Pay</div>
+          </div>
+        )}
+
+        {step === "redirect" && (
+          <div className="p-12 flex flex-col items-center">
+            <div className="text-5xl mb-4">✅</div>
+            <div className="text-xl font-bold text-[#007600] mb-2">Payment Successful!</div>
+            <div className="text-gray-500 text-sm text-center">Redirecting you to Amazon checkout to confirm your order…</div>
+            <div className="mt-4 flex gap-1">
+              {[1,2,3].map(i => (
+                <div key={i} className="w-2 h-2 bg-[#FF9900] rounded-full animate-bounce"
+                  style={{ animationDelay: `${i * 150}ms` }} />
+              ))}
+            </div>
+          </div>
         )}
       </div>
-      {item.is_smart_saver && item.savings && item.savings > 0 && (
-        <div className="text-[10px] text-[#007600] font-bold bg-[#E8F5E9] px-2 py-0.5 rounded">
-          You save {fmtINR(item.savings)} per unit
-        </div>
-      )}
-      {/* AI tip */}
-      {item.reasoning && (
-        <p className="text-[10px] text-[#007185] bg-[#F0F8FF] border border-[#A6C8FF] rounded px-2 py-1 line-clamp-2">
-          🤖 {item.reasoning}
-        </p>
-      )}
-      {/* Add / qty */}
-      {qty === 0 ? (
-        <button onClick={onAdd} id={`add-${item.id}`}
-          className="mt-auto w-full bg-[#FFD814] hover:bg-[#F7CA00] border border-[#FCD200] text-[#0F1111] text-sm py-2 rounded font-bold transition-colors">
-          Add
-        </button>
-      ) : (
-        <div className="mt-auto flex items-center justify-between bg-[#FFD814] border border-[#FCD200] rounded overflow-hidden">
-          <button onClick={onDec} className="px-3 py-2 hover:bg-[#F7CA00] transition-colors font-bold text-lg leading-none">−</button>
-          <span className="font-bold text-sm">{qty}</span>
-          <button onClick={onInc} className="px-3 py-2 hover:bg-[#F7CA00] transition-colors font-bold text-lg leading-none">+</button>
-        </div>
-      )}
     </div>
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+// ROOT APP
+// ═══════════════════════════════════════════════════════════════════
 export default function Home() {
-  const [message, setMessage]         = useState("");
-  const [isLoading, setIsLoading]     = useState(false);
-  const [isListening, setIsListening] = useState(false);
-  const [cart, setCart]               = useState<SmartCartResponse | null>(null);
-  const [localCart, setLocalCart]     = useState<LocalCart>({});
-  const [toast, setToast]             = useState<string | null>(null);
-  const [showPayment, setShowPayment] = useState(false);
-  const [showTracking, setShowTracking] = useState(false);
-  const [orderId, setOrderId]         = useState("");
-  // Preferences
-  const [showPrefs, setShowPrefs]     = useState(false);
-  const [budget, setBudget]           = useState("");         // INR string
-  const [peopleCount, setPeopleCount] = useState("1");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [mode,       setMode]       = useState<PageMode>("home");
+  const [isLoading,  setIsLoading]  = useState(false);
+  const [cart,       setCart]       = useState<SmartCartResponse | null>(null);
+  const [localCart,  setLocalCart]  = useState<LocalCart>({});
+  const [toast,      setToast]      = useState<string | null>(null);
+  const [showPay,    setShowPay]    = useState(false);
+  // Budget/people stored at root for display in ResultsView
+  const [activeBudget, setActiveBudget] = useState<number | undefined>();
+  const [activePeople, setActivePeople] = useState(1);
 
-  const parsedBudget = budget.trim() ? parseFloat(budget) : undefined;
-  const parsedPeople = Math.max(1, parseInt(peopleCount) || 1);
-
-  // ── Core fetch ──
-  const fetchCart = useCallback(async (query: string) => {
-    if (!query.trim()) return;
-    setIsLoading(true); setCart(null); setLocalCart({});
+  const fetchCart = useCallback(async (query: string, budget?: number, people = 1) => {
+    setActiveBudget(budget);
+    setActivePeople(people);
+    setIsLoading(true);
+    setCart(null);
+    setLocalCart({});
+    setMode("results");
     try {
       const res = await fetch("http://localhost:8000/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message:      query,
-          budget:       parsedBudget ?? null,
-          people_count: parsedPeople,
-        }),
+        body: JSON.stringify({ message: query, budget: budget ?? null, people_count: people }),
       });
-      if (!res.ok) throw new Error("Backend error");
+      if (!res.ok) throw new Error();
       const data: SmartCartResponse = await res.json();
       setCart(data);
       const init: LocalCart = {};
       data.items.forEach(i => { init[i.id] = i.quantity; });
       setLocalCart(init);
     } catch {
-      setToast("AI is warming up — please try again in a moment.");
+      setToast("AI is warming up — please try again.");
+      setMode("ai");
     } finally { setIsLoading(false); }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [parsedBudget, parsedPeople]);
+  }, []);
 
-  const handleSendMessage = () => fetchCart(message);
-  const handleScenario    = (query: string) => { setMessage(query); fetchCart(query); };
-
-  // ── Voice ──
-  const handleVoiceInput = () => {
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) { setToast("Voice search is not supported in this browser."); return; }
-    const rec = new SR();
-    rec.continuous = false; rec.interimResults = false;
-    rec.onstart  = () => { setIsListening(true); setMessage(""); };
-    rec.onresult = (e: any) => {
-      const t = e.results[0][0].transcript;
-      setMessage(t); setIsListening(false); fetchCart(t);
-    };
-    rec.onerror = () => setToast("Voice recognition failed.");
-    rec.onend   = () => setIsListening(false);
-    rec.start();
-  };
-
-  // ── Image upload ──
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.[0]) return;
-    setIsLoading(true); setCart(null); setLocalCart({});
-    const formData = new FormData();
-    formData.append("file", e.target.files[0]);
-    try {
-      const res = await fetch("http://localhost:8000/api/inventory/upload", { method: "POST", body: formData });
-      if (!res.ok) throw new Error("Backend error");
-      const data: SmartCartResponse = await res.json();
-      setCart(data);
-      const init: LocalCart = {};
-      data.items.forEach(i => { init[i.id] = i.quantity; });
-      setLocalCart(init);
-    } catch { setToast("Vision AI could not process the image."); }
-    finally { setIsLoading(false); e.target.value = ""; }
-  };
-
-  // ── Local cart ops ──
   const addItem = (id: string) => setLocalCart(p => ({ ...p, [id]: (p[id] ?? 0) + 1 }));
   const incItem = (id: string) => setLocalCart(p => ({ ...p, [id]: p[id] + 1 }));
   const decItem = (id: string) => setLocalCart(p => {
@@ -408,370 +906,82 @@ export default function Home() {
     return n;
   });
 
-  const cartItems  = cart?.items.filter(i => (localCart[i.id] ?? 0) > 0) ?? [];
-  const totalQty   = Object.values(localCart).reduce((a, b) => a + b, 0);
-  const totalPrice = cartItems.reduce((acc, i) => acc + toINR(i.price) * (localCart[i.id] ?? 0), 0);
-  const totalSavings = cartItems.reduce((acc, i) => acc + toINR(i.savings ?? 0) * (localCart[i.id] ?? 0), 0);
+  const totalQty = Object.values(localCart).reduce((a, b) => a + b, 0);
+  const cartItemsInCart = cart?.items.filter(i => (localCart[i.id] ?? 0) > 0) ?? [];
+  const totalPrice = cartItemsInCart.reduce((a, i) => a + toINR(i.price) * (localCart[i.id] ?? 0), 0);
+  const totalSave  = cartItemsInCart.reduce((a, i) => a + toINR(i.savings ?? 0) * (localCart[i.id] ?? 0), 0);
 
-  const handlePaymentSuccess = () => {
-    setShowPayment(false);
-    setOrderId(`AMZ-NOW-${Math.random().toString(36).substring(2, 8).toUpperCase()}`);
-    setShowTracking(true);
-  };
-  const handleReset = () => { setCart(null); setMessage(""); setLocalCart({}); };
+  const handleReset = () => { setCart(null); setMode("home"); setLocalCart({}); };
 
   return (
-    <main className="min-h-screen font-sans flex flex-col bg-[#EAEDED]">
-      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
-      {showPayment && (
-        <PaymentModal total={totalPrice} savings={totalSavings} itemCount={totalQty}
-          onSuccess={handlePaymentSuccess} onClose={() => setShowPayment(false)} />
+    <main className="min-h-screen font-sans">
+      {toast && <Toast msg={toast} onClose={() => setToast(null)} />}
+      {showPay && (
+        <CheckoutModal
+          total={totalPrice} savings={totalSave} itemCount={totalQty}
+          onClose={() => setShowPay(false)}
+        />
       )}
-      {showTracking && (
-        <OrderTrackingModal orderId={orderId} onClose={() => { setShowTracking(false); handleReset(); }} />
+
+      {/* Navbar always visible */}
+      <AmazonNavbar
+        mode={mode}
+        cartCount={totalQty}
+        onLogoClick={() => setMode("home")}
+        onCartClick={() => totalQty > 0 && setShowPay(true)}
+      />
+
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 z-50 bg-[#131921]/80 backdrop-blur-sm flex flex-col items-center justify-center">
+          <div className="w-16 h-16 border-4 border-[#FF9900] border-t-transparent rounded-full animate-spin mb-6" />
+          <div className="text-white font-bold text-xl mb-2">AI Building Your Cart…</div>
+          <div className="text-gray-400 text-sm">7 agents running in parallel — intent, context, consumption, inventory, graph, cart, explainability</div>
+          <div className="flex gap-2 mt-4">
+            {["Intent","Context","Consumption","Inventory","Graph","Cart","Explain"].map((a, i) => (
+              <div key={a} className="text-[10px] text-[#FF9900] font-bold bg-[#FF9900]/10 px-2 py-1 rounded border border-[#FF9900]/30 animate-pulse"
+                style={{ animationDelay: `${i * 200}ms` }}>{a}</div>
+            ))}
+          </div>
+        </div>
       )}
 
-      {/* ── Navbar ── */}
-      <header className="w-full bg-[#131921] text-white flex flex-col sticky top-0 z-40 shadow-md">
-        <div className="flex items-center justify-between px-4 py-2 gap-4">
-          {/* Logo */}
-          <div className="flex items-center cursor-pointer hover:border-white border border-transparent p-1 rounded shrink-0">
-            <span className="font-bold text-xl tracking-tighter">amazon</span>
-            <span className="text-[#FF9900] font-bold text-xl ml-0.5">now</span>
-            <span className="bg-[#FF9900] text-[#131921] text-[10px] font-black px-1.5 py-0.5 rounded ml-1.5 tracking-wide">AI</span>
-          </div>
-          {/* Deliver */}
-          <div className="hidden md:flex items-center hover:border-white border border-transparent p-1 rounded cursor-pointer shrink-0">
-            <MapPin size={18} className="mr-1 text-gray-300" />
-            <div className="flex flex-col">
-              <span className="text-[11px] text-gray-300 leading-3">Deliver to</span>
-              <span className="text-sm font-bold leading-4">Your Location</span>
-            </div>
-          </div>
-          {/* Search */}
-          <div className="flex-1 max-w-4xl flex items-center relative group">
-            <div className="absolute inset-0 bg-[#FF9900] rounded-md -m-0.5 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none" />
-            <div className="relative flex w-full h-10 rounded-md overflow-hidden z-10">
-              <button onClick={() => fileInputRef.current?.click()} disabled={isLoading}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 border-r border-gray-300 flex items-center justify-center" title="Upload photo">
-                <Camera size={20} />
-              </button>
-              <button onClick={handleVoiceInput} disabled={isLoading}
-                className={`bg-gray-100 hover:bg-gray-200 px-3 border-r border-gray-300 flex items-center justify-center transition-colors ${isListening ? "text-[#CC0C39] animate-pulse" : "text-gray-600"}`}>
-                <Mic size={20} />
-              </button>
-              <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileUpload} />
-              <input
-                id="amazon-now-search"
-                type="text"
-                className="flex-1 px-4 text-[#0F1111] focus:outline-none text-[15px]"
-                placeholder={isListening ? "🎤 Listening..." : "What do you need? (e.g. I have a fever, movie night...)"}
-                value={message}
-                onChange={e => setMessage(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && handleSendMessage()}
-                disabled={isLoading || isListening}
-              />
-              <button onClick={() => setShowPrefs(p => !p)} title="Budget & People"
-                className={`bg-gray-100 hover:bg-gray-200 px-3 border-l border-gray-300 flex items-center justify-center transition-colors ${showPrefs || parsedBudget || parsedPeople > 1 ? "text-[#FF9900]" : "text-gray-600"}`}>
-                <SlidersHorizontal size={18} />
-              </button>
-              <button onClick={handleSendMessage} disabled={isLoading}
-                id="search-submit-btn"
-                className="bg-[#FEBD69] hover:bg-[#F3A847] px-4 flex items-center justify-center transition-colors text-gray-900">
-                <Search size={22} />
-              </button>
-            </div>
-          </div>
-          {/* Account */}
-          <div className="hidden md:flex flex-col hover:border-white border border-transparent p-1 rounded cursor-pointer shrink-0">
-            <span className="text-[11px] text-gray-300 leading-3">Hello, Customer</span>
-            <span className="text-sm font-bold leading-4">Account &amp; Lists</span>
-          </div>
-          {/* Cart */}
-          <button onClick={() => cart && totalQty > 0 && setShowPayment(true)}
-            className="flex items-center hover:border-white border border-transparent p-1 rounded cursor-pointer shrink-0 relative">
-            <div className="relative flex items-end">
-              <ShoppingCart size={32} />
-              {totalQty > 0 && (
-                <span className="absolute -top-1 left-3.5 text-[#FF9900] font-bold text-[16px] leading-4">{totalQty}</span>
-              )}
-            </div>
-            <span className="text-sm font-bold hidden md:block ml-1 mt-3">Cart</span>
-          </button>
-        </div>
+      {/* Mode rendering */}
+      {mode === "home" && <HomeView onAIClick={() => setMode("ai")} />}
 
-        {/* ── Preferences panel ── */}
-        {showPrefs && (
-          <div className="bg-[#1a2433] border-t border-[#2d3f52] px-4 py-3 flex flex-wrap items-center gap-4 animate-fadein">
-            <span className="text-xs text-gray-400 font-bold uppercase tracking-wide">Preferences</span>
-            {/* Budget */}
-            <div className="flex items-center gap-2">
-              <IndianRupee size={14} className="text-[#FF9900]" />
-              <span className="text-xs text-gray-300">Budget:</span>
-              <div className="flex items-center bg-[#131921] border border-[#3a4f62] rounded overflow-hidden">
-                <span className="px-2 text-gray-400 text-sm">₹</span>
-                <input
-                  id="budget-input"
-                  type="number"
-                  min="0"
-                  placeholder="No limit"
-                  value={budget}
-                  onChange={e => setBudget(e.target.value)}
-                  className="bg-transparent text-white text-sm w-24 py-1 pr-2 focus:outline-none placeholder-gray-600"
-                />
-              </div>
-              {parsedBudget && (
-                <span className="text-[#FF9900] text-xs font-bold">Max ₹{parsedBudget.toLocaleString("en-IN")}</span>
-              )}
-            </div>
-            {/* People count */}
-            <div className="flex items-center gap-2">
-              <Users size={14} className="text-[#FF9900]" />
-              <span className="text-xs text-gray-300">For:</span>
-              <div className="flex items-center bg-[#131921] border border-[#3a4f62] rounded overflow-hidden">
-                <input
-                  id="people-count-input"
-                  type="number"
-                  min="1"
-                  max="50"
-                  value={peopleCount}
-                  onChange={e => setPeopleCount(e.target.value)}
-                  className="bg-transparent text-white text-sm w-12 py-1 px-2 text-center focus:outline-none"
-                />
-              </div>
-              <span className="text-gray-400 text-xs">people</span>
-              {parsedPeople > 1 && (
-                <span className="text-[#FF9900] text-xs font-bold">Quantities scaled ×{parsedPeople}</span>
-              )}
-            </div>
-            {/* Smart Saver info */}
-            <div className="ml-auto flex items-center gap-1.5 text-[10px] text-gray-500">
-              <span className="bg-[#FF9900] text-[#131921] px-1.5 py-0.5 rounded font-black text-[9px]">🏷️ Smart Saver</span>
-              near-expiry deals applied automatically
-            </div>
-          </div>
-        )}
+      {mode === "ai" && (
+        <AIInputView
+          onSubmit={(q, b, p) => fetchCart(q, b, p)}
+          onBack={() => setMode("home")}
+        />
+      )}
 
-        {/* Bottom strip */}
-        <div className="bg-[#232F3E] px-4 py-1.5 flex items-center gap-4 text-sm font-medium overflow-x-auto">
-          <div className="flex items-center gap-1 cursor-pointer hover:border-white border border-transparent p-1 rounded whitespace-nowrap">
-            <Menu size={18} /> All
-          </div>
-          <span className="cursor-pointer hover:border-white border border-transparent p-1 rounded whitespace-nowrap">Today's Deals</span>
-          <span className="cursor-pointer hover:border-white border border-transparent p-1 rounded whitespace-nowrap">Customer Service</span>
-          <span className="cursor-pointer hover:border-white border border-transparent p-1 rounded whitespace-nowrap">Registry</span>
-          <span className="cursor-pointer hover:border-white border border-transparent p-1 rounded whitespace-nowrap">Gift Cards</span>
-          <span className="ml-auto flex items-center gap-1.5 text-[#FF9900] font-bold whitespace-nowrap">
-            <Zap size={14} /> 10-Min Delivery
-          </span>
-        </div>
-      </header>
-
-      {/* ── Content ── */}
-      <div className="flex-1 w-full max-w-[1500px] mx-auto pb-12">
-
-        {isLoading && (
-          <div>
-            <div className="bg-[#007185] text-white px-4 py-2 text-sm text-center flex items-center justify-center gap-2">
-              <Sparkles size={16} className="animate-spin" />
-              AI building your cart{parsedBudget ? ` (budget: ₹${parsedBudget.toLocaleString("en-IN")})` : ""}
-              {parsedPeople > 1 ? ` for ${parsedPeople} people` : ""} — running 7 agents in parallel…
-            </div>
-            <CartSkeleton />
-          </div>
-        )}
-
-        {/* ── Homepage ── */}
-        {!cart && !isLoading && (
-          <div className="animate-fadein">
-            <div className="w-full bg-gradient-to-br from-[#131921] to-[#232F3E] text-white px-8 py-14 text-center relative overflow-hidden">
-              <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #FF9900 0%, transparent 50%), radial-gradient(circle at 80% 20%, #007185 0%, transparent 40%)" }} />
-              <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 bg-[#FF9900]/20 border border-[#FF9900]/40 rounded-full px-4 py-1.5 text-[#FF9900] text-sm font-bold mb-5">
-                  <Zap size={14} /> Need-Centric Shopping · 7-Agent AI Pipeline
-                </div>
-                <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-                  Skip the Search.<br />
-                  <span className="text-[#FF9900]">Fulfill the Need.</span>
-                </h1>
-                <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-3">
-                  Tell us what you're doing — not what you want to buy. Our AI builds the perfect cart in seconds.
-                </p>
-                <p className="text-sm text-gray-400 max-w-xl mx-auto">
-                  Powered by LangGraph · GPT-4o Vision · Parallel Agent Architecture
-                </p>
-                {/* Feature pills */}
-                <div className="flex flex-wrap justify-center gap-2 mt-6">
-                  {["🏷️ Smart Saver deals", "💰 Budget-aware", "👥 Scales by headcount", "📸 Vision AI"].map(f => (
-                    <span key={f} className="bg-white/10 text-gray-200 text-xs px-3 py-1 rounded-full border border-white/20">{f}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* How it works */}
-            <div className="bg-white border-b border-gray-200 px-8 py-4">
-              <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-8 text-sm text-center text-[#565959]">
-                {[
-                  { icon: "🎙️", step: "1. Speak or type your need" },
-                  { icon: "⚙️", step: "2. Set budget & headcount (optional)" },
-                  { icon: "🤖", step: "3. AI builds the perfect cart" },
-                  { icon: "⚡", step: "4. Delivered in 10 minutes" },
-                ].map(({ icon, step }) => (
-                  <div key={step} className="flex items-center gap-2 font-medium">
-                    <span className="text-xl">{icon}</span><span>{step}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Scenario cards */}
-            <div className="px-6 pt-8 pb-4">
-              <h2 className="text-center text-[#0F1111] text-xl font-bold mb-2">Try a scenario instantly</h2>
-              <p className="text-center text-[#565959] text-sm mb-6">Click any card — AI will build your cart. Set budget/headcount above for smarter results.</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-                {SCENARIOS.map(({ emoji, label, query }) => (
-                  <button key={query}
-                    id={`scenario-${label.replace(/\s+/g, "-").toLowerCase()}`}
-                    onClick={() => handleScenario(query)}
-                    className="group bg-white border border-[#D5D9D9] hover:border-[#FF9900] hover:shadow-md rounded-xl p-5 flex flex-col items-center gap-3 transition-all duration-200 cursor-pointer hover:-translate-y-0.5">
-                    <span className="text-4xl group-hover:scale-110 transition-transform duration-200">{emoji}</span>
-                    <span className="text-sm font-semibold text-[#0F1111] text-center leading-tight">{label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="text-center mt-4 mb-8 text-[#565959] text-sm">— or type anything custom in the search bar above —</div>
-
-            {/* Features */}
-            <div className="bg-white border-t border-b border-gray-200 px-8 py-8 mt-4">
-              <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
-                {[
-                  { icon: "🤖", title: "7-Agent Pipeline",    desc: "Parallel agents for intent, context, consumption, inventory, graph, cart, explainability." },
-                  { icon: "🏷️", title: "Smart Saver",        desc: "Near-expiry warehouse items flagged automatically with discounts — great for you, reduces Amazon's waste." },
-                  { icon: "💰", title: "Budget-Aware AI",     desc: "Set a budget. The Cart Agent will never build a cart that exceeds it — guaranteed by constraint satisfaction." },
-                  { icon: "📸", title: "Vision AI (GPT-4o)", desc: "Upload a fridge photo. Our AI detects what's missing and builds your replenishment cart automatically." },
-                ].map(({ icon, title, desc }) => (
-                  <div key={title} className="flex flex-col items-center text-center p-4">
-                    <span className="text-4xl mb-3">{icon}</span>
-                    <h3 className="font-bold text-[#0F1111] mb-2">{title}</h3>
-                    <p className="text-sm text-[#565959] leading-relaxed">{desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── Smart Cart Results ── */}
-        {!isLoading && cart && (
-          <div className="animate-fadein">
-            {/* Header */}
-            <div className="bg-white border-b border-gray-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-xl font-bold text-[#0F1111]">AI-Built Cart</h2>
-                <span className="text-sm bg-[#007185]/10 text-[#007185] font-semibold px-2 py-0.5 rounded border border-[#007185]/30">
-                  {cart.intent.replace(/_/g, " ").toUpperCase()}
-                </span>
-                {parsedBudget && (
-                  <span className="text-sm bg-[#E8F5E9] text-[#007600] font-semibold px-2 py-0.5 rounded border border-[#C8E6C9]">
-                    💰 Budget ₹{parsedBudget.toLocaleString("en-IN")}
-                  </span>
-                )}
-                {parsedPeople > 1 && (
-                  <span className="text-sm bg-[#FFF8E1] text-[#E65100] font-semibold px-2 py-0.5 rounded border border-[#FFE082]">
-                    👥 {parsedPeople} people
-                  </span>
-                )}
-                {(cart.total_savings ?? 0) > 0 && (
-                  <span className="text-sm bg-[#FFF3CD] text-[#856404] font-semibold px-2 py-0.5 rounded border border-[#FFEEBA]">
-                    🏷️ You save {fmtINR(cart.total_savings ?? 0)}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-3">
-                {totalQty > 0 && (
-                  <button id="buy-now-btn" onClick={() => setShowPayment(true)}
-                    className="bg-[#FF9900] hover:bg-[#E58800] text-white font-bold px-6 py-2.5 rounded-full shadow transition-colors flex items-center gap-2">
-                    <ShoppingCart size={18} />
-                    Buy Now ({totalQty} · {fmtINRv(totalPrice)})
-                  </button>
-                )}
-                <button onClick={handleReset} className="text-[#007185] text-sm hover:underline flex items-center gap-1">
-                  <RefreshCw size={13} /> New search
-                </button>
-              </div>
-            </div>
-
-            {/* Product grid */}
-            <div className="px-6 py-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {cart.items.map(item => (
-                <ProductCard key={item.id} item={item}
-                  qty={localCart[item.id] ?? 0}
-                  onAdd={() => addItem(item.id)}
-                  onInc={() => incItem(item.id)}
-                  onDec={() => decItem(item.id)}
-                />
-              ))}
-            </div>
-
-            {/* Sticky checkout bar */}
-            {totalQty > 0 && (
-              <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between shadow-xl">
-                <div className="flex items-center gap-4">
-                  <div>
-                    <span className="font-bold text-[#0F1111]">{totalQty} item{totalQty !== 1 ? "s" : ""}</span>
-                    <span className="text-[#B12704] font-bold ml-4 text-lg">{fmtINRv(totalPrice)}</span>
-                  </div>
-                  {totalSavings > 0 && (
-                    <span className="text-[#007600] text-sm font-bold bg-[#E8F5E9] px-3 py-1 rounded-full border border-[#C8E6C9]">
-                      🏷️ Saving {fmtINRv(totalSavings)}
-                    </span>
-                  )}
-                </div>
-                <button id="sticky-checkout-btn" onClick={() => setShowPayment(true)}
-                  className="bg-[#FFD814] hover:bg-[#F7CA00] border border-[#FCD200] text-[#0F1111] font-bold px-8 py-2.5 rounded-full shadow transition-colors">
-                  Proceed to Checkout →
-                </button>
-              </div>
-            )}
-
-            {/* AI Reasoning */}
-            <div className="px-6 pb-32">
-              <div className="max-w-3xl bg-[#F7F7F7] border border-[#D5D9D9] p-5 rounded shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1 h-full bg-[#007185]" />
-                <div className="flex items-center flex-wrap gap-2 mb-3">
-                  <span className="bg-[#007185] text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wide">LANGGRAPH</span>
-                  <span className="bg-[#232F3E] text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wide">GPT-4o</span>
-                  <span className="font-bold text-[#0F1111] ml-1">AI Pipeline Trace</span>
-                </div>
-                <ul className="space-y-3">
-                  {cart.explainability.map((exp, i) => (
-                    <li key={i} className="text-sm text-[#0F1111] flex gap-3 items-start">
-                      <ChevronRight size={16} className="text-[#007185] mt-0.5 shrink-0" />
-                      <span className="leading-snug">{exp}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      {mode === "results" && cart && !isLoading && (
+        <ResultsView
+          cart={cart}
+          localCart={localCart}
+          onAdd={addItem} onInc={incItem} onDec={decItem}
+          onCheckout={() => setShowPay(true)}
+          onReset={handleReset}
+          budget={activeBudget}
+          people={activePeople}
+        />
+      )}
 
       {/* Footer */}
-      <footer className="w-full bg-[#232F3E] text-white py-8 mt-auto flex flex-col items-center">
-        <div className="flex gap-8 text-sm font-medium mb-6 flex-wrap justify-center px-4">
-          <span className="hover:underline cursor-pointer">Conditions of Use</span>
-          <span className="hover:underline cursor-pointer">Privacy Notice</span>
-          <span className="hover:underline cursor-pointer">Your Ads Privacy Choices</span>
-        </div>
-        <div className="text-xs text-gray-400 text-center px-4">
-          Amazon Now AI — Built for Amazon HackOn Season 6 · Theme: Reimagining Urgent Shopping
-        </div>
-        <div className="text-xs text-gray-500 mt-1">© 1996-2026, Amazon.com, Inc. or its affiliates</div>
-      </footer>
+      {mode === "home" && (
+        <footer className="bg-[#232F3E] text-white py-8 flex flex-col items-center">
+          <div className="flex gap-8 text-sm font-medium mb-4 flex-wrap justify-center px-4">
+            <span className="hover:underline cursor-pointer">Conditions of Use</span>
+            <span className="hover:underline cursor-pointer">Privacy Notice</span>
+            <span className="hover:underline cursor-pointer">Interest-Based Ads</span>
+          </div>
+          <div className="text-xs text-gray-400">
+            Amazon Now AI — HackOn Season 6 · Reimagining Urgent Shopping
+          </div>
+          <div className="text-xs text-gray-600 mt-1">© 1996-2026, Amazon.com, Inc. or its affiliates</div>
+        </footer>
+      )}
     </main>
   );
 }
