@@ -311,7 +311,7 @@ function AmazonNavbar({ cartCount, onLogoClick, onCartClick }: {
 // ─── FIX 1 + ORDER TRACKING: Full-screen loading overlay ─────────────────────
 function FullScreenLoader() {
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#131921]/95 backdrop-blur-sm flex flex-col items-center justify-center">
+    <div className="fixed inset-0 z-30 pt-[100px] bg-[#131921]/95 backdrop-blur-sm flex flex-col items-center justify-center">
       <div className="w-14 h-14 border-4 border-[#FF9900] border-t-transparent rounded-full animate-spin mb-5" />
       <div className="text-white font-bold text-xl mb-2">AI Building Your Cart…</div>
       <div className="text-gray-400 text-sm text-center max-w-sm px-4">
