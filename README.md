@@ -143,16 +143,16 @@ Rufus helps you **find** products through conversational search. Amazon Now AI *
 
 ---
 
-## 🧩 Anticipating the Hard Questions
+## 🧩 Two Honest Clarifications
 
-> Honest answers to what a senior Amazon engineer will ask.
+> The questions a senior engineer asks first — answered upfront.
 
-| Question | Answer |
-|----------|--------|
-| **"What happens at 1M+ products? Does the prompt still work?"** | No — the prompt approach is for the demo's 50-SKU catalog. At scale: **vector embeddings** (retrieve top-K relevant SKUs per query) + **Amazon Neptune** for the association graph + **Personalize** for ranking. The LLM only ever sees a pre-filtered candidate set, never the full catalog. |
-| **"What if the user asks for something not in the catalog?"** | Graceful degradation — the post-processor silently drops any LLM-returned ID not in the catalog (`langgraph_flow.py`). The cart returns the closest available items; it never invents a fake product or price. |
-| **"Why OpenAI and not Bedrock?"** | Speed of iteration in 48h. The architecture is model-agnostic — the LLM client is a single swappable interface. Bedrock (Claude/Titan) is the documented production target so customer data stays in AWS. |
-| **"Is this really multi-agent?"** | No — and we don't claim it is. It's **one GPT-4o structured-output call + a deterministic graph traversal**. We deliberately collapsed 7 calls → 1 to hit sub-4s latency (see version history below). Honest naming: prompt-engineered single-shot synthesis, not a 7-agent swarm. |
+| Question | Honest answer |
+|----------|---------------|
+| **"What if the user asks for something not in the catalog?"** | Graceful degradation — the post-processor drops any LLM-returned ID not in the catalog (`langgraph_flow.py`). The cart returns the closest available items; it **never invents a fake product or price**. |
+| **"Is this *really* multi-agent?"** | No — and we don't claim it is. It's **one GPT-4o structured-output call + a deterministic graph traversal**. We deliberately collapsed 7 calls → 1 to hit sub-4s latency (see version history below). Honest naming: prompt-engineered single-shot synthesis, not a 7-agent swarm. |
+
+> The "how do we scale to 1M+ products / migrate off OpenAI" questions are answered concretely in the [6-Month Roadmap](#-target-scale-architecture-6-month-roadmap) below.
 
 <br/>
 
@@ -398,6 +398,8 @@ graph TD
 | OpenAI Vision | **Bedrock Titan Multimodal** | AWS-native image analysis |
 
 > **These are explicitly roadmap items — not claimed as built. Today's prototype is entirely self-contained.**
+>
+> **How the prompt scales:** at 1M+ SKUs the LLM never sees the full catalog — vector embeddings retrieve the top-K relevant products per query, and the model only synthesises from that pre-filtered candidate set.
 
 <br/>
 
