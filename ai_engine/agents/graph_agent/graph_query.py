@@ -5,7 +5,7 @@ This is NOT an LLM call. It builds a weighted co-occurrence graph from the
 product catalog (products that share tags / complementary categories are
 connected) and answers "what pairs well with X?" by traversing real edges.
 
-This is what powers the Graph Agent in the LangGraph pipeline:
+This is what powers the product-graph lookup in the single-shot pipeline:
   pasta  --(shared: pasta, italian, dinner)-->  marinara sauce
   popcorn --(shared: movie night, snack)-->     soda, candy
 

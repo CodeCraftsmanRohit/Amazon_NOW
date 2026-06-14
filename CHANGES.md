@@ -1,5 +1,10 @@
 # What Changed — Critical Fixes for Top 30
 
+> **⚠️ Historical snapshot.** This file documents an *intermediate* optimisation
+> stage (the 6–8s, multi-call version). The pipeline was subsequently collapsed
+> further to a **single grounded GPT-4o call + deterministic graph (~3s)**.
+> For the current architecture, see **README.md** and **system_design.md**.
+
 ## Summary
 Fixed the **3 biggest gaps** between your demo and what a technical judge will verify:
 
