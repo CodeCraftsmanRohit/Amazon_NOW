@@ -33,7 +33,7 @@ const PIMG: Record<string, string> = {
   P017: "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?w=400&h=400&fit=crop", // marinara sauce jar
   P018: "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400&h=400&fit=crop", // tomato pasta sauce
   // ── Bread ───────────────────────────────────────────────────────────────
-  P020: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=400&h=400&fit=crop", // garlic bread loaf
+  P020: "https://source.unsplash.com/featured/400x400/?garlic,bread,food", // garlic bread
   P034: "https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&h=400&fit=crop", // sliced wheat bread
   // ── Snacks ──────────────────────────────────────────────────────────────
   P010: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=400&h=400&fit=crop", // popcorn
