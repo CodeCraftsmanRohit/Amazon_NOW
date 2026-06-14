@@ -956,17 +956,22 @@ function ResultsView({ cart, localCart, onAdd, onInc, onDec, onCheckout, onReset
 // ═══════════════════════════════════════════════════════════════════
 // CART VIEW — Homepage cart with quantity controls + checkout
 // ═══════════════════════════════════════════════════════════════════
-interface CartEntry extends HomeProduct { qty: number; }
-function CartView({ entries, onInc, onDec, onRemove, onCheckout, onBack }: {
+interface CartEntry extends HomeProduct { qty: number; aiBuilt?: boolean; savings?: number; }
+function CartView({ entries, onInc, onDec, onRemove, aiEntries, onAiInc, onAiDec, onAiRemove, onCheckout, onBack }: {
   entries: CartEntry[];
   onInc: (id: string) => void;
   onDec: (id: string) => void;
   onRemove: (id: string) => void;
+  aiEntries?: CartEntry[];
+  onAiInc?: (id: string) => void;
+  onAiDec?: (id: string) => void;
+  onAiRemove?: (id: string) => void;
   onCheckout: () => void;
   onBack: () => void;
 }) {
-  const total = entries.reduce((s, e) => s + toINR(e.price) * e.qty, 0);
-  const savings = entries.reduce((s, e) => s + (e.orig ? (toINR(e.orig) - toINR(e.price)) * e.qty : 0), 0);
+  const allEntries = [...entries, ...(aiEntries ?? [])];
+  const total   = allEntries.reduce((s, e) => s + toINR(e.price) * e.qty, 0);
+  const savings = allEntries.reduce((s, e) => s + (e.orig ? (toINR(e.orig) - toINR(e.price)) * e.qty : 0) + (e.savings ? toINR(e.savings) * e.qty : 0), 0);
 
   return (
     <div className="min-h-screen bg-[#EAEDED] pb-32">
@@ -986,47 +991,97 @@ function CartView({ entries, onInc, onDec, onRemove, onCheckout, onBack }: {
       <div className="max-w-5xl mx-auto px-3 sm:px-4 md:px-6 pt-4 flex flex-col lg:flex-row gap-4">
         {/* Items list */}
         <div className="flex-1 space-y-3">
-          {entries.length === 0 ? (
+          {allEntries.length === 0 ? (
             <div className="bg-white rounded-xl p-10 text-center">
               <ShoppingCart size={56} className="mx-auto text-gray-200 mb-4" />
               <h2 className="text-xl font-bold text-[#0F1111] mb-1">Your cart is empty</h2>
-              <p className="text-gray-500 text-sm mb-4">Add items from the homepage to get started.</p>
+              <p className="text-gray-500 text-sm mb-4">Add items from the homepage or use AI shopping to get started.</p>
               <button onClick={onBack}
                 className="bg-[#FFD814] border border-[#FCD200] text-[#0F1111] font-bold px-6 py-2 rounded-full text-sm">
                 Shop now
               </button>
             </div>
-          ) : entries.map(e => (
-            <div key={e.id} className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 flex gap-3 sm:gap-4 hover:shadow-sm transition-shadow">
-              <img src={getImg(e.id)} alt={e.name}
-                className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg flex-shrink-0 border border-gray-100"
-                onError={ev => { (ev.target as HTMLImageElement).src = `https://picsum.photos/seed/${e.id}77/200/200`; }} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm sm:text-base font-medium text-[#0F1111] leading-snug mb-0.5 line-clamp-2">{e.name}</p>
-                <div className="text-[#007600] text-xs mb-1">In Stock · FREE 10-min delivery</div>
-                {e.ss && e.disc && (
-                  <span className="text-[10px] bg-[#CC0C39] text-white px-1.5 py-0.5 rounded font-bold">-{e.disc}%</span>
-                )}
-                <div className="flex items-center gap-3 mt-2">
-                  <div className="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden">
-                    <button onClick={() => onDec(e.id)} className="px-3 py-1.5 hover:bg-gray-100 font-bold text-base border-r border-gray-200">−</button>
-                    <span className="px-3 text-sm font-bold min-w-[2rem] text-center">{e.qty}</span>
-                    <button onClick={() => onInc(e.id)} className="px-3 py-1.5 hover:bg-gray-100 font-bold text-base border-l border-gray-200">+</button>
+          ) : (
+            <>
+              {/* AI-built items section */}
+              {(aiEntries ?? []).length > 0 && (
+                <div className="mb-3">
+                  <div className="flex items-center gap-2 px-1 mb-2">
+                    <span className="bg-[#FF9900] text-[#131921] text-[9px] font-black px-1.5 py-0.5 rounded">AI BUILT</span>
+                    <span className="text-xs font-bold text-[#0F1111]">AI-Recommended Items</span>
+                    <span className="text-xs text-[#565959] ml-auto">Powered by LangGraph</span>
                   </div>
-                  <button onClick={() => onRemove(e.id)} className="text-[#007185] text-xs hover:underline">Delete</button>
-                  <button className="text-[#007185] text-xs hover:underline">Save for later</button>
+                  {(aiEntries ?? []).map(e => (
+                    <div key={e.id} className="bg-white rounded-xl border-2 border-[#FF9900]/30 p-3 sm:p-4 flex gap-3 sm:gap-4 hover:shadow-sm transition-shadow mb-2">
+                      <img src={getImg(e.id)} alt={e.name}
+                        className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-lg flex-shrink-0 border border-gray-100"
+                        onError={ev => { (ev.target as HTMLImageElement).src = `https://picsum.photos/seed/${e.id}77/200/200`; }} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-[#0F1111] leading-snug mb-0.5 line-clamp-2">{e.name}</p>
+                        <div className="text-[#007600] text-xs mb-1">In Stock · FREE 10-min delivery</div>
+                        {(e as any).savings > 0 && (
+                          <span className="text-[10px] bg-[#FF9900] text-[#131921] px-1.5 py-0.5 rounded font-bold">🏷️ Smart Saver</span>
+                        )}
+                        <div className="flex items-center gap-3 mt-2">
+                          <div className="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden">
+                            <button onClick={() => onAiDec?.(e.id)} className="px-3 py-1.5 hover:bg-gray-100 font-bold text-base border-r border-gray-200">−</button>
+                            <span className="px-3 text-sm font-bold min-w-[2rem] text-center">{e.qty}</span>
+                            <button onClick={() => onAiInc?.(e.id)} className="px-3 py-1.5 hover:bg-gray-100 font-bold text-base border-l border-gray-200">+</button>
+                          </div>
+                          <button onClick={() => onAiRemove?.(e.id)} className="text-[#007185] text-xs hover:underline">Delete</button>
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className="font-bold text-base text-[#0F1111]">{fmtINR(e.price * e.qty)}</div>
+                        {e.orig && <div className="text-xs text-gray-400 line-through">{fmtINR(e.orig * e.qty)}</div>}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-              <div className="text-right shrink-0">
-                <div className="font-bold text-base sm:text-lg text-[#0F1111]">{fmtINR(e.price * e.qty)}</div>
-                {e.orig && <div className="text-xs text-gray-400 line-through">{fmtINR(e.orig * e.qty)}</div>}
-              </div>
-            </div>
-          ))}
+              )}
+              {/* Homepage items section */}
+              {entries.length > 0 && (
+                <div>
+                  {(aiEntries ?? []).length > 0 && (
+                    <div className="flex items-center gap-2 px-1 mb-2">
+                      <span className="text-xs font-bold text-[#0F1111]">Your Selected Items</span>
+                    </div>
+                  )}
+                  {entries.map(e => (
+                    <div key={e.id} className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 flex gap-3 sm:gap-4 hover:shadow-sm transition-shadow mb-2">
+                      <img src={getImg(e.id)} alt={e.name}
+                        className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg flex-shrink-0 border border-gray-100"
+                        onError={ev => { (ev.target as HTMLImageElement).src = `https://picsum.photos/seed/${e.id}77/200/200`; }} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm sm:text-base font-medium text-[#0F1111] leading-snug mb-0.5 line-clamp-2">{e.name}</p>
+                        <div className="text-[#007600] text-xs mb-1">In Stock · FREE 10-min delivery</div>
+                        {e.ss && e.disc && (
+                          <span className="text-[10px] bg-[#CC0C39] text-white px-1.5 py-0.5 rounded font-bold">-{e.disc}%</span>
+                        )}
+                        <div className="flex items-center gap-3 mt-2">
+                          <div className="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden">
+                            <button onClick={() => onDec(e.id)} className="px-3 py-1.5 hover:bg-gray-100 font-bold text-base border-r border-gray-200">−</button>
+                            <span className="px-3 text-sm font-bold min-w-[2rem] text-center">{e.qty}</span>
+                            <button onClick={() => onInc(e.id)} className="px-3 py-1.5 hover:bg-gray-100 font-bold text-base border-l border-gray-200">+</button>
+                          </div>
+                          <button onClick={() => onRemove(e.id)} className="text-[#007185] text-xs hover:underline">Delete</button>
+                          <button className="text-[#007185] text-xs hover:underline">Save for later</button>
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className="font-bold text-base sm:text-lg text-[#0F1111]">{fmtINR(e.price * e.qty)}</div>
+                        {e.orig && <div className="text-xs text-gray-400 line-through">{fmtINR(e.orig * e.qty)}</div>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
 
         {/* Order summary sticky sidebar */}
-        {entries.length > 0 && (
+        {allEntries.length > 0 && (
           <div className="lg:w-72 xl:w-80 shrink-0">
             <div className="bg-white rounded-xl border border-gray-200 p-4 sticky top-20">
               {savings > 0 && (
@@ -1035,7 +1090,7 @@ function CartView({ entries, onInc, onDec, onRemove, onCheckout, onBack }: {
                 </div>
               )}
               <div className="text-base sm:text-lg font-bold text-[#0F1111] mb-3">
-                Subtotal ({entries.reduce((s,e)=>s+e.qty,0)} items):{" "}
+                Subtotal ({allEntries.reduce((s,e)=>s+e.qty,0)} items):{" "}
                 <span className="text-[#B12704]">{fmtINRv(total)}</span>
               </div>
               {savings > 0 && (
@@ -1043,11 +1098,11 @@ function CartView({ entries, onInc, onDec, onRemove, onCheckout, onBack }: {
               )}
               <button onClick={onCheckout} id="cart-checkout-btn"
                 className="w-full bg-[#FFD814] hover:bg-[#F7CA00] border border-[#FCD200] text-[#0F1111] font-bold py-3 rounded-full text-sm transition-colors mb-2">
-                Proceed to Buy ({entries.reduce((s,e)=>s+e.qty,0)} items)
+                Proceed to Buy ({allEntries.reduce((s,e)=>s+e.qty,0)} items)
               </button>
               <div className="text-center text-[10px] text-gray-400">Secured by Amazon Pay · FREE delivery</div>
               <div className="border-t border-gray-100 mt-3 pt-3 space-y-1.5">
-                {entries.map(e => (
+                {allEntries.map(e => (
                   <div key={e.id} className="flex justify-between text-xs">
                     <span className="text-gray-600 truncate mr-2 max-w-[160px]">{e.name.split(" ").slice(0,3).join(" ")}…</span>
                     <span className="font-medium whitespace-nowrap">{fmtINR(e.price)} ×{e.qty}</span>
@@ -1186,8 +1241,7 @@ export default function Home() {
         cartCount={homeCartQty + aiCartQty}
         onLogoClick={() => setMode("home")}
         onCartClick={() => {
-          if (mode === "results" && aiCartQty > 0) { setShowPay(true); }
-          else if (homeCartQty > 0) { setMode("cart"); }
+          if (homeCartQty + aiCartQty > 0) { setMode("cart"); }
         }}
       />
 
@@ -1217,8 +1271,17 @@ export default function Home() {
           onInc={incHomeCart}
           onDec={decHomeCart}
           onRemove={removeFromHomeCart}
+          aiEntries={cart?.items
+            .filter(i => (localCart[i.id] ?? 0) > 0)
+            .map(i => ({ id: i.id, name: i.name, price: i.price, qty: localCart[i.id],
+              rating: 4.5, reviews: 100, savings: i.savings ?? 0,
+              orig: i.original_price, aiBuilt: true }))
+          }
+          onAiInc={incItem}
+          onAiDec={decItem}
+          onAiRemove={id => { const n = { ...localCart }; delete n[id]; setLocalCart(n); }}
           onCheckout={() => setShowPay(true)}
-          onBack={() => setMode("home")}
+          onBack={() => mode === "results" || cart ? setMode("results") : setMode("home")}
         />
       )}
 
