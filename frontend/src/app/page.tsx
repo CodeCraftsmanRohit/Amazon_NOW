@@ -78,7 +78,7 @@ interface SmartCartResponse {
   total_cost?: number; total_savings?: number;
 }
 type LocalCart = Record<string, number>;
-type PageMode = "home" | "ai" | "results";
+type PageMode = "home" | "ai" | "results" | "cart";
 
 // ─── Static catalog data ──────────────────────────────────────────────────────
 const CATEGORIES = [
@@ -488,9 +488,12 @@ function CheckoutModal({ total, savings, itemCount, onSuccess, onClose }: {
 }
 
 // ─── Reusable product card for homepage ─────────────────────────────────────
-function HomeProductCard({ id, name, price, rating, reviews, ss, disc, orig }: {
+interface HomeProduct {
   id: string; name: string; price: number; rating: number; reviews: number;
   ss?: boolean; disc?: number; orig?: number;
+}
+function HomeProductCard({ id, name, price, rating, reviews, ss, disc, orig, qty, onAdd, onInc, onDec }: HomeProduct & {
+  qty: number; onAdd: () => void; onInc: () => void; onDec: () => void;
 }) {
   return (
     <div className="bg-white rounded-lg overflow-hidden group cursor-pointer hover:shadow-md transition-shadow border border-gray-100">
@@ -504,6 +507,11 @@ function HomeProductCard({ id, name, price, rating, reviews, ss, disc, orig }: {
             -{disc}%
           </div>
         )}
+        {qty > 0 && (
+          <div className="absolute top-2 right-2 bg-[#007600] text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">
+            ✓ {qty}
+          </div>
+        )}
       </div>
       <div className="p-2 sm:p-3">
         <p className="text-[11px] sm:text-[12px] text-[#0F1111] font-medium line-clamp-2 leading-snug min-h-[32px]">{name}</p>
@@ -513,9 +521,18 @@ function HomeProductCard({ id, name, price, rating, reviews, ss, disc, orig }: {
           {ss && orig && <span className="text-[11px] text-gray-400 line-through">{fmtINR(orig)}</span>}
         </div>
         <div className="text-[10px] text-[#007600] mt-0.5">FREE Delivery</div>
-        <button className="mt-2 w-full bg-[#FFD814] hover:bg-[#F7CA00] border border-[#FCD200] text-[#0F1111] text-[11px] sm:text-xs py-1.5 rounded font-bold transition-colors">
-          Add to Cart
-        </button>
+        {qty === 0 ? (
+          <button onClick={e => { e.stopPropagation(); onAdd(); }}
+            className="mt-2 w-full bg-[#FFD814] hover:bg-[#F7CA00] border border-[#FCD200] text-[#0F1111] text-[11px] sm:text-xs py-1.5 rounded font-bold transition-colors">
+            Add to Cart
+          </button>
+        ) : (
+          <div className="mt-2 flex items-center justify-between bg-[#FFD814] border border-[#FCD200] rounded overflow-hidden">
+            <button onClick={e => { e.stopPropagation(); onDec(); }} className="px-2.5 py-1 hover:bg-[#F7CA00] font-bold text-base">−</button>
+            <span className="text-xs font-bold">{qty}</span>
+            <button onClick={e => { e.stopPropagation(); onInc(); }} className="px-2.5 py-1 hover:bg-[#F7CA00] font-bold text-base">+</button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -524,7 +541,14 @@ function HomeProductCard({ id, name, price, rating, reviews, ss, disc, orig }: {
 // ═══════════════════════════════════════════════════════════════════
 // FIX 5+6: HOME VIEW — More products, no Snack/Dairy banners
 // ═══════════════════════════════════════════════════════════════════
-function HomeView({ onAIClick }: { onAIClick: () => void }) {
+function HomeView({ onAIClick, homeCart, onAddToCart, onIncCart, onDecCart, onViewCart }: {
+  onAIClick: () => void;
+  homeCart: LocalCart;
+  onAddToCart: (p: HomeProduct) => void;
+  onIncCart: (id: string) => void;
+  onDecCart: (id: string) => void;
+  onViewCart: () => void;
+}) {
   return (
     <div className="bg-[#EAEDED] min-h-screen pb-12">
 
@@ -616,7 +640,12 @@ function HomeView({ onAIClick }: { onAIClick: () => void }) {
           {/* Responsive grid: 2 col on mobile, 3 on sm, 4 on md, 6 on xl */}
           <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
             {section.products.map(p => (
-              <HomeProductCard key={p.id} {...p} />
+              <HomeProductCard key={p.id} {...p}
+                qty={homeCart[p.id] ?? 0}
+                onAdd={() => onAddToCart(p)}
+                onInc={() => onIncCart(p.id)}
+                onDec={() => onDecCart(p.id)}
+              />
             ))}
           </div>
         </div>
@@ -925,6 +954,118 @@ function ResultsView({ cart, localCart, onAdd, onInc, onDec, onCheckout, onReset
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// CART VIEW — Homepage cart with quantity controls + checkout
+// ═══════════════════════════════════════════════════════════════════
+interface CartEntry extends HomeProduct { qty: number; }
+function CartView({ entries, onInc, onDec, onRemove, onCheckout, onBack }: {
+  entries: CartEntry[];
+  onInc: (id: string) => void;
+  onDec: (id: string) => void;
+  onRemove: (id: string) => void;
+  onCheckout: () => void;
+  onBack: () => void;
+}) {
+  const total = entries.reduce((s, e) => s + toINR(e.price) * e.qty, 0);
+  const savings = entries.reduce((s, e) => s + (e.orig ? (toINR(e.orig) - toINR(e.price)) * e.qty : 0), 0);
+
+  return (
+    <div className="min-h-screen bg-[#EAEDED] pb-32">
+      {/* Cart header */}
+      <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 shadow-sm">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button onClick={onBack} className="text-[#007185] text-sm hover:underline flex items-center gap-1">
+              <ArrowLeft size={14} /> Continue shopping
+            </button>
+            <h1 className="text-lg sm:text-2xl font-bold text-[#0F1111]">Shopping Cart</h1>
+          </div>
+          <span className="text-sm text-[#565959]">Price</span>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-3 sm:px-4 md:px-6 pt-4 flex flex-col lg:flex-row gap-4">
+        {/* Items list */}
+        <div className="flex-1 space-y-3">
+          {entries.length === 0 ? (
+            <div className="bg-white rounded-xl p-10 text-center">
+              <ShoppingCart size={56} className="mx-auto text-gray-200 mb-4" />
+              <h2 className="text-xl font-bold text-[#0F1111] mb-1">Your cart is empty</h2>
+              <p className="text-gray-500 text-sm mb-4">Add items from the homepage to get started.</p>
+              <button onClick={onBack}
+                className="bg-[#FFD814] border border-[#FCD200] text-[#0F1111] font-bold px-6 py-2 rounded-full text-sm">
+                Shop now
+              </button>
+            </div>
+          ) : entries.map(e => (
+            <div key={e.id} className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 flex gap-3 sm:gap-4 hover:shadow-sm transition-shadow">
+              <img src={getImg(e.id)} alt={e.name}
+                className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg flex-shrink-0 border border-gray-100"
+                onError={ev => { (ev.target as HTMLImageElement).src = `https://picsum.photos/seed/${e.id}77/200/200`; }} />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm sm:text-base font-medium text-[#0F1111] leading-snug mb-0.5 line-clamp-2">{e.name}</p>
+                <div className="text-[#007600] text-xs mb-1">In Stock · FREE 10-min delivery</div>
+                {e.ss && e.disc && (
+                  <span className="text-[10px] bg-[#CC0C39] text-white px-1.5 py-0.5 rounded font-bold">-{e.disc}%</span>
+                )}
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden">
+                    <button onClick={() => onDec(e.id)} className="px-3 py-1.5 hover:bg-gray-100 font-bold text-base border-r border-gray-200">−</button>
+                    <span className="px-3 text-sm font-bold min-w-[2rem] text-center">{e.qty}</span>
+                    <button onClick={() => onInc(e.id)} className="px-3 py-1.5 hover:bg-gray-100 font-bold text-base border-l border-gray-200">+</button>
+                  </div>
+                  <button onClick={() => onRemove(e.id)} className="text-[#007185] text-xs hover:underline">Delete</button>
+                  <button className="text-[#007185] text-xs hover:underline">Save for later</button>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="font-bold text-base sm:text-lg text-[#0F1111]">{fmtINR(e.price * e.qty)}</div>
+                {e.orig && <div className="text-xs text-gray-400 line-through">{fmtINR(e.orig * e.qty)}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Order summary sticky sidebar */}
+        {entries.length > 0 && (
+          <div className="lg:w-72 xl:w-80 shrink-0">
+            <div className="bg-white rounded-xl border border-gray-200 p-4 sticky top-20">
+              {savings > 0 && (
+                <div className="text-[#CC0C39] text-sm font-bold mb-2">
+                  Your order qualifies for FREE Delivery! 🎉
+                </div>
+              )}
+              <div className="text-base sm:text-lg font-bold text-[#0F1111] mb-3">
+                Subtotal ({entries.reduce((s,e)=>s+e.qty,0)} items):{" "}
+                <span className="text-[#B12704]">{fmtINRv(total)}</span>
+              </div>
+              {savings > 0 && (
+                <div className="text-xs text-[#007600] font-bold mb-2">🏷️ You save {fmtINRv(savings)} on this order</div>
+              )}
+              <button onClick={onCheckout} id="cart-checkout-btn"
+                className="w-full bg-[#FFD814] hover:bg-[#F7CA00] border border-[#FCD200] text-[#0F1111] font-bold py-3 rounded-full text-sm transition-colors mb-2">
+                Proceed to Buy ({entries.reduce((s,e)=>s+e.qty,0)} items)
+              </button>
+              <div className="text-center text-[10px] text-gray-400">Secured by Amazon Pay · FREE delivery</div>
+              <div className="border-t border-gray-100 mt-3 pt-3 space-y-1.5">
+                {entries.map(e => (
+                  <div key={e.id} className="flex justify-between text-xs">
+                    <span className="text-gray-600 truncate mr-2 max-w-[160px]">{e.name.split(" ").slice(0,3).join(" ")}…</span>
+                    <span className="font-medium whitespace-nowrap">{fmtINR(e.price)} ×{e.qty}</span>
+                  </div>
+                ))}
+                <div className="border-t border-gray-100 pt-1.5 flex justify-between text-sm font-bold">
+                  <span>Total</span><span className="text-[#B12704]">{fmtINRv(total)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // ROOT APP
 // ═══════════════════════════════════════════════════════════════════
 export default function Home() {
@@ -932,12 +1073,36 @@ export default function Home() {
   const [isLoading,      setIsLoading]     = useState(false);
   const [cart,           setCart]          = useState<SmartCartResponse | null>(null);
   const [localCart,      setLocalCart]     = useState<LocalCart>({});
+  const [homeCart,       setHomeCart]      = useState<LocalCart>({});  // homepage cart
+  const [homeCatalog,    setHomeCatalog]   = useState<HomeProduct[]>([]); // product lookup
   const [toast,          setToast]         = useState<string | null>(null);
   const [showPay,        setShowPay]       = useState(false);
-  const [showTracking,   setShowTracking]  = useState(false);  // FIX 2
+  const [showTracking,   setShowTracking]  = useState(false);
   const [orderId,        setOrderId]       = useState("");
   const [activeBudget,   setActiveBudget]  = useState<number | undefined>();
   const [activePeople,   setActivePeople]  = useState(1);
+
+  // Home cart helpers
+  const addToHomeCart = (p: HomeProduct) => {
+    setHomeCatalog(prev => prev.some(x => x.id === p.id) ? prev : [...prev, p]);
+    setHomeCart(prev => ({ ...prev, [p.id]: (prev[p.id] ?? 0) + 1 }));
+  };
+  const incHomeCart = (id: string) => setHomeCart(prev => ({ ...prev, [id]: prev[id] + 1 }));
+  const decHomeCart = (id: string) => setHomeCart(prev => {
+    const next = { ...prev, [id]: (prev[id] ?? 1) - 1 };
+    if (next[id] <= 0) delete next[id];
+    return next;
+  });
+  const removeFromHomeCart = (id: string) => setHomeCart(prev => {
+    const next = { ...prev }; delete next[id]; return next;
+  });
+
+  const homeCartEntries: CartEntry[] = homeCatalog
+    .filter(p => (homeCart[p.id] ?? 0) > 0)
+    .map(p => ({ ...p, qty: homeCart[p.id] }));
+  const homeCartQty   = Object.values(homeCart).reduce((a, b) => a + b, 0);
+  const homeCartTotal = homeCartEntries.reduce((s, e) => s + toINR(e.price) * e.qty, 0);
+  const homeCartSave  = homeCartEntries.reduce((s, e) => s + (e.orig ? (toINR(e.orig) - toINR(e.price)) * e.qty : 0), 0);
 
   const fetchCart = useCallback(async (query: string, budget?: number, people = 1) => {
     setActiveBudget(budget);
@@ -972,10 +1137,15 @@ export default function Home() {
     return n;
   });
 
-  const totalQty = Object.values(localCart).reduce((a, b) => a + b, 0);
+  const aiCartQty  = Object.values(localCart).reduce((a, b) => a + b, 0);
+  const totalQty   = mode === "cart" ? homeCartQty : (mode === "results" ? aiCartQty : homeCartQty + aiCartQty);
   const cartItemsList = cart?.items.filter(i => (localCart[i.id] ?? 0) > 0) ?? [];
-  const totalPrice = cartItemsList.reduce((a, i) => a + toINR(i.price) * (localCart[i.id] ?? 0), 0);
-  const totalSave  = cartItemsList.reduce((a, i) => a + toINR(i.savings ?? 0) * (localCart[i.id] ?? 0), 0);
+  const totalPrice = mode === "cart"
+    ? homeCartTotal
+    : cartItemsList.reduce((a, i) => a + toINR(i.price) * (localCart[i.id] ?? 0), 0);
+  const totalSave  = mode === "cart"
+    ? homeCartSave
+    : cartItemsList.reduce((a, i) => a + toINR(i.savings ?? 0) * (localCart[i.id] ?? 0), 0);
 
   // FIX 2: After payment → Order Tracking (not Amazon.in redirect)
   const handlePaymentSuccess = () => {
@@ -989,6 +1159,7 @@ export default function Home() {
     setCart(null);
     setMode("home");
     setLocalCart({});
+    setHomeCart({});
   };
 
   return (
@@ -1012,12 +1183,24 @@ export default function Home() {
 
       {/* Navbar always present */}
       <AmazonNavbar
-        cartCount={totalQty}
+        cartCount={homeCartQty + aiCartQty}
         onLogoClick={() => setMode("home")}
-        onCartClick={() => totalQty > 0 && setShowPay(true)}
+        onCartClick={() => {
+          if (mode === "results" && aiCartQty > 0) { setShowPay(true); }
+          else if (homeCartQty > 0) { setMode("cart"); }
+        }}
       />
 
-      {mode === "home" && <HomeView onAIClick={() => setMode("ai")} />}
+      {mode === "home" && (
+        <HomeView
+          onAIClick={() => setMode("ai")}
+          homeCart={homeCart}
+          onAddToCart={p => { addToHomeCart(p); }}
+          onIncCart={incHomeCart}
+          onDecCart={decHomeCart}
+          onViewCart={() => setMode("cart")}
+        />
+      )}
       {mode === "ai"   && <AIInputView onSubmit={fetchCart} onBack={() => setMode("home")} />}
       {mode === "results" && cart && !isLoading && (
         <ResultsView
@@ -1028,8 +1211,18 @@ export default function Home() {
           budget={activeBudget} people={activePeople}
         />
       )}
+      {mode === "cart" && (
+        <CartView
+          entries={homeCartEntries}
+          onInc={incHomeCart}
+          onDec={decHomeCart}
+          onRemove={removeFromHomeCart}
+          onCheckout={() => setShowPay(true)}
+          onBack={() => setMode("home")}
+        />
+      )}
 
-      {mode === "home" && (
+      {(mode === "home" || mode === "cart") && (
         <footer className="bg-[#232F3E] text-white py-6 sm:py-8 flex flex-col items-center">
           <div className="flex flex-wrap gap-4 sm:gap-8 text-xs sm:text-sm font-medium mb-4 justify-center px-4">
             <span className="hover:underline cursor-pointer">Conditions of Use</span>
