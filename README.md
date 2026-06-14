@@ -139,6 +139,9 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 ### vs. Amazon Rufus
 Rufus helps you **find** products through conversational search. Amazon Now AI **builds the complete cart** from a single intent — *"movie night for 4"* → 5 items, scaled, budgeted, checked out. Rufus answers questions; Amazon Now AI fulfills needs. They're complementary layers, not competitors.
 
+### 🔌 Provider-Agnostic Model Layer
+The reasoning pipeline never imports a vendor directly — it asks `ai_engine/llm/provider.py` for a chat model. **OpenAI GPT-4o is the demo default; Amazon Bedrock (Claude 3.5) is one env-var away** (`LLM_PROVIDER=bedrock`). Same code, same structured-output interface — so "data stays in AWS" is a config flip, not a rewrite.
+
 <br/>
 
 ---
@@ -390,7 +393,7 @@ graph TD
 
 | Today (Prototype) | 6-Month Target | Why |
 |---|---|---|
-| OpenAI GPT-4o | **Amazon Bedrock** | Data stays in AWS, no 3rd-party dependency |
+| OpenAI GPT-4o | **Amazon Bedrock** | Data stays in AWS, no 3rd-party dependency — **already wired, flip `LLM_PROVIDER=bedrock`** |
 | In-process graph | **Amazon Neptune** | Billion-edge co-purchase graph at catalog scale |
 | JSON flat files | **DynamoDB + Personalize** | Real-time purchase history for all 300M+ Amazon customers |
 | Mock checkout | **Amazon Order API + Prime Air** | Live fulfilment + drone dispatch |
@@ -550,6 +553,8 @@ amazon-now-ai/
 │   │   │   └── graph_query.py        ← Real Product association graph
 │   │   └── consumption_agent/
 │   │       └── history.py            ← Purchase history store
+│   ├── llm/
+│   │   └── provider.py               ← Provider-agnostic LLM factory (OpenAI / Bedrock)
 │   └── workflow/
 │       └── langgraph_flow.py         ← Single-hop AI pipeline
 ├── backend/

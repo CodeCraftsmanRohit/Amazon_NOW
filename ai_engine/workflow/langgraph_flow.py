@@ -32,21 +32,22 @@ import time
 import asyncio
 from typing import Dict, Any, List, Optional
 from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from ai_engine.agents.graph_agent.graph_query import PRODUCT_GRAPH, extract_keywords
 from ai_engine.agents.consumption_agent.history import get_consumption_signals
+from ai_engine.llm.provider import get_chat_model, get_provider
 
-# ── LLM client (lazy init — no API key needed at import time) ─────────────────
-CART_MODEL = "gpt-4o"
-_llm: Optional[ChatOpenAI] = None
+# ── LLM client (lazy init — provider chosen by LLM_PROVIDER env var) ──────────
+# Defaults to OpenAI GPT-4o. Set LLM_PROVIDER=bedrock to route through
+# Amazon Bedrock (Claude 3.5) with zero code change — see ai_engine/llm/provider.py
+_llm = None
 
 
-def get_llm() -> ChatOpenAI:
+def get_llm():
     global _llm
     if _llm is None:
-        _llm = ChatOpenAI(model=CART_MODEL, temperature=0)
+        _llm = get_chat_model(temperature=0)
     return _llm
 
 
