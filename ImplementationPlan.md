@@ -1,5 +1,8 @@
 # Implementation Plan
 
+> **Historical progress log.** This records the build journey. The 7-agent LangGraph phase below was later **collapsed to a single grounded GPT-4o call + a deterministic product graph** (~60s -> ~3s). See README / system_design.md for the shipped architecture.
+
+
 ## Phase 1: Foundation (Completed)
 - Initialize Next.js frontend with TailwindCSS.
 - Initialize FastAPI backend.

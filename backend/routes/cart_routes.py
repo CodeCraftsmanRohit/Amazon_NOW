@@ -41,7 +41,7 @@ class CartRemoveRequest(BaseModel):
 
 @router.post("/smart")
 async def smart_cart_endpoint(req: SmartCartRequest):
-    """Build a smart cart using the parallel LangGraph AI pipeline."""
+    """Build a smart cart using the single-shot AI pipeline."""
     result = await build_smart_cart(req.message)
     return result
 

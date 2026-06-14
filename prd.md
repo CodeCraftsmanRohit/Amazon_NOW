@@ -16,16 +16,13 @@ The current e-commerce paradigm is "Product-Centric" (User -> Search -> Browse -
 
 ## 4. Key Features
 - **Conversational Input:** Express needs via natural language (e.g., "Hosting a movie night").
-- **Visual Input (VLM):** Upload photos of empty fridges or pantries for automatic replenishment.
-- **7-Agent LangGraph AI Pipeline:**
-  - *Intent Agent:* Determines core need.
-  - *Context Agent:* Injects environmental factors (weather, time).
-  - *Consumption Agent:* Predicts historical preferences.
-  - *Inventory Agent:* Analyzes missing items.
-  - *Graph Agent:* Finds semantic product associations.
-  - *Cart Agent:* Synthesizes signals into a final cart.
-  - *Explainability Agent:* Provides transparent reasoning to the user.
-- **Instant Smart Cart:** Generates a ready-to-buy cart of exactly 3 optimal items in under 5 seconds.
+- **Visual Input (VLM):** Upload photos of grocery lists, empty fridges or pantries for automatic cart-building.
+- **Single-Shot AI Synthesis:** One grounded GPT-4o call reasons over every signal at once — intent, context (weather/time), real purchase history, inventory gaps, and product-graph associations — then synthesises the cart and its explanation. A deterministic in-process product association graph runs concurrently (0ms) and feeds real complementary pairings (pasta → sauce) into the prompt.
+  - *Architecture note:* an earlier design used 7 sequential agent calls (~60s). It was deliberately collapsed to 1 grounded call + graph (~3s) because for sub-5-minute Q-commerce sessions, **latency is the product**.
+- **Anti-Hallucination Guard:** Every product name, price, and discount is pinned to the catalog after the LLM responds — the model only chooses *which* products; it never invents facts.
+- **Personalisation:** Real purchase-history lookup (brand affinities + 14-day reorder-gap detection) tailors the cart per customer.
+- **Instant Smart Cart:** Generates a ready-to-buy cart of 3–7 optimal items in under 5 seconds.
+- **Budget + Headcount:** Quantity-aware budget fitting and per-person scaling.
 - **1-Click Checkout:** Frictionless payment and delivery routing.
 
 ## 5. Success Metrics

@@ -13,5 +13,5 @@
 - **Client Components:** Use `"use client";` at the top of interactive Next.js files.
 
 ## 3. General Architecture
-- **Stateless Backend:** Keep the FastAPI backend stateless. All state should be passed via the LangGraph `ShoppingState` or stored in the frontend during the session.
-- **Explainability:** AI agents must always populate the `explainability` array so the frontend can render transparency logs to the user.
+- **Stateless Backend:** Keep the FastAPI backend stateless. Request state is passed in the `MessageRequest` or stored in the frontend during the session.
+- **Explainability:** The AI must always populate the `explainability` array so the frontend can render transparency logs to the user.

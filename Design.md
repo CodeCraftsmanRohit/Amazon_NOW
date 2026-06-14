@@ -10,10 +10,10 @@
 ## 2. Core UI Components
 1. **Persona Banner:** Introduces the customer context immediately.
 2. **Hero Search Bar:** Central, oversized input field emphasizing the conversational nature of the app. Includes a camera icon for VLM uploads.
-3. **Smart Cart Panel:** Clean, receipt-like display of exactly 3 optimal items with prices and brief reasoning.
-4. **AI Reasoning Panel:** A transparent, bulleted list detailing how the AI traversed the LangGraph pipeline to arrive at the cart.
+3. **Smart Cart Panel:** Clean, receipt-like display of 3–7 optimal items with prices and brief reasoning.
+4. **AI Reasoning Panel:** A transparent, bulleted list explaining why the AI built this cart.
 5. **1-Click Checkout Modal:** A celebratory success modal with simulated order tracking to complete the user journey loop.
 
-## 3. System Design (LangGraph Architecture)
-The AI Engine uses a directed acyclic graph (DAG) to process state.
-`START -> Intent -> Context -> Consumption -> Inventory -> Graph -> Cart -> Explainability -> END`
+## 3. System Design (Single-Shot Synthesis)
+One grounded GPT-4o call reasons over all signals at once, running concurrently with a deterministic product association graph:
+`message → [ graph traversal (0ms) ‖ gpt-4o (intent · context · history · inventory · cart · explainability) ] → post-process (catalog-pinned, Smart Saver, budget, scaling) → SmartCartResponse`

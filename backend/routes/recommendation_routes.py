@@ -27,7 +27,7 @@ async def search_products(q: str = Query(..., description="Search query"), limit
 async def products_by_intent(intent: str, limit: int = 10):
     """
     Get products relevant to a detected shopping intent.
-    Used internally by the LangGraph Cart Agent.
+    Used internally by the AI cart pipeline.
     """
     results = get_products_by_intent(intent, limit=limit)
     return {"intent": intent, "products": results}

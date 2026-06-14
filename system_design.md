@@ -1,33 +1,31 @@
 # Amazon Now AI: System Design & Architecture
 
 ## 1. Current Hackathon Architecture (Prototype)
-Our current 48-hour prototype uses a lightweight stack optimized for speed and a working demo:
+Our 48-hour prototype uses a lightweight stack optimised for speed and a working demo. The core is a **single-shot synthesis**: one grounded GPT-4o call handles intent, context, history, inventory reasoning, cart selection and explainability at once, running concurrently with a deterministic in-process product association graph.
 
 ```mermaid
 graph TD
     A[Next.js Frontend] -->|REST /api/chat| B(FastAPI Backend)
     A -->|REST /api/inventory| B
-    
-    subgraph LangGraph AI Pipeline
-        B --> C{Intent Agent}
-        C --> D[Context Agent]
-        D --> E[Consumption Agent]
-        E --> F[Inventory Agent]
-        F --> G[Graph Agent]
-        G --> H[Cart Agent]
-        H --> I[Explainability Agent]
+
+    subgraph "AI Synthesis (single hop)"
+        B --> G[Deterministic Product Graph\n0ms · no LLM]
+        B --> L((OpenAI gpt-4o\nstructured output))
+        G -->|associations| L
     end
-    
-    I --> J((OpenAI gpt-4o))
-    J -->|Structured JSON| B
-    B -->|SmartCartResponse| A
+
+    L -->|cart + bullets| PP[Post-Processor\nprice/name pinned to catalog\nSmart Saver · budget · scaling]
+    PP -->|SmartCartResponse| A
 ```
 
 - **Frontend:** Next.js (React), TailwindCSS
-- **Backend:** FastAPI (Python)
-- **AI Orchestration:** LangGraph (State Graph for 7 dynamic agents)
-- **LLM Provider:** OpenAI `gpt-4o` (for text and vision)
+- **Backend:** FastAPI (Python), async throughout
+- **AI:** One grounded GPT-4o structured-output call + an in-process weighted product association graph (pure Python, deterministic)
+- **Provider layer:** model-agnostic (`ai_engine/llm/provider.py`) — OpenAI default, Amazon Bedrock one env-var away
+- **Anti-hallucination:** post-processor pins every price/name to the catalog
 - **Deployment:** Localhost
+
+> **Design history:** started at 7 sequential agent calls (~60s), deliberately collapsed to 1 grounded call + graph (~3s). For sub-5-minute Q-commerce sessions, latency is the product.
 
 ## 2. Target Enterprise Architecture (AWS-Native)
 To deploy this at Amazon scale (millions of users, sub-second latency), we will migrate the entire stack to **AWS native services**. This guarantees enterprise security, massive horizontal scalability, and deep integration with the Amazon ecosystem.
@@ -59,13 +57,13 @@ graph TD
 - **Amazon Bedrock (Claude 3.5 Sonnet / Titan Multimodal):** 
   Replacing OpenAI with Amazon Bedrock ensures our data never leaves the AWS ecosystem. Bedrock provides serverless, highly scalable access to top-tier foundation models with built-in security and low latency.
 - **AWS Lambda & API Gateway:**
-  The FastAPI backend and LangGraph agents will be deployed as serverless Lambda functions behind API Gateway to handle massive traffic spikes seamlessly.
+  The FastAPI backend and AI synthesis call will be deployed as serverless Lambda functions behind API Gateway to handle massive traffic spikes seamlessly.
 - **Amazon ElastiCache (Redis):**
-  Used to cache user sessions, contexts, and frequent graph queries, dramatically reducing latency for the Cart and Context agents.
+  Used to cache user sessions, contexts, and frequent graph queries, dramatically reducing latency.
 - **Amazon DynamoDB:**
-  A highly scalable NoSQL database to store user purchase histories, feeding directly into the Consumption Agent.
+  A highly scalable NoSQL database to store user purchase histories, feeding the personalisation layer.
 - **Amazon Personalize:**
-  Integrates directly with the Consumption Agent to provide hyper-accurate purchase predictions based on the user's historical Amazon data.
+  Provides hyper-accurate purchase predictions based on the user's historical Amazon data.
 - **Amazon S3:**
   For secure storage and processing of user-uploaded fridge/pantry images.
 

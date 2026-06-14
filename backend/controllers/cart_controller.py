@@ -1,7 +1,7 @@
 """
 Cart Controller
 Handles shopping cart operations — add, update, remove, and smart cart generation.
-The smart cart is built by the LangGraph AI pipeline in ai_engine/workflow/langgraph_flow.py.
+The smart cart is built by the single-shot AI pipeline in ai_engine/workflow/langgraph_flow.py.
 """
 
 from typing import List, Dict, Any
@@ -10,7 +10,7 @@ from ai_engine.workflow.langgraph_flow import aprocess_message
 
 async def build_smart_cart(message: str) -> Dict[str, Any]:
     """
-    Invoke the parallel LangGraph pipeline to build a smart cart
+    Invoke the single-shot AI pipeline to build a smart cart
     from a natural language user message.
     """
     result = await aprocess_message(message)
