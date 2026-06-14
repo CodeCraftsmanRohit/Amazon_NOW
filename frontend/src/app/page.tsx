@@ -818,32 +818,44 @@ function AIInputView({ onSubmit, onBack }: {
             🤖 Build My Cart
           </button>
 
-          {/* ── Persona Picker ── */}
-          {PERSONAS.length > 0 && (
-            <div className="mt-5">
-              <p className="text-center text-xs text-gray-500 mb-2.5 flex items-center justify-center gap-1.5">
-                <span className="text-[#FF9900]">👤</span>
-                Shopping as <span className="text-gray-400 ml-1">(uses real purchase history)</span>
-              </p>
-              <div className="flex flex-wrap justify-center gap-2">
-                <button onClick={() => setActiveUser(null)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${activeUser === null ? "bg-[#FF9900] text-[#131921] border-[#FF9900]" : "bg-white/5 text-gray-400 border-white/10 hover:border-[#FF9900]/40"}`}>
-                  🛒 Guest
-                </button>
-                {PERSONAS.map(u => (
-                  <button key={u.user_id} onClick={() => setActiveUser(activeUser === u.user_id ? null : u.user_id)} title={u.bio}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${activeUser === u.user_id ? "bg-[#FF9900] text-[#131921] border-[#FF9900]" : "bg-white/5 text-gray-400 border-white/10 hover:border-[#FF9900]/40"}`}>
-                    {u.avatar} {u.name}
-                  </button>
-                ))}
+          {/* ── Personalisation demo strip ── */}
+          <div className="mt-6 bg-white/5 border border-white/10 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-base">🎯</span>
+              <div>
+                <p className="text-white text-xs font-bold">Personalised shopping demo</p>
+                <p className="text-gray-500 text-[10px]">Select a profile to see AI use real purchase history — brand preferences, low-stock alerts, past order patterns</p>
               </div>
-              {activeUser && (
-                <p className="text-center text-[10px] text-[#FF9900]/80 mt-2 px-4">
-                  {PERSONAS.find(u => u.user_id === activeUser)?.bio}
-                </p>
-              )}
             </div>
-          )}
+            <div className="flex flex-wrap gap-2">
+              {PERSONAS.map(u => (
+                <button
+                  key={u.user_id}
+                  onClick={() => setActiveUser(activeUser === u.user_id ? null : u.user_id)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                    activeUser === u.user_id
+                      ? "bg-[#FF9900] text-[#131921] border-[#FF9900]"
+                      : "bg-white/5 text-gray-300 border-white/10 hover:border-[#FF9900]/50 hover:text-white"
+                  }`}>
+                  <span>{u.avatar}</span>
+                  <span>{u.name}</span>
+                  <span className={`text-[9px] ${activeUser === u.user_id ? "text-[#131921]/70" : "text-gray-500"}`}>{u.label}</span>
+                </button>
+              ))}
+            </div>
+            {activeUser ? (
+              <div className="mt-3 flex items-start gap-2 bg-[#FF9900]/10 border border-[#FF9900]/30 rounded-lg px-3 py-2">
+                <span className="text-base mt-0.5">{PERSONAS.find(u => u.user_id === activeUser)?.avatar}</span>
+                <div>
+                  <p className="text-[#FF9900] text-[11px] font-bold">{PERSONAS.find(u => u.user_id === activeUser)?.name}'s history loaded</p>
+                  <p className="text-gray-400 text-[10px] mt-0.5">{PERSONAS.find(u => u.user_id === activeUser)?.bio}</p>
+                  <p className="text-gray-500 text-[10px] mt-1">AI will now use their real order history, preferred brands and inventory gaps to build the cart.</p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-600 text-[10px] mt-2.5 text-center">No profile selected — AI uses general signals only</p>
+            )}
+          </div>
 
         </div>{/* end max-w-2xl prompt box */}
 
@@ -905,8 +917,8 @@ function ResultsView({ cart, localCart, onAdd, onInc, onDec, onCheckout, onReset
               </span>
             )}
             {cart.personalised && (
-              <span className="text-[10px] sm:text-sm bg-[#E8F4FD] text-[#0066C0] font-bold px-1.5 sm:px-2 py-0.5 rounded flex items-center gap-1" title="Cart built using your real purchase history">
-                👤 Personalised
+              <span className="text-[10px] sm:text-sm bg-[#E8F4FD] text-[#0066C0] font-bold px-1.5 sm:px-2 py-0.5 rounded flex items-center gap-1" title="Cart built using real purchase history">
+                🎯 Personalised
               </span>
             )}
           </div>
