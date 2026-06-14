@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   Search, ShoppingCart, MapPin, Sparkles, Zap, X,
   ArrowLeft, Mic, Camera, Users, IndianRupee,
@@ -213,6 +213,72 @@ const HOME_SECTIONS = [
       { id:"P019", name:"Kraft Parmesan Cheese Shaker (8oz)",    price:3.82, rating:4.6, reviews:2340, ss:true, disc:15, orig:4.49 },
       { id:"P024", name:"DiGiorno Pepperoni Pizza (28oz)",       price:5.59, rating:4.4, reviews:3120, ss:true, disc:20, orig:6.99 },
       { id:"P036", name:"Smucker's Strawberry Jam (18oz)",       price:3.99, rating:4.5, reviews:2100 },
+    ],
+  },
+];
+
+// ─── Occasion Packs (hardcoded demo carts) ───────────────────────────────────
+interface PackItem { id: string; name: string; price: number; qty: number; }
+interface OccasionPack {
+  emoji: string; label: string; tag: string;
+  color: string; textColor: string;
+  items: PackItem[];
+}
+
+const OCCASION_PACKS: OccasionPack[] = [
+  {
+    emoji: "🍿", label: "Movie Night", tag: "Most Popular",
+    color: "#1a1a2e", textColor: "#FF9900",
+    items: [
+      { id:"P010", name:"Orville Redenbacher Popcorn 6-Pack", price:4.49, qty:2 },
+      { id:"P012", name:"Coca-Cola Classic 12-Pack",          price:7.49, qty:1 },
+      { id:"P011", name:"Doritos Nacho Cheese Party Size",    price:5.79, qty:1 },
+      { id:"P023", name:"M&Ms Party Size Milk Chocolate",     price:11.99, qty:1 },
+      { id:"P048", name:"Ben & Jerry's Chunky Monkey",        price:5.09, qty:1 }, // Smart Saver
+    ],
+  },
+  {
+    emoji: "🎂", label: "Bake a Cake", tag: "Weekend Special",
+    color: "#3e1f47", textColor: "#e879f9",
+    items: [
+      { id:"P001", name:"Ghirardelli Chocolate Chips (12oz)", price:4.99, qty:2 },
+      { id:"P003", name:"Kerrygold Unsalted Butter (8oz)",    price:3.19, qty:2 }, // Smart Saver
+      { id:"P004", name:"Vital Farms Eggs (12ct)",            price:4.67, qty:1 }, // Smart Saver
+      { id:"P005", name:"Domino Granulated Sugar (4lb)",      price:3.29, qty:1 },
+      { id:"P007", name:"Hershey's Cocoa Powder (8oz)",       price:3.79, qty:1 },
+    ],
+  },
+  {
+    emoji: "🤒", label: "Sick Day Kit", tag: "Emergency",
+    color: "#1a2e1a", textColor: "#4ade80",
+    items: [
+      { id:"P026", name:"Advil Ibuprofen 200mg (50ct)",       price:8.99, qty:1 },
+      { id:"P027", name:"Tylenol Extra Strength (100ct)",     price:9.49, qty:1 },
+      { id:"P031", name:"Campbell's Chicken Soup 6-Pack",     price:7.99, qty:1 },
+      { id:"P030", name:"Gatorade Variety 12-Pack",           price:10.99, qty:1 },
+      { id:"P032", name:"Lipton Tea Bags (100ct)",            price:5.99, qty:1 },
+    ],
+  },
+  {
+    emoji: "🎉", label: "Party Pack", tag: "For 10+ People",
+    color: "#2e1a1a", textColor: "#f97316",
+    items: [
+      { id:"P012", name:"Coca-Cola Classic 12-Pack",          price:7.49, qty:2 },
+      { id:"P011", name:"Doritos Nacho Cheese Party Size",    price:5.79, qty:2 },
+      { id:"P015", name:"Planters Mixed Nuts (18.25oz)",      price:8.99, qty:2 },
+      { id:"P014", name:"Ferrero Rocher Chocolate Box (24pc)",price:12.99, qty:1 },
+      { id:"P021", name:"Sparkling Ice Variety Pack",         price:9.99, qty:1 },
+    ],
+  },
+  {
+    emoji: "🍝", label: "Italian Dinner", tag: "Date Night",
+    color: "#1a1e2e", textColor: "#60a5fa",
+    items: [
+      { id:"P016", name:"Barilla Spaghetti Pasta (16oz)",     price:1.89, qty:2 },
+      { id:"P017", name:"Rao's Homemade Marinara (24oz)",     price:8.49, qty:1 },
+      { id:"P019", name:"Kraft Parmesan Shaker (8oz)",        price:3.82, qty:1 }, // Smart Saver
+      { id:"P020", name:"DeLallo Garlic Bread Loaf (16oz)",   price:2.79, qty:1 }, // Smart Saver
+      { id:"P021", name:"Sparkling Ice Variety Pack",         price:9.99, qty:1 },
     ],
   },
 ];
@@ -576,14 +642,38 @@ function HomeProductCard({ id, name, price, rating, reviews, ss, disc, orig, qty
 // ═══════════════════════════════════════════════════════════════════
 // FIX 5+6: HOME VIEW — More products, no Snack/Dairy banners
 // ═══════════════════════════════════════════════════════════════════
-function HomeView({ onAIClick, homeCart, onAddToCart, onIncCart, onDecCart, onViewCart }: {
+function HomeView({ onAIClick, onPackClick, homeCart, onAddToCart, onIncCart, onDecCart, onViewCart }: {
   onAIClick: () => void;
+  onPackClick: (pack: OccasionPack) => void;
   homeCart: LocalCart;
   onAddToCart: (p: HomeProduct) => void;
   onIncCart: (id: string) => void;
   onDecCart: (id: string) => void;
   onViewCart: () => void;
 }) {
+  // ── Weather-aware banner ──────────────────────────────────────────────────
+  const [weather, setWeather] = React.useState<{temp: number; desc: string} | null>(null);
+
+  React.useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(pos => {
+      const { latitude, longitude } = pos.coords;
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode&timezone=auto`)
+        .then(r => r.json())
+        .then(d => {
+          const temp = Math.round(d.current.temperature_2m);
+          const code = d.current.weathercode;
+          let desc = "";
+          if (temp >= 35)      desc = "It's scorching out 🥵 — want cold drinks & ice cream?";
+          else if (temp >= 28) desc = "Warm afternoon 🌤️ — staying hydrated?";
+          else if (code >= 61) desc = "Rainy outside 🌧️ — perfect for hot soup & tea";
+          else if (temp <= 15) desc = "It's chilly ❄️ — how about hot coffee & comfort food?";
+          if (desc) setWeather({ temp, desc });
+        })
+        .catch(() => {});
+    }, () => {});
+  }, []);
+
   return (
     <div className="bg-[#EAEDED] min-h-screen pb-12">
 
@@ -628,6 +718,71 @@ function HomeView({ onAIClick, homeCart, onAddToCart, onIncCart, onDecCart, onVi
               <span className="text-[10px] sm:text-[11px] text-[#0F1111] font-medium text-center w-14 sm:w-16 leading-tight">{cat.name}</span>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* ── Weather-aware smart banner ── */}
+      {weather && (
+        <div className="mx-2 sm:mx-4 mt-2 rounded-xl overflow-hidden cursor-pointer"
+          onClick={onAIClick}
+          style={{ background: "linear-gradient(135deg, #0d47a1, #1565c0)" }}>
+          <div className="flex items-center justify-between px-4 py-3">
+            <div className="flex items-center gap-2.5">
+              <span className="text-2xl">🌡️</span>
+              <div>
+                <p className="text-white font-bold text-sm">{weather.desc}</p>
+                <p className="text-blue-200 text-[11px] mt-0.5">{weather.temp}°C outside · Tap to build a cart instantly</p>
+              </div>
+            </div>
+            <span className="text-white text-xs font-bold bg-white/20 px-3 py-1.5 rounded-full shrink-0 ml-2">Shop Now →</span>
+          </div>
+        </div>
+      )}
+
+      {/* ── Occasion Packs ── */}
+      <div className="bg-white mt-2 px-4 sm:px-6 py-4 sm:py-5">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-[#0F1111]">⚡ Ready-to-Go Packs</h2>
+            <p className="text-xs text-[#565959] mt-0.5">One tap · Pre-filled cart · Delivered in 10 mins</p>
+          </div>
+        </div>
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          {OCCASION_PACKS.map(pack => {
+            const total = pack.items.reduce((s, i) => s + i.price * i.qty, 0);
+            return (
+              <button
+                key={pack.label}
+                onClick={() => onPackClick(pack)}
+                className="flex-shrink-0 w-44 rounded-xl overflow-hidden border border-gray-100 hover:border-[#FF9900] hover:shadow-md transition-all text-left group"
+                style={{ background: pack.color }}>
+                {/* Pack image strip */}
+                <div className="flex gap-0.5 h-20 overflow-hidden">
+                  {pack.items.slice(0, 3).map(item => (
+                    <div key={item.id} className="flex-1 overflow-hidden">
+                      <img src={getImg(item.id)} alt={item.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  ))}
+                </div>
+                <div className="p-2.5">
+                  {pack.tag && (
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: pack.textColor + "33", color: pack.textColor }}>
+                      {pack.tag}
+                    </span>
+                  )}
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className="text-lg">{pack.emoji}</span>
+                    <span className="text-white font-bold text-sm">{pack.label}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-1.5">
+                    <span className="text-gray-400 text-[10px]">{pack.items.length} items</span>
+                    <span className="font-bold text-xs" style={{ color: pack.textColor }}>₹{Math.round(total * 83.5)}</span>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -910,7 +1065,14 @@ function ResultsView({ cart, localCart, onAdd, onInc, onDec, onCheckout, onReset
               {cart.intent.replace(/_/g, " ").toUpperCase()}
             </span>
             {budget && <span className="text-[10px] sm:text-sm bg-[#E8F5E9] text-[#007600] font-bold px-1.5 sm:px-2 py-0.5 rounded">💰 ₹{budget.toLocaleString("en-IN")}</span>}
-            {people > 1 && <span className="text-[10px] sm:text-sm bg-[#FFF8E1] text-[#E65100] font-bold px-1.5 sm:px-2 py-0.5 rounded">👥 {people}p</span>}
+            {people > 1 && (
+              <span className="text-[10px] sm:text-sm bg-[#FFF8E1] text-[#E65100] font-bold px-1.5 sm:px-2 py-0.5 rounded">👥 {people}p</span>
+            )}
+            {people > 1 && totalPrice > 0 && (
+              <span className="text-[10px] sm:text-sm bg-[#E8F5E9] text-[#2E7D32] font-bold px-1.5 sm:px-2 py-0.5 rounded" title="Split bill per person">
+                💳 {fmtINRv(totalPrice / people)}/person
+              </span>
+            )}
             {cart.processing_time_ms != null && (
               <span className="text-[10px] sm:text-sm bg-[#FFF3E0] text-[#B25000] font-bold px-1.5 sm:px-2 py-0.5 rounded flex items-center gap-1" title="End-to-end AI pipeline time">
                 <Zap size={11} /> Built in {(cart.processing_time_ms / 1000).toFixed(1)}s
@@ -1334,6 +1496,16 @@ export default function Home() {
       {mode === "home" && (
         <HomeView
           onAIClick={() => setMode("ai")}
+          onPackClick={(pack) => {
+            // Instantly pre-fill cart from pack — no API call needed
+            pack.items.forEach(item => {
+              addToHomeCart({ id: item.id, name: item.name, price: item.price,
+                rating: 4.5, reviews: 1000 });
+              const current = homeCart[item.id] ?? 0;
+              for (let i = current; i < item.qty; i++) incHomeCart(item.id);
+            });
+            setMode("cart");
+          }}
           homeCart={homeCart}
           onAddToCart={p => { addToHomeCart(p); }}
           onIncCart={incHomeCart}
