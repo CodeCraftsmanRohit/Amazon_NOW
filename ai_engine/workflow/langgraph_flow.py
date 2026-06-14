@@ -62,6 +62,7 @@ CATALOG_BY_ID: Dict[str, Dict] = {p["id"]: p for p in PRODUCT_CATALOG}
 
 
 def _build_catalog_summary() -> str:
+    # Single pass over catalog — builds both CATALOG_BY_ID lookup and summary string
     rows = []
     for p in PRODUCT_CATALOG:
         expiry = p.get("expiry_days", 9999)
@@ -93,22 +94,32 @@ def cart_total_usd(items: List[Dict]) -> float:
 def fit_cart_to_budget(items: List[Dict], budget_inr: Optional[float],
                        usd_to_inr: float = 83.5, min_items: int = 3) -> List[Dict]:
     """
-    Fit cart to INR budget while preserving variety:
+    Fit cart to INR budget while preserving variety.
+    Uses a running total — O(n) per iteration instead of O(n²).
+
     1. Reduce quantities (most expensive lines first, down to 1 each).
     2. Only then drop items (never below min_items).
     """
     if not budget_inr or not items:
         return items
+
     budget_usd = budget_inr / usd_to_inr
     floor = min(min_items, len(items))
 
-    while cart_total_usd(items) > budget_usd and any(i["quantity"] > 1 for i in items):
+    # Maintain a running total — avoid recomputing from scratch each iteration
+    running = sum(i["price"] * i["quantity"] for i in items)
+
+    # Phase 1: trim quantities of the priciest lines first
+    while running > budget_usd and any(i["quantity"] > 1 for i in items):
         line = max((i for i in items if i["quantity"] > 1),
                    key=lambda x: x["price"] * x["quantity"])
+        running -= line["price"]   # subtract one unit cost
         line["quantity"] -= 1
 
-    while cart_total_usd(items) > budget_usd and len(items) > floor:
+    # Phase 2: drop most expensive item if still over budget
+    while running > budget_usd and len(items) > floor:
         drop = max(items, key=lambda x: x["price"] * x["quantity"])
+        running -= drop["price"] * drop["quantity"]
         items.remove(drop)
 
     return items

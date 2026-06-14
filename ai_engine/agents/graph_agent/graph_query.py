@@ -55,18 +55,31 @@ class ProductGraph:
     def __init__(self, catalog: List[Dict]):
         self.catalog = catalog
         self.by_id: Dict[str, Dict] = {p["id"]: p for p in catalog}
-        # adjacency[id] -> {neighbor_id: weight}
         self.adjacency: Dict[str, Dict[str, float]] = {p["id"]: {} for p in catalog}
+
+        # Pre-compute per-product data once — avoids rebuilding on every call.
+        # tag sets: O(n) at init instead of O(n²) during _build
+        # haystack strings: O(n) at init instead of O(n) per seed_products query
+        self._tag_sets: Dict[str, set] = {
+            p["id"]: {t.lower() for t in p.get("tags", [])}
+            for p in catalog
+        }
+        self._haystacks: Dict[str, str] = {
+            p["id"]: (
+                p["name"].lower() + " "
+                + " ".join(p.get("tags", [])).lower() + " "
+                + p.get("category", "").lower()
+            )
+            for p in catalog
+        }
         self._build()
 
     def _build(self) -> None:
+        # Use pre-computed tag sets — each set is built once, not n times
         for a, b in combinations(self.catalog, 2):
-            tags_a = set(t.lower() for t in a.get("tags", []))
-            tags_b = set(t.lower() for t in b.get("tags", []))
-            shared = tags_a & tags_b
+            shared = self._tag_sets[a["id"]] & self._tag_sets[b["id"]]
             weight = float(len(shared))
 
-            # Complementary category bonus (e.g. pasta + sauce).
             cat_pair = frozenset({a.get("category", ""), b.get("category", "")})
             if cat_pair in _COMPLEMENTARY_SET and len(cat_pair) == 2:
                 weight += 2.0
@@ -78,15 +91,13 @@ class ProductGraph:
     # ── Queries ────────────────────────────────────────────────────────────
 
     def seed_products(self, keywords: List[str], limit: int = 4) -> List[str]:
-        """Find product IDs whose name/tags match any of the keywords."""
+        """Find product IDs whose name/tags match any of the keywords. O(n·k)."""
         kws = [k.lower() for k in keywords if k]
         scored: List[Tuple[int, str]] = []
-        for p in self.catalog:
-            haystack = (p["name"].lower() + " " + " ".join(p.get("tags", [])).lower()
-                        + " " + p.get("category", "").lower())
+        for pid, haystack in self._haystacks.items():   # use pre-built haystacks
             score = sum(1 for k in kws if k in haystack)
             if score:
-                scored.append((score, p["id"]))
+                scored.append((score, pid))
         scored.sort(reverse=True)
         return [pid for _, pid in scored[:limit]]
 
@@ -110,7 +121,8 @@ class ProductGraph:
         seeds = self.seed_products(keywords)
         associations: List[str] = []
         related_ids: List[str] = []
-        seen_pairs = set()
+        seen_pairs: set = set()
+        related_ids_set: set = set()   # O(1) membership instead of O(m) list scan
 
         for seed in seeds:
             seed_name = self.by_id[seed]["name"]
@@ -123,8 +135,9 @@ class ProductGraph:
                 seen_pairs.add(pair_key)
                 neighbor_name = self.by_id[neighbor_id]["name"]
                 associations.append(f"{seed_name} pairs well with {neighbor_name}")
-                if neighbor_id not in related_ids:
+                if neighbor_id not in related_ids_set:
                     related_ids.append(neighbor_id)
+                    related_ids_set.add(neighbor_id)
                 if len(associations) >= max_assoc:
                     break
             if len(associations) >= max_assoc:

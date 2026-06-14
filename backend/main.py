@@ -16,6 +16,10 @@ logger = logging.getLogger("amazon_now_ai")
 # ─── AI pipeline import ───────────────────────────────────────────────────────
 from ai_engine.workflow.langgraph_flow import aprocess_message
 from backend.services.inventory_service import analyze_inventory_image
+from ai_engine.agents.consumption_agent.history import all_users as _all_users
+
+# Cache user list at module load — it never changes at runtime
+_USERS_CACHE: list = _all_users()
 
 # ─── Startup pre-warmer ───────────────────────────────────────────────────────
 # Fires a background request at boot time so the cold-start cost
@@ -98,9 +102,8 @@ def health_check():
 
 @app.get("/api/users", tags=["users"])
 def get_users():
-    """Return the list of demo user personas for the UI picker."""
-    from ai_engine.agents.consumption_agent.history import all_users
-    return {"users": all_users()}
+    """Return the cached list of demo user personas — O(1), built at startup."""
+    return {"users": _USERS_CACHE}
 
 
 @app.post("/api/chat", response_model=SmartCartResponse, tags=["ai"])

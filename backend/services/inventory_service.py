@@ -15,6 +15,12 @@ from backend.config.settings import settings
 
 client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
 
+# Compile once at module load — reused on every request instead of recompiling
+_JSON_FENCE_RE = re.compile(r"```json|```")
+
+# 10 MB hard cap — prevents OOM from unexpectedly large uploads
+_MAX_IMAGE_BYTES = 10 * 1024 * 1024
+
 
 async def analyze_inventory_image(image_bytes: bytes) -> Dict[str, Any]:
     """
@@ -28,6 +34,15 @@ async def analyze_inventory_image(image_bytes: bytes) -> Dict[str, Any]:
     explainability = []
     intent = "inventory_replenishment"
     items = []
+
+    # Guard: reject oversized uploads before encoding
+    if len(image_bytes) > _MAX_IMAGE_BYTES:
+        return {
+            "intent": intent,
+            "context": {"source": "vision_analysis", "status": "error"},
+            "items": [],
+            "explainability": ["Image too large. Please upload a photo under 10 MB."],
+        }
 
     try:
         # Step 1: Vision analysis
@@ -62,7 +77,7 @@ async def analyze_inventory_image(image_bytes: bytes) -> Dict[str, Any]:
         )
 
         ai_text = vision_response.choices[0].message.content.strip()
-        ai_text = re.sub(r"```json|```", "", ai_text).strip()
+        ai_text = _JSON_FENCE_RE.sub("", ai_text).strip()
         vision_data = json.loads(ai_text)
 
         missing = vision_data.get("missing_items", ["Whole Milk", "Eggs", "Bread"])
@@ -102,7 +117,7 @@ async def analyze_inventory_image(image_bytes: bytes) -> Dict[str, Any]:
         )
 
         cart_text = cart_response.choices[0].message.content.strip()
-        cart_text = re.sub(r"```json|```", "", cart_text).strip()
+        cart_text = _JSON_FENCE_RE.sub("", cart_text).strip()
         raw_items = json.loads(cart_text)
 
         items = [

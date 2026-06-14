@@ -91,16 +91,18 @@ def get_consumption_signals(user_id: str) -> Dict:
             if pid not in last_ordered or last_ordered[pid] < order_date:
                 last_ordered[pid] = order_date
 
-    # Frequently bought: top 5 by order count
-    frequently_bought = [
-        name for _, name in sorted(freq.values(), key=lambda x: -x[0])
-    ][:5]
+    # Sort once by frequency descending — reuse for both outputs
+    sorted_by_freq = sorted(freq.items(), key=lambda kv: -kv[1][0])
 
-    # Likely out of: bought 2+ times total but not in last 14 days
+    # Frequently bought: top 5 product names
+    frequently_bought = [name for _, (_, name) in sorted_by_freq[:5]]
+
+    # Likely out of: bought 2+ times but not reordered in 14 days
+    # Iterate the already-sorted list — no second sort needed
     cutoff = datetime.now() - timedelta(days=14)
     likely_out_of = [
-        freq[pid][1]
-        for pid, (count, name) in freq.items()
+        name
+        for pid, (count, name) in sorted_by_freq
         if count >= 2 and last_ordered.get(pid, datetime.min) < cutoff
     ][:3]
 
