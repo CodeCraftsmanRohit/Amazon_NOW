@@ -13,7 +13,16 @@ const toINR   = (usd: number) => Math.round(usd * 83.5);
 const fmtINR  = (usd: number) => `₹${toINR(usd).toLocaleString("en-IN")}`;
 const fmtINRv = (inr: number) => `₹${Math.round(inr).toLocaleString("en-IN")}`;
 
-// ─── Curated Unsplash product images ────────────────────────────────────────
+// ── Demo personas (hardcoded — always visible, no API dependency) ─────────────
+const PERSONAS: UserPersona[] = [
+  { user_id: "priya_sharma",     name: "Priya",   avatar: "👩‍💼", label: "Working Professional", bio: "Cooks Italian twice a week, movie nights on Fridays" },
+  { user_id: "rahul_new_parent", name: "Rahul",   avatar: "👨‍👧", label: "New Parent",           bio: "First-time dad, always stocking baby essentials and quick meals" },
+  { user_id: "aisha_student",    name: "Aisha",   avatar: "🎓",  label: "College Student",       bio: "Late-night study sessions, tight budget, loves snacks" },
+  { user_id: "krishna_host",     name: "Krishna", avatar: "🎉",  label: "Party Host",            bio: "Loves hosting large groups — snacks, drinks, party food" },
+  { user_id: "meera_baker",      name: "Meera",   avatar: "🧁",  label: "Home Baker",            bio: "Bakes every weekend — Ghirardelli chocolate, Kerrygold butter, always low on sugar" },
+];
+
+// ─── Product images ────────────────────────────────────────────────────────
 const PIMG: Record<string, string> = {
   // ── Baking ──────────────────────────────────────────────────────────────
   P001: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&h=400&fit=crop", // chocolate chips
@@ -704,17 +713,8 @@ function AIInputView({ onSubmit, onBack }: {
   const [people,      setPeople]      = useState("1");
   const [showPrefs,   setShowPrefs]   = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [personas,    setPersonas]    = useState<UserPersona[]>([]);
   const [activeUser,  setActiveUser]  = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-
-  // Load personas from backend on mount
-  useEffect(() => {
-    fetch("http://localhost:8000/api/users")
-      .then(r => r.json())
-      .then(d => setPersonas(d.users || []))
-      .catch(() => {});
-  }, []);
 
   const submit = (q: string) => {
     if (!q.trim()) return;
@@ -819,7 +819,7 @@ function AIInputView({ onSubmit, onBack }: {
           </button>
 
           {/* ── Persona Picker ── */}
-          {personas.length > 0 && (
+          {PERSONAS.length > 0 && (
             <div className="mt-5">
               <p className="text-center text-xs text-gray-500 mb-2.5 flex items-center justify-center gap-1.5">
                 <span className="text-[#FF9900]">👤</span>
@@ -830,7 +830,7 @@ function AIInputView({ onSubmit, onBack }: {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${activeUser === null ? "bg-[#FF9900] text-[#131921] border-[#FF9900]" : "bg-white/5 text-gray-400 border-white/10 hover:border-[#FF9900]/40"}`}>
                   🛒 Guest
                 </button>
-                {personas.map(u => (
+                {PERSONAS.map(u => (
                   <button key={u.user_id} onClick={() => setActiveUser(activeUser === u.user_id ? null : u.user_id)} title={u.bio}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${activeUser === u.user_id ? "bg-[#FF9900] text-[#131921] border-[#FF9900]" : "bg-white/5 text-gray-400 border-white/10 hover:border-[#FF9900]/40"}`}>
                     {u.avatar} {u.name}
@@ -839,7 +839,7 @@ function AIInputView({ onSubmit, onBack }: {
               </div>
               {activeUser && (
                 <p className="text-center text-[10px] text-[#FF9900]/80 mt-2 px-4">
-                  {personas.find(u => u.user_id === activeUser)?.bio}
+                  {PERSONAS.find(u => u.user_id === activeUser)?.bio}
                 </p>
               )}
             </div>
