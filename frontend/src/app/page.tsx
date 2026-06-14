@@ -600,7 +600,7 @@ function HomeProductCard({ id, name, price, rating, reviews, ss, disc, orig, qty
     <div className="bg-white rounded-lg overflow-hidden group cursor-pointer hover:shadow-md transition-shadow border border-gray-100">
       <div className="relative">
         <img src={getImg(id)} alt={name}
-          className="w-full h-36 sm:h-44 object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-44 sm:h-52 object-cover group-hover:scale-105 transition-transform duration-300"
           onError={e => { (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${id}42/400/350`; }}
         />
         {ss && disc && (
