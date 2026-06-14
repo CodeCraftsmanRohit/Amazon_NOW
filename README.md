@@ -165,7 +165,7 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 
 ## 🏗️ What's Actually Built — No Slideware
 
-> Every feature below runs locally. Everything is verifiable.
+> Clone the repo, add your `OPENAI_API_KEY`, and every feature below works. No mocked responses, no pre-recorded demos.
 
 <br/>
 
