@@ -15,51 +15,70 @@ const fmtINRv = (inr: number) => `₹${Math.round(inr).toLocaleString("en-IN")}`
 
 // ─── Curated Unsplash product images ────────────────────────────────────────
 const PIMG: Record<string, string> = {
-  P001: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=400&fit=crop",
-  P002: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=400&fit=crop",
-  P003: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=400&h=400&fit=crop",
-  P004: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=400&h=400&fit=crop",
-  P005: "https://images.unsplash.com/photo-1595981234058-a9302fb97229?w=400&h=400&fit=crop",
-  P007: "https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=400&h=400&fit=crop",
-  P009: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop",
-  P010: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=400&h=400&fit=crop",
-  P011: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&h=400&fit=crop",
-  P012: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop",
-  P013: "https://images.unsplash.com/photo-1629203851122-3726555cf5a2?w=400&h=400&fit=crop",
-  P014: "https://images.unsplash.com/photo-1548907040-4baa42d10919?w=400&h=400&fit=crop",
-  P015: "https://images.unsplash.com/photo-1536816579748-4ecb3f03d72a?w=400&h=400&fit=crop",
-  P016: "https://images.unsplash.com/photo-1551183053-bf91798d10bf?w=400&h=400&fit=crop",
-  P017: "https://images.unsplash.com/photo-1608039829572-76b5b6f2f88c?w=400&h=400&fit=crop",
-  P019: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&h=400&fit=crop",
-  P020: "https://images.unsplash.com/photo-1549931319-a545dcf3bc7f?w=400&h=400&fit=crop",
-  P021: "https://images.unsplash.com/photo-1542345812-d98b5cd6cf98?w=400&h=400&fit=crop",
-  P022: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&h=400&fit=crop",
-  P023: "https://images.unsplash.com/photo-1548907040-4baa42d10919?w=400&h=400&fit=crop",
-  P024: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=400&fit=crop",
-  P025: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop",
-  P026: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop",
-  P027: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop",
-  P028: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop",
-  P029: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop",
-  P030: "https://images.unsplash.com/photo-1622542086073-5af5f53e9517?w=400&h=400&fit=crop",
-  P031: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=400&fit=crop",
-  P032: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
-  P033: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=400&fit=crop",
-  P034: "https://images.unsplash.com/photo-1549931319-a545dcf3bc7f?w=400&h=400&fit=crop",
-  P035: "https://images.unsplash.com/photo-1583531172565-1318d9e0e7fb?w=400&h=400&fit=crop",
-  P036: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&h=400&fit=crop",
-  P037: "https://images.unsplash.com/photo-1621506289937-a8e7ac0dfd3a?w=400&h=400&fit=crop",
-  P038: "https://images.unsplash.com/photo-1599398815647-6f4f48be39ac?w=400&h=400&fit=crop",
-  P039: "https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?w=400&h=400&fit=crop",
-  P040: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=400&fit=crop",
-  P041: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
-  P042: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
-  P044: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
-  P046: "https://images.unsplash.com/photo-1614087698640-27cbf92c4749?w=400&h=400&fit=crop",
-  P047: "https://images.unsplash.com/photo-1597393353415-b3730f3719fe?w=400&h=400&fit=crop",
-  P048: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=400&fit=crop",
-  P049: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=400&fit=crop",
-  P050: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=400&fit=crop",
+  // ── Baking ──────────────────────────────────────────────────────────────
+  P001: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&h=400&fit=crop", // chocolate chips
+  P002: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=400&fit=crop", // flour bag
+  P003: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=400&h=400&fit=crop", // butter block
+  P004: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=400&h=400&fit=crop", // eggs
+  P005: "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=400&h=400&fit=crop", // sugar
+  P006: "https://images.unsplash.com/photo-1612201289071-70cdb0e07566?w=400&h=400&fit=crop", // baking powder tin
+  P007: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=400&fit=crop", // cocoa powder
+  P008: "https://images.unsplash.com/photo-1598103442097-8b74394b95c4?w=400&h=400&fit=crop", // vanilla extract bottle
+  // ── Dairy ───────────────────────────────────────────────────────────────
+  P009: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop", // milk jug
+  P019: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&h=400&fit=crop", // parmesan cheese shaker
+  P040: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=400&fit=crop", // yogurt cups
+  // ── Pasta & Sauces ──────────────────────────────────────────────────────
+  P016: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=400&fit=crop", // dry spaghetti
+  P017: "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?w=400&h=400&fit=crop", // marinara sauce jar
+  P018: "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=400&h=400&fit=crop", // tomato pasta sauce
+  // ── Bread ───────────────────────────────────────────────────────────────
+  P020: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=400&h=400&fit=crop", // garlic bread loaf
+  P034: "https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&h=400&fit=crop", // sliced wheat bread
+  // ── Snacks ──────────────────────────────────────────────────────────────
+  P010: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=400&h=400&fit=crop", // popcorn
+  P011: "https://images.unsplash.com/photo-1600952841320-db92ec4047ca?w=400&h=400&fit=crop", // doritos chips bag
+  P015: "https://images.unsplash.com/photo-1536816579748-4ecb3f03d72a?w=400&h=400&fit=crop", // mixed nuts
+  P022: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&h=400&fit=crop", // lays chips
+  P050: "https://images.unsplash.com/photo-1610614819513-58e34989848b?w=400&h=400&fit=crop", // fruit snacks
+  // ── Candy & Chocolate ───────────────────────────────────────────────────
+  P014: "https://images.unsplash.com/photo-1548907040-4baa42d10919?w=400&h=400&fit=crop", // ferrero rocher box
+  P023: "https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?w=400&h=400&fit=crop", // m&ms
+  // ── Beverages ───────────────────────────────────────────────────────────
+  P012: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop", // coca cola cans
+  P013: "https://images.unsplash.com/photo-1629203851122-3726555cf5a2?w=400&h=400&fit=crop", // pepsi cans
+  P021: "https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400&h=400&fit=crop", // sparkling water bottles
+  P025: "https://images.unsplash.com/photo-1570831739435-6601aa3fa4fb?w=400&h=400&fit=crop", // red bull cans
+  P030: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=400&fit=crop", // gatorade bottles
+  P033: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=400&fit=crop", // coffee beans/bag
+  P037: "https://images.unsplash.com/photo-1621506289937-a8e7ac0dfd3a?w=400&h=400&fit=crop", // orange juice carton
+  P045: "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=400&h=400&fit=crop", // instant coffee jar
+  // ── Tea ─────────────────────────────────────────────────────────────────
+  P032: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop", // tea bags box
+  // ── Medicine ────────────────────────────────────────────────────────────
+  P026: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop", // advil pills bottle
+  P027: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop", // tylenol bottle
+  P028: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=400&fit=crop", // dayquil liquid
+  P029: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=400&fit=crop", // vicks vapo rub
+  // ── Canned / Soup ───────────────────────────────────────────────────────
+  P031: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=400&fit=crop", // chicken noodle soup cans
+  // ── Breakfast ───────────────────────────────────────────────────────────
+  P038: "https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&h=400&fit=crop", // corn flakes cereal box
+  P039: "https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?w=400&h=400&fit=crop", // oatmeal packets
+  // ── Condiments ──────────────────────────────────────────────────────────
+  P035: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&h=400&fit=crop", // peanut butter jar
+  P036: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&h=400&fit=crop", // strawberry jam jar
+  P046: "https://images.unsplash.com/photo-1611251135345-18c56206b863?w=400&h=400&fit=crop", // ketchup bottle
+  P047: "https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=400&h=400&fit=crop", // mayonnaise jar
+  // ── Frozen ──────────────────────────────────────────────────────────────
+  P024: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=400&fit=crop", // pizza box
+  P048: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=400&fit=crop", // ice cream tub
+  P049: "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=400&h=400&fit=crop", // vanilla ice cream scoop
+  // ── Baby ────────────────────────────────────────────────────────────────
+  P041: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=400&h=400&fit=crop", // baby wipes pack
+  P042: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop", // diapers pack
+  P043: "https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=400&h=400&fit=crop", // baby shampoo bottle
+  P044: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop", // baby formula tin
 };
 
 function getImg(id: string) {
