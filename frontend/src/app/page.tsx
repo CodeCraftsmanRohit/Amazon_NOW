@@ -818,10 +818,16 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart
               Don't search for products. Just tell us <em className="text-gray-200">what you're doing</em>.
               "I have a fever" → perfect cart in seconds.
             </p>
-            <div className="flex flex-wrap gap-1.5 mt-2 sm:mt-3 justify-center sm:justify-start">
-              {["🏷️ Smart Saver","💰 Budget-aware","👥 Headcount scaling","📸 Vision AI"].map(f => (
+            <div className="flex flex-wrap gap-1.5 mt-2 sm:mt-3 justify-center sm:justify-start items-center">
+              {["🏷️ Smart Saver","💰 Budget-aware","👥 Headcount scaling"].map(f => (
                 <span key={f} className="bg-white/10 text-gray-300 text-[10px] px-2 py-0.5 rounded-full border border-white/20">{f}</span>
               ))}
+              <button
+                onClick={e => { e.stopPropagation(); onScanList(); }}
+                className="flex items-center gap-1 bg-[#FF9900]/15 hover:bg-[#FF9900]/30 text-[#FF9900] text-[10px] font-bold px-2 py-0.5 rounded-full border border-[#FF9900]/40 transition-colors"
+                title="Photo of grocery list, WhatsApp screenshot → instant cart">
+                📋 Scan a List
+              </button>
             </div>
           </div>
           <div className="shrink-0">
@@ -830,25 +836,6 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart
               style={{ background: "linear-gradient(135deg, #FF9900 0%, #e47911 100%)", color: "#131921" }}>
               <Wand2 size={20} /> Try AI Shopping
             </button>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Scan a List banner ── */}
-      <div className="mx-2 sm:mx-4 mt-2">
-        <div
-          onClick={() => onScanList()}
-          className="rounded-xl overflow-hidden cursor-pointer border border-[#FF9900]/30 hover:border-[#FF9900] transition-all group"
-          style={{ background: "linear-gradient(135deg, #1a1200, #2d1f00)" }}>
-          <div className="flex items-center gap-3 px-4 py-3.5">
-            <div className="text-3xl">📋</div>
-            <div className="flex-1">
-              <p className="text-white font-bold text-sm">Scan a Grocery List</p>
-              <p className="text-[#FF9900]/80 text-[11px] mt-0.5">Photo of mom's list, WhatsApp message, Notes app screenshot → instant cart</p>
-            </div>
-            <span className="text-[#FF9900] text-xs font-bold bg-[#FF9900]/10 px-2.5 py-1 rounded-full shrink-0 group-hover:bg-[#FF9900]/20">
-              📸 Scan
-            </span>
           </div>
         </div>
       </div>
