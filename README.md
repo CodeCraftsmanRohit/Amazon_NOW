@@ -151,14 +151,6 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 
 <br/>
 
-> *"Shopping is evolving beyond 'search and browse' to 'describe and get.'"* — Bain
->
-> *"AI-referred traffic surged 1,200% while traditional search declined 10%."* — Previsible, 2026
->
-> *"Purpose-built agents — not monolithic AI — dominate the early agentic wave."* — commercetools
-
-<br/>
-
 ---
 
 ## 🏗️ What's Actually Built — No Slideware
@@ -250,8 +242,6 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 | 🧠 **Memory** | Retains preferences, past purchases, brand affinities | `history.py` — real order history, brand preferences, inventory gaps |
 | 💡 **Reasoning** | Breaks down complex requests into structured, actionable steps | GPT-4o single-shot structured output |
 | 🔧 **Tools** | Takes action — searches catalog, applies discounts, builds cart | Product graph + catalog + budget fitter + Smart Saver |
-
-> *"Purpose-built agents, not a monolithic AI — each component has a specific job. Human stays in the loop at checkout."* — commercetools, 2026
 
 <br/>
 
@@ -358,13 +348,9 @@ sequenceDiagram
 
 ## 🏛️ Target Scale Architecture (6-Month Roadmap)
 
-> *"Traditional e-retail platforms will continue to thrive, protected by brand trust, product fulfillment, and personalisation."* — Bain & Company
->
-> Amazon Now AI is the conversational layer that makes those moats actionable.
-
 **6-month target:** Migrate to Amazon Bedrock, implement UCP for protocol-native discovery, connect AP2 for verifiable payments — making Amazon Now AI the first Q-commerce agent compliant with 2026 industry standards.
 
-> *"UCP (Universal Commerce Protocol, co-developed by Google + Shopify) + AP2 (Agent Payment Protocol, backed by Mastercard, Visa, PayPal) are the 2026 open standards for agentic commerce. Merchants implementing UCP once are discoverable across ChatGPT, Gemini, Copilot, and Perplexity simultaneously."* — Ekamoira / Charle, 2026
+> UCP (co-developed by Google + Shopify) and AP2 (backed by Mastercard, Visa, PayPal) are the open standards for agentic commerce. One UCP implementation = discoverable across ChatGPT, Gemini, Copilot, and Perplexity simultaneously.
 
 ```mermaid
 graph TD
@@ -606,8 +592,6 @@ Generation 5 — Autonomous Commerce:   Set rules once, AI manages forever
 | Intent pipeline | Responds to user message | Triggered by sensor/calendar, not user input |
 | Occasion packs | User taps to fill cart | Pre-staged cart appears on lock screen before user thinks of it |
 
-> *"An AI agent could detect low inventory through a refrigerator sensor and automatically reorder items based on budget, brand, and timing preferences."* — Stord State of AI, 2026
-
 **The trust bridge:** The winning design is not full autonomy — 30% of consumers would never allow AI to shop without asking (Stord, 2026). The right model is **AI does 95% of the work, human confirms in one tap**. Amazon Now AI is already designed this way — the AI builds the cart, the human approves at checkout.
 
 <br/>
@@ -631,10 +615,6 @@ Generation 5 — Autonomous Commerce:   Set rules once, AI manages forever
 
 ### *"AI is the next paradigm shift in e-commerce. Just as we moved from catalogs to online, from online to mobile, and from mobile to platforms — AI will fundamentally change how customers shop and how we serve them."*
 ### *— McKinsey, 2026*
-
-<br/>
-
-> **The numbers:** AI recs convert **4.4× better** than traditional search (McKinsey) · Gen Z **38% uplift** from AI recommendations (Stord) · Microsoft Copilot users **194% more likely** to buy when intent is present · India Q-commerce **$65–70B by 2030** (Bain)
 
 <br/>
 
