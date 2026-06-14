@@ -759,7 +759,6 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, homeCart, onAddToCar
         </div>
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           {OCCASION_PACKS.map(pack => {
-            const total = pack.items.reduce((s, i) => s + i.price * i.qty, 0);
             return (
               <button
                 key={pack.label}
@@ -785,10 +784,7 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, homeCart, onAddToCar
                     <span className="text-lg">{pack.emoji}</span>
                     <span className="text-white font-bold text-sm">{pack.label}</span>
                   </div>
-                  <div className="flex items-center justify-between mt-1.5">
-                    <span className="text-gray-400 text-[10px]">{pack.items.length} items</span>
-                    <span className="font-bold text-xs" style={{ color: pack.textColor }}>₹{Math.round(total * 83.5)}</span>
-                  </div>
+                  <p className="text-gray-400 text-[10px] mt-1">{pack.items.length} items · One tap checkout</p>
                 </div>
               </button>
             );
