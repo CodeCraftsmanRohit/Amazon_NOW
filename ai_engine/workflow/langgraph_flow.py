@@ -221,8 +221,13 @@ RULES:
         disc   = cat.get("discount_percentage", 0)
         is_ss  = expiry < 30 and disc > 0
 
-        orig_price   = cat.get("price", item.price_usd)
-        final_price  = round(orig_price * (1 - disc / 100), 2) if is_ss else item.price_usd
+        # ALWAYS use catalog price — never trust the LLM's price field.
+        # This is the single source of truth and prevents price hallucination.
+        if not cat:
+            # LLM returned an ID not in catalog — skip this item silently.
+            continue
+        orig_price   = cat["price"]
+        final_price  = round(orig_price * (1 - disc / 100), 2) if is_ss else orig_price
         savings_unit = round(orig_price - final_price, 2) if is_ss else 0.0
         qty          = (max(1, round(item.quantity * people_count))
                         if people_count > 1 else item.quantity)
@@ -232,7 +237,7 @@ RULES:
 
         final_items.append({
             "id":             item.id,
-            "name":           item.name,
+            "name":           cat["name"],           # catalog name, not LLM's
             "price":          final_price,
             "quantity":       qty,
             "image_url":      item.image_url,
