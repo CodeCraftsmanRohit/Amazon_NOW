@@ -76,6 +76,7 @@ interface SmartCartResponse {
   intent: string; context: Record<string, string>;
   items: CartItem[]; explainability: string[];
   total_cost?: number; total_savings?: number;
+  processing_time_ms?: number;
 }
 type LocalCart = Record<string, number>;
 type PageMode = "home" | "ai" | "results" | "cart";
@@ -315,7 +316,7 @@ function FullScreenLoader() {
       <div className="w-14 h-14 border-4 border-[#FF9900] border-t-transparent rounded-full animate-spin mb-5" />
       <div className="text-white font-bold text-xl mb-2">AI Building Your Cart…</div>
       <div className="text-gray-400 text-sm text-center max-w-sm px-4">
-        7 agents running in parallel — intent, context, consumption, inventory, graph, cart, explainability
+        6 AI agents (4 in parallel) — intent → context · consumption · inventory · graph → cart
       </div>
       <div className="flex flex-wrap justify-center gap-2 mt-5 max-w-sm px-4">
         {["Intent","Context","Consumption","Inventory","Graph","Cart","Explain"].map((a,i) => (
@@ -602,7 +603,7 @@ function HomeView({ onAIClick, homeCart, onAddToCart, onIncCart, onDecCart, onVi
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 px-4 sm:px-8 py-5 sm:py-7">
           <div className="flex-1 text-center sm:text-left">
             <div className="inline-flex items-center gap-1.5 bg-[#FF9900]/20 border border-[#FF9900]/40 rounded-full px-3 py-1 text-[#FF9900] text-xs font-bold mb-2 sm:mb-3">
-              <Sparkles size={12} /> Powered by LangGraph · GPT-4o · 7 Parallel AI Agents
+              <Sparkles size={12} /> Powered by LangGraph · GPT-4o · Parallel AI Agents
             </div>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-1.5 sm:mb-2 leading-tight">
               Meet <span className="text-[#FF9900]">Amazon Now AI</span>
@@ -835,6 +836,11 @@ function ResultsView({ cart, localCart, onAdd, onInc, onDec, onCheckout, onReset
             </span>
             {budget && <span className="text-[10px] sm:text-sm bg-[#E8F5E9] text-[#007600] font-bold px-1.5 sm:px-2 py-0.5 rounded">💰 ₹{budget.toLocaleString("en-IN")}</span>}
             {people > 1 && <span className="text-[10px] sm:text-sm bg-[#FFF8E1] text-[#E65100] font-bold px-1.5 sm:px-2 py-0.5 rounded">👥 {people}p</span>}
+            {cart.processing_time_ms != null && (
+              <span className="text-[10px] sm:text-sm bg-[#FFF3E0] text-[#B25000] font-bold px-1.5 sm:px-2 py-0.5 rounded flex items-center gap-1" title="End-to-end AI pipeline time">
+                <Zap size={11} /> Built in {(cart.processing_time_ms / 1000).toFixed(1)}s
+              </span>
+            )}
           </div>
           {totalQty > 0 && (
             <button id="buy-now-btn" onClick={onCheckout}
@@ -1281,7 +1287,7 @@ export default function Home() {
           onAiDec={decItem}
           onAiRemove={id => { const n = { ...localCart }; delete n[id]; setLocalCart(n); }}
           onCheckout={() => setShowPay(true)}
-          onBack={() => mode === "results" || cart ? setMode("results") : setMode("home")}
+          onBack={() => cart ? setMode("results") : setMode("home")}
         />
       )}
 

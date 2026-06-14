@@ -5,15 +5,15 @@ The smart cart is built by the LangGraph AI pipeline in ai_engine/workflow/langg
 """
 
 from typing import List, Dict, Any
-from ai_engine.workflow.langgraph_flow import process_message
+from ai_engine.workflow.langgraph_flow import aprocess_message
 
 
-def build_smart_cart(message: str) -> Dict[str, Any]:
+async def build_smart_cart(message: str) -> Dict[str, Any]:
     """
-    Invoke the 7-agent LangGraph pipeline to build a smart cart
+    Invoke the parallel LangGraph pipeline to build a smart cart
     from a natural language user message.
     """
-    result = process_message(message)
+    result = await aprocess_message(message)
     return result
 
 

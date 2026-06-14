@@ -1,0 +1,2026 @@
+{
+  "nodes": [
+    {
+      "id": "P001",
+      "name": "Ghirardelli Semi-Sweet Chocolate Chips (12oz)",
+      "category": "baking"
+    },
+    {
+      "id": "P002",
+      "name": "King Arthur All-Purpose Flour (5lb)",
+      "category": "baking"
+    },
+    {
+      "id": "P003",
+      "name": "Kerrygold Unsalted Butter (8oz)",
+      "category": "dairy"
+    },
+    {
+      "id": "P004",
+      "name": "Vital Farms Pasture-Raised Eggs (12ct)",
+      "category": "dairy"
+    },
+    {
+      "id": "P005",
+      "name": "Domino Granulated Sugar (4lb)",
+      "category": "baking"
+    },
+    {
+      "id": "P006",
+      "name": "Clabber Girl Double Acting Baking Powder (10oz)",
+      "category": "baking"
+    },
+    {
+      "id": "P007",
+      "name": "Hershey's Unsweetened Cocoa Powder (8oz)",
+      "category": "baking"
+    },
+    {
+      "id": "P008",
+      "name": "Nielsen-Massey Pure Vanilla Extract (4oz)",
+      "category": "baking"
+    },
+    {
+      "id": "P009",
+      "name": "Organic Valley Whole Milk (1 Gallon)",
+      "category": "dairy"
+    },
+    {
+      "id": "P010",
+      "name": "Orville Redenbacher Movie Theater Butter Popcorn (6-pack)",
+      "category": "snacks"
+    },
+    {
+      "id": "P011",
+      "name": "Doritos Nacho Cheese Party Size (14.5oz)",
+      "category": "snacks"
+    },
+    {
+      "id": "P012",
+      "name": "Coca-Cola Classic 12-Pack Cans",
+      "category": "beverages"
+    },
+    {
+      "id": "P013",
+      "name": "Pepsi 12-Pack Cans",
+      "category": "beverages"
+    },
+    {
+      "id": "P014",
+      "name": "Ferrero Rocher Chocolate Box (24pc)",
+      "category": "snacks"
+    },
+    {
+      "id": "P015",
+      "name": "Planters Mixed Nuts (18.25oz)",
+      "category": "snacks"
+    },
+    {
+      "id": "P016",
+      "name": "Barilla Spaghetti Pasta (16oz)",
+      "category": "pasta"
+    },
+    {
+      "id": "P017",
+      "name": "Rao's Homemade Marinara Sauce (24oz)",
+      "category": "sauces"
+    },
+    {
+      "id": "P018",
+      "name": "Prego Italian Tomato Pasta Sauce (24oz)",
+      "category": "sauces"
+    },
+    {
+      "id": "P019",
+      "name": "Kraft Parmesan Cheese Shaker (8oz)",
+      "category": "dairy"
+    },
+    {
+      "id": "P020",
+      "name": "DeLallo Garlic Bread Loaf (16oz)",
+      "category": "bread"
+    },
+    {
+      "id": "P021",
+      "name": "Sparkling Ice Variety Pack (12 bottles)",
+      "category": "beverages"
+    },
+    {
+      "id": "P022",
+      "name": "Lay's Classic Potato Chips (8oz)",
+      "category": "snacks"
+    },
+    {
+      "id": "P023",
+      "name": "M&Ms Party Size Milk Chocolate (38oz)",
+      "category": "candy"
+    },
+    {
+      "id": "P024",
+      "name": "DiGiorno Pepperoni Pizza (28oz)",
+      "category": "frozen"
+    },
+    {
+      "id": "P025",
+      "name": "Red Bull Energy Drink 4-Pack (8.4oz)",
+      "category": "beverages"
+    },
+    {
+      "id": "P026",
+      "name": "Advil Ibuprofen 200mg (50ct)",
+      "category": "medicine"
+    },
+    {
+      "id": "P027",
+      "name": "Tylenol Extra Strength 500mg (100ct)",
+      "category": "medicine"
+    },
+    {
+      "id": "P028",
+      "name": "DayQuil Cold & Flu Liquid (12oz)",
+      "category": "medicine"
+    },
+    {
+      "id": "P029",
+      "name": "Vicks VapoRub Ointment (6oz)",
+      "category": "medicine"
+    },
+    {
+      "id": "P030",
+      "name": "Gatorade Thirst Quencher Variety 12-Pack",
+      "category": "beverages"
+    },
+    {
+      "id": "P031",
+      "name": "Campbell's Chicken Noodle Soup (10.75oz, 6-pack)",
+      "category": "canned"
+    },
+    {
+      "id": "P032",
+      "name": "Lipton Tea Bags (100ct)",
+      "category": "beverages"
+    },
+    {
+      "id": "P033",
+      "name": "Starbucks Pike Place Ground Coffee (12oz)",
+      "category": "beverages"
+    },
+    {
+      "id": "P034",
+      "name": "Nature's Own Honey Wheat Bread (20oz)",
+      "category": "bread"
+    },
+    {
+      "id": "P035",
+      "name": "Skippy Creamy Peanut Butter (16.3oz)",
+      "category": "condiments"
+    },
+    {
+      "id": "P036",
+      "name": "Smucker's Strawberry Jam (18oz)",
+      "category": "condiments"
+    },
+    {
+      "id": "P037",
+      "name": "Tropicana Orange Juice No Pulp (52oz)",
+      "category": "beverages"
+    },
+    {
+      "id": "P038",
+      "name": "Kellogg's Corn Flakes Cereal (18oz)",
+      "category": "breakfast"
+    },
+    {
+      "id": "P039",
+      "name": "Quaker Instant Oatmeal Variety Pack (20ct)",
+      "category": "breakfast"
+    },
+    {
+      "id": "P040",
+      "name": "Chobani Greek Yogurt Variety Pack (12ct)",
+      "category": "dairy"
+    },
+    {
+      "id": "P041",
+      "name": "Amazon Fresh Baby Wipes (200ct)",
+      "category": "baby"
+    },
+    {
+      "id": "P042",
+      "name": "Pampers Swaddlers Diapers Size 1 (40ct)",
+      "category": "baby"
+    },
+    {
+      "id": "P043",
+      "name": "Johnson's Baby Shampoo (15oz)",
+      "category": "baby"
+    },
+    {
+      "id": "P044",
+      "name": "Enfamil NeuroPro Baby Formula (20.7oz)",
+      "category": "baby"
+    },
+    {
+      "id": "P045",
+      "name": "Folgers Classic Roast Instant Coffee (8oz)",
+      "category": "beverages"
+    },
+    {
+      "id": "P046",
+      "name": "Heinz Tomato Ketchup (32oz)",
+      "category": "condiments"
+    },
+    {
+      "id": "P047",
+      "name": "Hellmann's Real Mayonnaise (30oz)",
+      "category": "condiments"
+    },
+    {
+      "id": "P048",
+      "name": "Ben & Jerry's Chunky Monkey Ice Cream (16oz)",
+      "category": "frozen"
+    },
+    {
+      "id": "P049",
+      "name": "H\u00e4agen-Dazs Vanilla Ice Cream (14oz)",
+      "category": "frozen"
+    },
+    {
+      "id": "P050",
+      "name": "Welch's Fruit Snacks Mixed Fruit (40 pouches)",
+      "category": "snacks"
+    }
+  ],
+  "edges": [
+    {
+      "source": "P001",
+      "target": "P002",
+      "weight": 2.0
+    },
+    {
+      "source": "P001",
+      "target": "P003",
+      "weight": 3.0
+    },
+    {
+      "source": "P001",
+      "target": "P004",
+      "weight": 3.0
+    },
+    {
+      "source": "P001",
+      "target": "P005",
+      "weight": 2.0
+    },
+    {
+      "source": "P001",
+      "target": "P006",
+      "weight": 1.0
+    },
+    {
+      "source": "P001",
+      "target": "P007",
+      "weight": 3.0
+    },
+    {
+      "source": "P001",
+      "target": "P008",
+      "weight": 1.0
+    },
+    {
+      "source": "P001",
+      "target": "P009",
+      "weight": 3.0
+    },
+    {
+      "source": "P001",
+      "target": "P014",
+      "weight": 2.0
+    },
+    {
+      "source": "P001",
+      "target": "P019",
+      "weight": 2.0
+    },
+    {
+      "source": "P001",
+      "target": "P023",
+      "weight": 1.0
+    },
+    {
+      "source": "P001",
+      "target": "P040",
+      "weight": 2.0
+    },
+    {
+      "source": "P001",
+      "target": "P048",
+      "weight": 1.0
+    },
+    {
+      "source": "P001",
+      "target": "P049",
+      "weight": 1.0
+    },
+    {
+      "source": "P002",
+      "target": "P003",
+      "weight": 3.0
+    },
+    {
+      "source": "P002",
+      "target": "P004",
+      "weight": 3.0
+    },
+    {
+      "source": "P002",
+      "target": "P005",
+      "weight": 2.0
+    },
+    {
+      "source": "P002",
+      "target": "P006",
+      "weight": 1.0
+    },
+    {
+      "source": "P002",
+      "target": "P007",
+      "weight": 2.0
+    },
+    {
+      "source": "P002",
+      "target": "P008",
+      "weight": 1.0
+    },
+    {
+      "source": "P002",
+      "target": "P009",
+      "weight": 3.0
+    },
+    {
+      "source": "P002",
+      "target": "P019",
+      "weight": 2.0
+    },
+    {
+      "source": "P002",
+      "target": "P020",
+      "weight": 1.0
+    },
+    {
+      "source": "P002",
+      "target": "P034",
+      "weight": 1.0
+    },
+    {
+      "source": "P002",
+      "target": "P040",
+      "weight": 2.0
+    },
+    {
+      "source": "P003",
+      "target": "P004",
+      "weight": 2.0
+    },
+    {
+      "source": "P003",
+      "target": "P005",
+      "weight": 3.0
+    },
+    {
+      "source": "P003",
+      "target": "P006",
+      "weight": 3.0
+    },
+    {
+      "source": "P003",
+      "target": "P007",
+      "weight": 3.0
+    },
+    {
+      "source": "P003",
+      "target": "P008",
+      "weight": 3.0
+    },
+    {
+      "source": "P003",
+      "target": "P009",
+      "weight": 1.0
+    },
+    {
+      "source": "P003",
+      "target": "P016",
+      "weight": 3.0
+    },
+    {
+      "source": "P003",
+      "target": "P038",
+      "weight": 2.0
+    },
+    {
+      "source": "P003",
+      "target": "P039",
+      "weight": 2.0
+    },
+    {
+      "source": "P003",
+      "target": "P046",
+      "weight": 1.0
+    },
+    {
+      "source": "P004",
+      "target": "P005",
+      "weight": 3.0
+    },
+    {
+      "source": "P004",
+      "target": "P006",
+      "weight": 3.0
+    },
+    {
+      "source": "P004",
+      "target": "P007",
+      "weight": 3.0
+    },
+    {
+      "source": "P004",
+      "target": "P008",
+      "weight": 3.0
+    },
+    {
+      "source": "P004",
+      "target": "P009",
+      "weight": 2.0
+    },
+    {
+      "source": "P004",
+      "target": "P016",
+      "weight": 3.0
+    },
+    {
+      "source": "P004",
+      "target": "P033",
+      "weight": 1.0
+    },
+    {
+      "source": "P004",
+      "target": "P034",
+      "weight": 1.0
+    },
+    {
+      "source": "P004",
+      "target": "P035",
+      "weight": 1.0
+    },
+    {
+      "source": "P004",
+      "target": "P036",
+      "weight": 1.0
+    },
+    {
+      "source": "P004",
+      "target": "P037",
+      "weight": 1.0
+    },
+    {
+      "source": "P004",
+      "target": "P038",
+      "weight": 3.0
+    },
+    {
+      "source": "P004",
+      "target": "P039",
+      "weight": 3.0
+    },
+    {
+      "source": "P004",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P004",
+      "target": "P046",
+      "weight": 1.0
+    },
+    {
+      "source": "P005",
+      "target": "P006",
+      "weight": 1.0
+    },
+    {
+      "source": "P005",
+      "target": "P007",
+      "weight": 2.0
+    },
+    {
+      "source": "P005",
+      "target": "P008",
+      "weight": 1.0
+    },
+    {
+      "source": "P005",
+      "target": "P009",
+      "weight": 3.0
+    },
+    {
+      "source": "P005",
+      "target": "P019",
+      "weight": 2.0
+    },
+    {
+      "source": "P005",
+      "target": "P040",
+      "weight": 2.0
+    },
+    {
+      "source": "P006",
+      "target": "P007",
+      "weight": 1.0
+    },
+    {
+      "source": "P006",
+      "target": "P008",
+      "weight": 1.0
+    },
+    {
+      "source": "P006",
+      "target": "P009",
+      "weight": 3.0
+    },
+    {
+      "source": "P006",
+      "target": "P019",
+      "weight": 2.0
+    },
+    {
+      "source": "P006",
+      "target": "P040",
+      "weight": 2.0
+    },
+    {
+      "source": "P007",
+      "target": "P008",
+      "weight": 1.0
+    },
+    {
+      "source": "P007",
+      "target": "P009",
+      "weight": 3.0
+    },
+    {
+      "source": "P007",
+      "target": "P014",
+      "weight": 1.0
+    },
+    {
+      "source": "P007",
+      "target": "P019",
+      "weight": 2.0
+    },
+    {
+      "source": "P007",
+      "target": "P023",
+      "weight": 1.0
+    },
+    {
+      "source": "P007",
+      "target": "P040",
+      "weight": 2.0
+    },
+    {
+      "source": "P008",
+      "target": "P009",
+      "weight": 3.0
+    },
+    {
+      "source": "P008",
+      "target": "P019",
+      "weight": 2.0
+    },
+    {
+      "source": "P008",
+      "target": "P040",
+      "weight": 2.0
+    },
+    {
+      "source": "P008",
+      "target": "P049",
+      "weight": 1.0
+    },
+    {
+      "source": "P009",
+      "target": "P016",
+      "weight": 2.0
+    },
+    {
+      "source": "P009",
+      "target": "P033",
+      "weight": 1.0
+    },
+    {
+      "source": "P009",
+      "target": "P034",
+      "weight": 1.0
+    },
+    {
+      "source": "P009",
+      "target": "P035",
+      "weight": 1.0
+    },
+    {
+      "source": "P009",
+      "target": "P036",
+      "weight": 1.0
+    },
+    {
+      "source": "P009",
+      "target": "P037",
+      "weight": 1.0
+    },
+    {
+      "source": "P009",
+      "target": "P038",
+      "weight": 3.0
+    },
+    {
+      "source": "P009",
+      "target": "P039",
+      "weight": 3.0
+    },
+    {
+      "source": "P009",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P010",
+      "target": "P011",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P012",
+      "weight": 3.0
+    },
+    {
+      "source": "P010",
+      "target": "P013",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P015",
+      "weight": 1.0
+    },
+    {
+      "source": "P010",
+      "target": "P021",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P022",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P023",
+      "weight": 4.0
+    },
+    {
+      "source": "P010",
+      "target": "P024",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P025",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P030",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P032",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P035",
+      "weight": 1.0
+    },
+    {
+      "source": "P010",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P010",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P048",
+      "weight": 3.0
+    },
+    {
+      "source": "P010",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P010",
+      "target": "P050",
+      "weight": 1.0
+    },
+    {
+      "source": "P011",
+      "target": "P012",
+      "weight": 4.0
+    },
+    {
+      "source": "P011",
+      "target": "P013",
+      "weight": 3.0
+    },
+    {
+      "source": "P011",
+      "target": "P014",
+      "weight": 1.0
+    },
+    {
+      "source": "P011",
+      "target": "P015",
+      "weight": 2.0
+    },
+    {
+      "source": "P011",
+      "target": "P021",
+      "weight": 3.0
+    },
+    {
+      "source": "P011",
+      "target": "P022",
+      "weight": 4.0
+    },
+    {
+      "source": "P011",
+      "target": "P023",
+      "weight": 5.0
+    },
+    {
+      "source": "P011",
+      "target": "P024",
+      "weight": 2.0
+    },
+    {
+      "source": "P011",
+      "target": "P025",
+      "weight": 2.0
+    },
+    {
+      "source": "P011",
+      "target": "P030",
+      "weight": 2.0
+    },
+    {
+      "source": "P011",
+      "target": "P032",
+      "weight": 2.0
+    },
+    {
+      "source": "P011",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P011",
+      "target": "P035",
+      "weight": 1.0
+    },
+    {
+      "source": "P011",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P011",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P011",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P011",
+      "target": "P048",
+      "weight": 3.0
+    },
+    {
+      "source": "P011",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P011",
+      "target": "P050",
+      "weight": 1.0
+    },
+    {
+      "source": "P012",
+      "target": "P013",
+      "weight": 3.0
+    },
+    {
+      "source": "P012",
+      "target": "P014",
+      "weight": 3.0
+    },
+    {
+      "source": "P012",
+      "target": "P015",
+      "weight": 3.0
+    },
+    {
+      "source": "P012",
+      "target": "P021",
+      "weight": 2.0
+    },
+    {
+      "source": "P012",
+      "target": "P022",
+      "weight": 4.0
+    },
+    {
+      "source": "P012",
+      "target": "P023",
+      "weight": 4.0
+    },
+    {
+      "source": "P012",
+      "target": "P024",
+      "weight": 2.0
+    },
+    {
+      "source": "P012",
+      "target": "P025",
+      "weight": 1.0
+    },
+    {
+      "source": "P012",
+      "target": "P026",
+      "weight": 2.0
+    },
+    {
+      "source": "P012",
+      "target": "P027",
+      "weight": 2.0
+    },
+    {
+      "source": "P012",
+      "target": "P028",
+      "weight": 2.0
+    },
+    {
+      "source": "P012",
+      "target": "P029",
+      "weight": 2.0
+    },
+    {
+      "source": "P012",
+      "target": "P038",
+      "weight": 2.0
+    },
+    {
+      "source": "P012",
+      "target": "P039",
+      "weight": 2.0
+    },
+    {
+      "source": "P012",
+      "target": "P048",
+      "weight": 3.0
+    },
+    {
+      "source": "P012",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P012",
+      "target": "P050",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P014",
+      "weight": 3.0
+    },
+    {
+      "source": "P013",
+      "target": "P015",
+      "weight": 3.0
+    },
+    {
+      "source": "P013",
+      "target": "P021",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P022",
+      "weight": 3.0
+    },
+    {
+      "source": "P013",
+      "target": "P023",
+      "weight": 3.0
+    },
+    {
+      "source": "P013",
+      "target": "P024",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P025",
+      "weight": 1.0
+    },
+    {
+      "source": "P013",
+      "target": "P026",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P027",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P028",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P029",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P038",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P039",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P048",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P013",
+      "target": "P050",
+      "weight": 2.0
+    },
+    {
+      "source": "P014",
+      "target": "P015",
+      "weight": 1.0
+    },
+    {
+      "source": "P014",
+      "target": "P021",
+      "weight": 3.0
+    },
+    {
+      "source": "P014",
+      "target": "P022",
+      "weight": 1.0
+    },
+    {
+      "source": "P014",
+      "target": "P023",
+      "weight": 5.0
+    },
+    {
+      "source": "P014",
+      "target": "P024",
+      "weight": 2.0
+    },
+    {
+      "source": "P014",
+      "target": "P025",
+      "weight": 2.0
+    },
+    {
+      "source": "P014",
+      "target": "P030",
+      "weight": 2.0
+    },
+    {
+      "source": "P014",
+      "target": "P032",
+      "weight": 2.0
+    },
+    {
+      "source": "P014",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P014",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P014",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P014",
+      "target": "P048",
+      "weight": 3.0
+    },
+    {
+      "source": "P014",
+      "target": "P049",
+      "weight": 3.0
+    },
+    {
+      "source": "P015",
+      "target": "P021",
+      "weight": 4.0
+    },
+    {
+      "source": "P015",
+      "target": "P022",
+      "weight": 2.0
+    },
+    {
+      "source": "P015",
+      "target": "P023",
+      "weight": 4.0
+    },
+    {
+      "source": "P015",
+      "target": "P024",
+      "weight": 3.0
+    },
+    {
+      "source": "P015",
+      "target": "P025",
+      "weight": 2.0
+    },
+    {
+      "source": "P015",
+      "target": "P030",
+      "weight": 2.0
+    },
+    {
+      "source": "P015",
+      "target": "P032",
+      "weight": 2.0
+    },
+    {
+      "source": "P015",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P015",
+      "target": "P035",
+      "weight": 1.0
+    },
+    {
+      "source": "P015",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P015",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P015",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P015",
+      "target": "P048",
+      "weight": 2.0
+    },
+    {
+      "source": "P015",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P015",
+      "target": "P050",
+      "weight": 1.0
+    },
+    {
+      "source": "P016",
+      "target": "P017",
+      "weight": 5.0
+    },
+    {
+      "source": "P016",
+      "target": "P018",
+      "weight": 4.0
+    },
+    {
+      "source": "P016",
+      "target": "P019",
+      "weight": 4.0
+    },
+    {
+      "source": "P016",
+      "target": "P020",
+      "weight": 4.0
+    },
+    {
+      "source": "P016",
+      "target": "P024",
+      "weight": 1.0
+    },
+    {
+      "source": "P016",
+      "target": "P034",
+      "weight": 2.0
+    },
+    {
+      "source": "P016",
+      "target": "P040",
+      "weight": 2.0
+    },
+    {
+      "source": "P016",
+      "target": "P046",
+      "weight": 1.0
+    },
+    {
+      "source": "P017",
+      "target": "P018",
+      "weight": 3.0
+    },
+    {
+      "source": "P017",
+      "target": "P019",
+      "weight": 2.0
+    },
+    {
+      "source": "P017",
+      "target": "P020",
+      "weight": 2.0
+    },
+    {
+      "source": "P017",
+      "target": "P024",
+      "weight": 1.0
+    },
+    {
+      "source": "P018",
+      "target": "P019",
+      "weight": 2.0
+    },
+    {
+      "source": "P018",
+      "target": "P020",
+      "weight": 1.0
+    },
+    {
+      "source": "P019",
+      "target": "P020",
+      "weight": 1.0
+    },
+    {
+      "source": "P019",
+      "target": "P038",
+      "weight": 2.0
+    },
+    {
+      "source": "P019",
+      "target": "P039",
+      "weight": 2.0
+    },
+    {
+      "source": "P020",
+      "target": "P024",
+      "weight": 1.0
+    },
+    {
+      "source": "P020",
+      "target": "P034",
+      "weight": 1.0
+    },
+    {
+      "source": "P020",
+      "target": "P035",
+      "weight": 2.0
+    },
+    {
+      "source": "P020",
+      "target": "P036",
+      "weight": 2.0
+    },
+    {
+      "source": "P020",
+      "target": "P046",
+      "weight": 2.0
+    },
+    {
+      "source": "P020",
+      "target": "P047",
+      "weight": 2.0
+    },
+    {
+      "source": "P021",
+      "target": "P022",
+      "weight": 3.0
+    },
+    {
+      "source": "P021",
+      "target": "P023",
+      "weight": 3.0
+    },
+    {
+      "source": "P021",
+      "target": "P024",
+      "weight": 3.0
+    },
+    {
+      "source": "P021",
+      "target": "P025",
+      "weight": 1.0
+    },
+    {
+      "source": "P021",
+      "target": "P026",
+      "weight": 2.0
+    },
+    {
+      "source": "P021",
+      "target": "P027",
+      "weight": 2.0
+    },
+    {
+      "source": "P021",
+      "target": "P028",
+      "weight": 2.0
+    },
+    {
+      "source": "P021",
+      "target": "P029",
+      "weight": 2.0
+    },
+    {
+      "source": "P021",
+      "target": "P038",
+      "weight": 2.0
+    },
+    {
+      "source": "P021",
+      "target": "P039",
+      "weight": 2.0
+    },
+    {
+      "source": "P021",
+      "target": "P048",
+      "weight": 2.0
+    },
+    {
+      "source": "P021",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P021",
+      "target": "P050",
+      "weight": 2.0
+    },
+    {
+      "source": "P022",
+      "target": "P023",
+      "weight": 5.0
+    },
+    {
+      "source": "P022",
+      "target": "P024",
+      "weight": 2.0
+    },
+    {
+      "source": "P022",
+      "target": "P025",
+      "weight": 2.0
+    },
+    {
+      "source": "P022",
+      "target": "P030",
+      "weight": 2.0
+    },
+    {
+      "source": "P022",
+      "target": "P032",
+      "weight": 2.0
+    },
+    {
+      "source": "P022",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P022",
+      "target": "P035",
+      "weight": 1.0
+    },
+    {
+      "source": "P022",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P022",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P022",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P022",
+      "target": "P048",
+      "weight": 3.0
+    },
+    {
+      "source": "P022",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P022",
+      "target": "P050",
+      "weight": 1.0
+    },
+    {
+      "source": "P023",
+      "target": "P025",
+      "weight": 2.0
+    },
+    {
+      "source": "P023",
+      "target": "P030",
+      "weight": 2.0
+    },
+    {
+      "source": "P023",
+      "target": "P032",
+      "weight": 2.0
+    },
+    {
+      "source": "P023",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P023",
+      "target": "P035",
+      "weight": 1.0
+    },
+    {
+      "source": "P023",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P023",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P023",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P023",
+      "target": "P048",
+      "weight": 1.0
+    },
+    {
+      "source": "P023",
+      "target": "P050",
+      "weight": 3.0
+    },
+    {
+      "source": "P024",
+      "target": "P025",
+      "weight": 2.0
+    },
+    {
+      "source": "P024",
+      "target": "P030",
+      "weight": 2.0
+    },
+    {
+      "source": "P024",
+      "target": "P032",
+      "weight": 2.0
+    },
+    {
+      "source": "P024",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P024",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P024",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P024",
+      "target": "P050",
+      "weight": 2.0
+    },
+    {
+      "source": "P025",
+      "target": "P026",
+      "weight": 2.0
+    },
+    {
+      "source": "P025",
+      "target": "P027",
+      "weight": 2.0
+    },
+    {
+      "source": "P025",
+      "target": "P028",
+      "weight": 2.0
+    },
+    {
+      "source": "P025",
+      "target": "P029",
+      "weight": 2.0
+    },
+    {
+      "source": "P025",
+      "target": "P038",
+      "weight": 2.0
+    },
+    {
+      "source": "P025",
+      "target": "P039",
+      "weight": 2.0
+    },
+    {
+      "source": "P025",
+      "target": "P048",
+      "weight": 2.0
+    },
+    {
+      "source": "P025",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P025",
+      "target": "P050",
+      "weight": 2.0
+    },
+    {
+      "source": "P026",
+      "target": "P027",
+      "weight": 3.0
+    },
+    {
+      "source": "P026",
+      "target": "P028",
+      "weight": 2.0
+    },
+    {
+      "source": "P026",
+      "target": "P029",
+      "weight": 2.0
+    },
+    {
+      "source": "P026",
+      "target": "P030",
+      "weight": 3.0
+    },
+    {
+      "source": "P026",
+      "target": "P031",
+      "weight": 3.0
+    },
+    {
+      "source": "P026",
+      "target": "P032",
+      "weight": 2.0
+    },
+    {
+      "source": "P026",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P026",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P026",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P027",
+      "target": "P028",
+      "weight": 2.0
+    },
+    {
+      "source": "P027",
+      "target": "P029",
+      "weight": 2.0
+    },
+    {
+      "source": "P027",
+      "target": "P030",
+      "weight": 3.0
+    },
+    {
+      "source": "P027",
+      "target": "P031",
+      "weight": 3.0
+    },
+    {
+      "source": "P027",
+      "target": "P032",
+      "weight": 2.0
+    },
+    {
+      "source": "P027",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P027",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P027",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P028",
+      "target": "P029",
+      "weight": 4.0
+    },
+    {
+      "source": "P028",
+      "target": "P030",
+      "weight": 3.0
+    },
+    {
+      "source": "P028",
+      "target": "P031",
+      "weight": 5.0
+    },
+    {
+      "source": "P028",
+      "target": "P032",
+      "weight": 3.0
+    },
+    {
+      "source": "P028",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P028",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P028",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P029",
+      "target": "P030",
+      "weight": 3.0
+    },
+    {
+      "source": "P029",
+      "target": "P031",
+      "weight": 4.0
+    },
+    {
+      "source": "P029",
+      "target": "P032",
+      "weight": 3.0
+    },
+    {
+      "source": "P029",
+      "target": "P033",
+      "weight": 2.0
+    },
+    {
+      "source": "P029",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P029",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P030",
+      "target": "P031",
+      "weight": 2.0
+    },
+    {
+      "source": "P030",
+      "target": "P032",
+      "weight": 1.0
+    },
+    {
+      "source": "P030",
+      "target": "P038",
+      "weight": 2.0
+    },
+    {
+      "source": "P030",
+      "target": "P039",
+      "weight": 2.0
+    },
+    {
+      "source": "P030",
+      "target": "P048",
+      "weight": 2.0
+    },
+    {
+      "source": "P030",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P030",
+      "target": "P050",
+      "weight": 2.0
+    },
+    {
+      "source": "P031",
+      "target": "P032",
+      "weight": 2.0
+    },
+    {
+      "source": "P032",
+      "target": "P038",
+      "weight": 2.0
+    },
+    {
+      "source": "P032",
+      "target": "P039",
+      "weight": 2.0
+    },
+    {
+      "source": "P032",
+      "target": "P048",
+      "weight": 2.0
+    },
+    {
+      "source": "P032",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P032",
+      "target": "P050",
+      "weight": 2.0
+    },
+    {
+      "source": "P033",
+      "target": "P034",
+      "weight": 1.0
+    },
+    {
+      "source": "P033",
+      "target": "P035",
+      "weight": 1.0
+    },
+    {
+      "source": "P033",
+      "target": "P036",
+      "weight": 1.0
+    },
+    {
+      "source": "P033",
+      "target": "P037",
+      "weight": 2.0
+    },
+    {
+      "source": "P033",
+      "target": "P038",
+      "weight": 4.0
+    },
+    {
+      "source": "P033",
+      "target": "P039",
+      "weight": 4.0
+    },
+    {
+      "source": "P033",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P033",
+      "target": "P045",
+      "weight": 2.0
+    },
+    {
+      "source": "P033",
+      "target": "P048",
+      "weight": 2.0
+    },
+    {
+      "source": "P033",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P033",
+      "target": "P050",
+      "weight": 2.0
+    },
+    {
+      "source": "P034",
+      "target": "P035",
+      "weight": 4.0
+    },
+    {
+      "source": "P034",
+      "target": "P036",
+      "weight": 4.0
+    },
+    {
+      "source": "P034",
+      "target": "P037",
+      "weight": 1.0
+    },
+    {
+      "source": "P034",
+      "target": "P038",
+      "weight": 1.0
+    },
+    {
+      "source": "P034",
+      "target": "P039",
+      "weight": 1.0
+    },
+    {
+      "source": "P034",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P034",
+      "target": "P046",
+      "weight": 2.0
+    },
+    {
+      "source": "P034",
+      "target": "P047",
+      "weight": 3.0
+    },
+    {
+      "source": "P035",
+      "target": "P036",
+      "weight": 2.0
+    },
+    {
+      "source": "P035",
+      "target": "P037",
+      "weight": 1.0
+    },
+    {
+      "source": "P035",
+      "target": "P038",
+      "weight": 1.0
+    },
+    {
+      "source": "P035",
+      "target": "P039",
+      "weight": 1.0
+    },
+    {
+      "source": "P035",
+      "target": "P040",
+      "weight": 2.0
+    },
+    {
+      "source": "P035",
+      "target": "P047",
+      "weight": 1.0
+    },
+    {
+      "source": "P035",
+      "target": "P050",
+      "weight": 1.0
+    },
+    {
+      "source": "P036",
+      "target": "P037",
+      "weight": 1.0
+    },
+    {
+      "source": "P036",
+      "target": "P038",
+      "weight": 1.0
+    },
+    {
+      "source": "P036",
+      "target": "P039",
+      "weight": 1.0
+    },
+    {
+      "source": "P036",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P036",
+      "target": "P047",
+      "weight": 1.0
+    },
+    {
+      "source": "P037",
+      "target": "P038",
+      "weight": 4.0
+    },
+    {
+      "source": "P037",
+      "target": "P039",
+      "weight": 4.0
+    },
+    {
+      "source": "P037",
+      "target": "P040",
+      "weight": 1.0
+    },
+    {
+      "source": "P037",
+      "target": "P045",
+      "weight": 1.0
+    },
+    {
+      "source": "P037",
+      "target": "P048",
+      "weight": 2.0
+    },
+    {
+      "source": "P037",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P037",
+      "target": "P050",
+      "weight": 2.0
+    },
+    {
+      "source": "P038",
+      "target": "P039",
+      "weight": 3.0
+    },
+    {
+      "source": "P038",
+      "target": "P040",
+      "weight": 3.0
+    },
+    {
+      "source": "P038",
+      "target": "P045",
+      "weight": 4.0
+    },
+    {
+      "source": "P039",
+      "target": "P040",
+      "weight": 4.0
+    },
+    {
+      "source": "P039",
+      "target": "P045",
+      "weight": 4.0
+    },
+    {
+      "source": "P040",
+      "target": "P050",
+      "weight": 1.0
+    },
+    {
+      "source": "P041",
+      "target": "P042",
+      "weight": 2.0
+    },
+    {
+      "source": "P041",
+      "target": "P043",
+      "weight": 3.0
+    },
+    {
+      "source": "P041",
+      "target": "P044",
+      "weight": 2.0
+    },
+    {
+      "source": "P042",
+      "target": "P043",
+      "weight": 2.0
+    },
+    {
+      "source": "P042",
+      "target": "P044",
+      "weight": 3.0
+    },
+    {
+      "source": "P043",
+      "target": "P044",
+      "weight": 2.0
+    },
+    {
+      "source": "P045",
+      "target": "P048",
+      "weight": 2.0
+    },
+    {
+      "source": "P045",
+      "target": "P049",
+      "weight": 2.0
+    },
+    {
+      "source": "P045",
+      "target": "P050",
+      "weight": 2.0
+    },
+    {
+      "source": "P046",
+      "target": "P047",
+      "weight": 1.0
+    },
+    {
+      "source": "P048",
+      "target": "P049",
+      "weight": 3.0
+    },
+    {
+      "source": "P048",
+      "target": "P050",
+      "weight": 3.0
+    },
+    {
+      "source": "P049",
+      "target": "P050",
+      "weight": 3.0
+    }
+  ]
+}

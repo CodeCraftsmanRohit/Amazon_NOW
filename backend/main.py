@@ -33,6 +33,7 @@ class SmartCartResponse(BaseModel):
     explainability: List[str]
     total_cost:    Optional[float] = 0.0
     total_savings: Optional[float] = 0.0
+    processing_time_ms: Optional[int] = None
 
 # ─── App ─────────────────────────────────────────────────────────────────────
 
@@ -52,7 +53,7 @@ app.add_middleware(
 
 # ─── Core imports ─────────────────────────────────────────────────────────────
 
-from ai_engine.workflow.langgraph_flow import process_message
+from ai_engine.workflow.langgraph_flow import aprocess_message
 from backend.services.inventory_service import analyze_inventory_image
 
 # ─── Routes ──────────────────────────────────────────────────────────────────
@@ -69,7 +70,7 @@ async def chat_interaction(req: MessageRequest):
     Supports optional budget (INR) and people_count for scaling.
     Smart Saver deals applied automatically for near-expiry catalog items.
     """
-    result = process_message(
+    result = await aprocess_message(
         message=req.message,
         budget=req.budget,
         people_count=req.people_count or 1,
@@ -95,6 +96,7 @@ async def chat_interaction(req: MessageRequest):
         explainability=result.get("explainability_summary", []),
         total_cost=result.get("total_cost", 0.0),
         total_savings=result.get("total_savings", 0.0),
+        processing_time_ms=result.get("processing_time_ms"),
     )
 
 
