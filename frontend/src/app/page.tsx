@@ -642,10 +642,11 @@ function HomeProductCard({ id, name, price, rating, reviews, ss, disc, orig, qty
 // ═══════════════════════════════════════════════════════════════════
 // FIX 5+6: HOME VIEW — More products, no Snack/Dairy banners
 // ═══════════════════════════════════════════════════════════════════
-function HomeView({ onAIClick, onPackClick, onWeatherClick, homeCart, onAddToCart, onIncCart, onDecCart, onViewCart }: {
+function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart, onAddToCart, onIncCart, onDecCart, onViewCart }: {
   onAIClick: () => void;
   onPackClick: (pack: OccasionPack) => void;
   onWeatherClick: (query: string) => void;
+  onScanList: () => void;
   homeCart: LocalCart;
   onAddToCart: (p: HomeProduct) => void;
   onIncCart: (id: string) => void;
@@ -823,7 +824,43 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, homeCart, onAddToCar
         </div>
       </div>
 
-      {/* ── FIX 5: Multiple product sections ── */}
+      {/* ── Scan a List banner ── */}
+      <div className="mx-2 sm:mx-4 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {/* Scan grocery list card */}
+        <div
+          onClick={() => onScanList()}
+          className="rounded-xl overflow-hidden cursor-pointer border border-[#FF9900]/30 hover:border-[#FF9900] transition-all group"
+          style={{ background: "linear-gradient(135deg, #1a1200, #2d1f00)" }}>
+          <div className="flex items-center gap-3 px-4 py-3.5">
+            <div className="text-3xl">📋</div>
+            <div className="flex-1">
+              <p className="text-white font-bold text-sm">Scan a Grocery List</p>
+              <p className="text-[#FF9900]/80 text-[11px] mt-0.5">Photo of mom's list, WhatsApp message, Notes app screenshot → instant cart</p>
+            </div>
+            <span className="text-[#FF9900] text-xs font-bold bg-[#FF9900]/10 px-2.5 py-1 rounded-full shrink-0 group-hover:bg-[#FF9900]/20">
+              📸 Scan
+            </span>
+          </div>
+        </div>
+        {/* Fridge scan card */}
+        <div
+          onClick={() => onScanList()}
+          className="rounded-xl overflow-hidden cursor-pointer border border-blue-500/30 hover:border-blue-400 transition-all group"
+          style={{ background: "linear-gradient(135deg, #001a2d, #002a45)" }}>
+          <div className="flex items-center gap-3 px-4 py-3.5">
+            <div className="text-3xl">🧊</div>
+            <div className="flex-1">
+              <p className="text-white font-bold text-sm">Scan Your Fridge</p>
+              <p className="text-blue-300/80 text-[11px] mt-0.5">Upload a fridge or pantry photo — AI detects what's missing and adds it to cart</p>
+            </div>
+            <span className="text-blue-300 text-xs font-bold bg-blue-500/10 px-2.5 py-1 rounded-full shrink-0 group-hover:bg-blue-500/20">
+              📸 Scan
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Multiple product sections ── */}
       {HOME_SECTIONS.map(section => (
         <div key={section.title} className={`mt-2 px-4 sm:px-6 py-4 sm:py-5 ${section.highlight ? "bg-[#FFF8E1] border-t-2 border-[#FF9900]" : "bg-white"}`}>
           <div className="flex items-start justify-between mb-3 sm:mb-4 max-w-7xl mx-auto">
@@ -865,9 +902,10 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, homeCart, onAddToCar
 // ═══════════════════════════════════════════════════════════════════
 // AI INPUT VIEW — Responsive centered prompt
 // ═══════════════════════════════════════════════════════════════════
-function AIInputView({ onSubmit, onBack, initialQuery = "" }: {
+function AIInputView({ onSubmit, onBack, onScanImage, initialQuery = "" }: {
   onSubmit: (q: string, b?: number, p?: number, userId?: string) => void;
   onBack: () => void;
+  onScanImage: (formData: FormData) => void;
   initialQuery?: string;
 }) {
   const [query,       setQuery]       = useState(initialQuery);
@@ -894,6 +932,13 @@ function AIInputView({ onSubmit, onBack, initialQuery = "" }: {
     rec.onerror  = () => setIsListening(false);
     rec.onend    = () => setIsListening(false);
     rec.start();
+  };
+
+  const handleFileUpload = async (file: File) => {
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    onScanImage(formData);
   };
 
   return (
@@ -933,10 +978,12 @@ function AIInputView({ onSubmit, onBack, initialQuery = "" }: {
                 <Mic size={18} />
               </button>
               <button onClick={() => fileRef.current?.click()}
+                title="Scan grocery list, fridge or pantry photo → instant cart"
                 className="p-2 rounded-full bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white transition-colors">
                 <Camera size={18} />
               </button>
-              <input type="file" ref={fileRef} className="hidden" accept="image/*" />
+              <input type="file" ref={fileRef} className="hidden" accept="image/*"
+                onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload(f); e.target.value = ""; }} />
             </div>
           </div>
 
@@ -1440,6 +1487,33 @@ export default function Home() {
     } finally { setIsLoading(false); }
   }, []);
 
+  // ── Scan image (grocery list / fridge photo) ──────────────────────────────
+  const scanFileRef = useRef<HTMLInputElement>(null);
+
+  const fetchInventory = useCallback(async (formData: FormData) => {
+    setIsLoading(true);
+    setCart(null);
+    setLocalCart({});
+    setMode("results");
+    try {
+      const res = await fetch("http://localhost:8000/api/inventory/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error();
+      const data: SmartCartResponse = await res.json();
+      setCart(data);
+      const init: LocalCart = {};
+      data.items.forEach(i => { init[i.id] = i.quantity; });
+      setLocalCart(init);
+    } catch {
+      setToast("Could not read the image — please try again.");
+      setMode("home");
+    } finally { setIsLoading(false); }
+  }, []);
+
+  const handleScanList = () => { scanFileRef.current?.click(); };
+
   const addItem = (id: string) => setLocalCart(p => ({ ...p, [id]: (p[id] ?? 0) + 1 }));
   const incItem = (id: string) => setLocalCart(p => ({ ...p, [id]: p[id] + 1 }));
   const decItem = (id: string) => setLocalCart(p => {
@@ -1502,26 +1576,32 @@ export default function Home() {
       />
 
       {mode === "home" && (
-        <HomeView
-          onAIClick={() => { setAiInitialQuery(""); setMode("ai"); }}
-          onPackClick={(pack) => {
-            pack.items.forEach(item => {
-              addToHomeCart({ id: item.id, name: item.name, price: item.price,
-                rating: 4.5, reviews: 1000 });
-              const current = homeCart[item.id] ?? 0;
-              for (let i = current; i < item.qty; i++) incHomeCart(item.id);
-            });
-            setMode("cart");
-          }}
-          onWeatherClick={(query) => { setAiInitialQuery(query); setMode("ai"); }}
-          homeCart={homeCart}
-          onAddToCart={p => { addToHomeCart(p); }}
-          onIncCart={incHomeCart}
-          onDecCart={decHomeCart}
-          onViewCart={() => setMode("cart")}
-        />
+        <>
+          {/* Hidden file input for scan list — triggered from homepage cards */}
+          <input type="file" ref={scanFileRef} className="hidden" accept="image/*"
+            onChange={e => { const f = e.target.files?.[0]; if (f) { const fd = new FormData(); fd.append("file", f); fetchInventory(fd); } e.target.value = ""; }} />
+          <HomeView
+            onAIClick={() => { setAiInitialQuery(""); setMode("ai"); }}
+            onPackClick={(pack) => {
+              pack.items.forEach(item => {
+                addToHomeCart({ id: item.id, name: item.name, price: item.price,
+                  rating: 4.5, reviews: 1000 });
+                const current = homeCart[item.id] ?? 0;
+                for (let i = current; i < item.qty; i++) incHomeCart(item.id);
+              });
+              setMode("cart");
+            }}
+            onWeatherClick={(query) => { setAiInitialQuery(query); setMode("ai"); }}
+            onScanList={handleScanList}
+            homeCart={homeCart}
+            onAddToCart={p => { addToHomeCart(p); }}
+            onIncCart={incHomeCart}
+            onDecCart={decHomeCart}
+            onViewCart={() => setMode("cart")}
+          />
+        </>
       )}
-      {mode === "ai" && <AIInputView initialQuery={aiInitialQuery} onSubmit={fetchCart} onBack={() => setMode("home")} />}
+      {mode === "ai" && <AIInputView initialQuery={aiInitialQuery} onSubmit={fetchCart} onScanImage={fetchInventory} onBack={() => setMode("home")} />}
       {mode === "results" && cart && !isLoading && (
         <ResultsView
           cart={cart} localCart={localCart}
