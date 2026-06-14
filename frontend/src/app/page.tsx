@@ -665,16 +665,26 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart
         .then(d => {
           const temp = Math.round(d.current.temperature_2m);
           const code = d.current.weathercode;
+          const hour = new Date().getHours();
           let desc = "", query = "";
-          if (temp >= 35) {
+          if (code >= 61) {
+            // Rain overrides everything
+            desc  = "Rainy outside 🌧️ — perfect for hot soup & tea";
+            query = "It's raining outside, I need hot soup, tea and comfort food to stay cosy";
+          } else if (hour >= 22 || hour < 5) {
+            // Late night
+            desc  = "Late night snack run? 🌙";
+            query = "Late night craving, need quick snacks and a cold drink";
+          } else if (hour >= 5 && hour < 9) {
+            // Morning
+            desc  = "Good morning ☀️ — breakfast time!";
+            query = "Morning breakfast essentials — coffee, eggs, bread and juice";
+          } else if (temp >= 35) {
             desc  = "It's scorching out 🥵 — want cold drinks & ice cream?";
             query = "It's very hot outside, I need cold drinks, ice cream and something refreshing";
           } else if (temp >= 28) {
             desc  = "Warm afternoon 🌤️ — staying hydrated?";
             query = "It's warm outside, I need cold drinks and snacks to stay hydrated and refreshed";
-          } else if (code >= 61) {
-            desc  = "Rainy outside 🌧️ — perfect for hot soup & tea";
-            query = "It's raining outside, I need hot soup, tea and comfort food to stay cosy";
           } else if (temp <= 15) {
             desc  = "It's chilly ❄️ — how about hot coffee & comfort food?";
             query = "It's cold outside, I need hot coffee, warm soup and comfort food";
@@ -825,8 +835,7 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart
       </div>
 
       {/* ── Scan a List banner ── */}
-      <div className="mx-2 sm:mx-4 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {/* Scan grocery list card */}
+      <div className="mx-2 sm:mx-4 mt-2">
         <div
           onClick={() => onScanList()}
           className="rounded-xl overflow-hidden cursor-pointer border border-[#FF9900]/30 hover:border-[#FF9900] transition-all group"
@@ -838,22 +847,6 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart
               <p className="text-[#FF9900]/80 text-[11px] mt-0.5">Photo of mom's list, WhatsApp message, Notes app screenshot → instant cart</p>
             </div>
             <span className="text-[#FF9900] text-xs font-bold bg-[#FF9900]/10 px-2.5 py-1 rounded-full shrink-0 group-hover:bg-[#FF9900]/20">
-              📸 Scan
-            </span>
-          </div>
-        </div>
-        {/* Fridge scan card */}
-        <div
-          onClick={() => onScanList()}
-          className="rounded-xl overflow-hidden cursor-pointer border border-blue-500/30 hover:border-blue-400 transition-all group"
-          style={{ background: "linear-gradient(135deg, #001a2d, #002a45)" }}>
-          <div className="flex items-center gap-3 px-4 py-3.5">
-            <div className="text-3xl">🧊</div>
-            <div className="flex-1">
-              <p className="text-white font-bold text-sm">Scan Your Fridge</p>
-              <p className="text-blue-300/80 text-[11px] mt-0.5">Upload a fridge or pantry photo — AI detects what's missing and adds it to cart</p>
-            </div>
-            <span className="text-blue-300 text-xs font-bold bg-blue-500/10 px-2.5 py-1 rounded-full shrink-0 group-hover:bg-blue-500/20">
               📸 Scan
             </span>
           </div>
