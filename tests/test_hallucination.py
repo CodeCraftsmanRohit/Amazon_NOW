@@ -15,10 +15,12 @@ import pytest
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-# Only run if API key present
+# Live API tests are OPT-IN — they hit the real OpenAI API and can be slow/flaky.
+# Default `pytest` runs skip these; the deterministic equivalents live in
+# tests/test_hallucination_mocked.py. Set RUN_LIVE_TESTS=1 to run these.
 pytestmark = pytest.mark.skipif(
-    not os.getenv("OPENAI_API_KEY"),
-    reason="OPENAI_API_KEY not set — skipping live tests"
+    not os.getenv("RUN_LIVE_TESTS"),
+    reason="live OpenAI API test — set RUN_LIVE_TESTS=1 to run"
 )
 
 from dotenv import load_dotenv

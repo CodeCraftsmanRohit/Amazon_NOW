@@ -21,7 +21,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![OpenAI](https://img.shields.io/badge/GPT--4o-Vision-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com)
 [![Architecture](https://img.shields.io/badge/Architecture-Single--Shot%20%2B%20Graph-FF6B35?style=for-the-badge)](#-the-ai-pipeline)
-[![Tests](https://img.shields.io/badge/Tests-22%20passing-22C55E?style=for-the-badge&logo=pytest&logoColor=white)](./tests)
+[![Tests](https://img.shields.io/badge/Tests-19%20deterministic%20%2B%209%20live-22C55E?style=for-the-badge&logo=pytest&logoColor=white)](./tests)
 
 <br/>
 
@@ -208,7 +208,7 @@ The reasoning pipeline never imports a vendor directly — it asks `ai_engine/ll
 | ⏱️ Processing time badge | **✅ Live** | Every response shows "⚡ Built in X.Xs" |
 | 🔒 Hallucination guard | **✅ Real** | Prices + names always pinned to catalog, never LLM-generated |
 | 1️⃣ One-click checkout + tracking | **✅ Live** | Mock order flow with animated delivery tracking |
-| 🧪 Test suite | **✅ 22 passing** | Graph traversal, budget logic, live hallucination tests |
+| 🧪 Test suite | **✅ 19 deterministic + 9 live** | Graph traversal, budget logic, mocked + live hallucination guard |
 
 <br/>
 
@@ -456,18 +456,20 @@ Every response field is verified before it reaches the user:
 
 ---
 
-## 🧪 Tests — 22 Passing
+## 🧪 Tests — Deterministic by Default
 
 ```bash
-python -m pytest tests/ -v
+python -m pytest tests/ -v          # 19 deterministic tests, no network, always green
+RUN_LIVE_TESTS=1 pytest tests/ -v   # + 9 live OpenAI hallucination tests (opt-in)
 ```
 
 ```
-tests/test_graph.py          7 tests   Graph edges, pasta↔sauce, symmetry
-tests/test_agents.py         6 tests   Budget fitting, variety preservation  
-tests/test_hallucination.py  9 tests   Live API: IDs, names, prices, domains
+tests/test_graph.py                7 tests   Graph edges, pasta↔sauce, symmetry
+tests/test_agents.py               6 tests   Budget fitting, variety preservation
+tests/test_hallucination_mocked.py 6 tests   Anti-hallucination guard (mocked, deterministic)
+tests/test_hallucination.py        9 tests   Live API: IDs, names, prices (opt-in via RUN_LIVE_TESTS)
 ─────────────────────────────────────
-TOTAL: 22 passed in ~45s
+DEFAULT: 19 passed in <1s · zero network · never flakes
 ```
 
 <br/>
@@ -572,7 +574,8 @@ amazon-now-ai/
 └── tests/
     ├── test_graph.py                 ← Graph traversal tests
     ├── test_agents.py                ← Budget logic tests
-    └── test_hallucination.py         ← Live hallucination guard tests
+    ├── test_hallucination_mocked.py  ← Deterministic anti-hallucination tests
+    └── test_hallucination.py         ← Live API hallucination tests (opt-in)
 ```
 
 <br/>
@@ -621,7 +624,7 @@ Generation 5 — Autonomous Commerce:   Set rules once, AI manages forever
 | Criterion | Evidence |
 |-----------|----------|
 | **Customer obsession** | Priya's persona, 5 personas with real history, weather context, emergency mode |
-| **Quality of implementation** | End-to-end working prototype, 22 passing tests, verifiable in 5 minutes |
+| **Quality of implementation** | End-to-end working prototype, 19 deterministic tests (always green) + 9 live, verifiable in 5 minutes |
 | **Scalability & system design** | AWS-native architecture diagram, explicit current vs roadmap split |
 | **Futuristic vision** | Bedrock + Neptune + Personalize + Prime Air + UCP/AP2 protocol compliance + Anticipatory Commerce roadmap |
 
