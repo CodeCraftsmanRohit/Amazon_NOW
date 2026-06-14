@@ -123,7 +123,7 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 | Natural language intent | ✅ Search Q&A | ❌ Recipe name only | ✅ **Any intent** |
 | Auto-builds full cart | ❌ Still manual | ✅ Recipe only | ✅ **Any intent** |
 | Purchase history personalisation | ❌ | ❌ | ✅ **Real order data** |
-| Product knowledge graph | ❌ | ❌ | ✅ **Real graph traversal** |
+| Product association graph | ❌ | ❌ | ✅ **Real graph traversal** |
 | Budget constraint + split bill | ❌ | ❌ | ✅ |
 | Headcount scaling | ❌ | ❌ | ✅ |
 | Smart Saver near-expiry deals | ❌ | ❌ | ✅ |
@@ -135,6 +135,24 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 | Processing time visible | ❌ | ❌ | ✅ **⚡ Built in X.Xs** |
 
 **The gap:** Instacart and Blinkit solve *discovery*. Amazon Now AI solves the complete *need-fulfillment* loop — from intent to cart to checkout in under 5 seconds.
+
+### vs. Amazon Rufus
+Rufus helps you **find** products through conversational search. Amazon Now AI **builds the complete cart** from a single intent — *"movie night for 4"* → 5 items, scaled, budgeted, checked out. Rufus answers questions; Amazon Now AI fulfills needs. They're complementary layers, not competitors.
+
+<br/>
+
+---
+
+## 🧩 Anticipating the Hard Questions
+
+> Honest answers to what a senior Amazon engineer will ask.
+
+| Question | Answer |
+|----------|--------|
+| **"What happens at 1M+ products? Does the prompt still work?"** | No — the prompt approach is for the demo's 50-SKU catalog. At scale: **vector embeddings** (retrieve top-K relevant SKUs per query) + **Amazon Neptune** for the association graph + **Personalize** for ranking. The LLM only ever sees a pre-filtered candidate set, never the full catalog. |
+| **"What if the user asks for something not in the catalog?"** | Graceful degradation — the post-processor silently drops any LLM-returned ID not in the catalog (`langgraph_flow.py`). The cart returns the closest available items; it never invents a fake product or price. |
+| **"Why OpenAI and not Bedrock?"** | Speed of iteration in 48h. The architecture is model-agnostic — the LLM client is a single swappable interface. Bedrock (Claude/Titan) is the documented production target so customer data stays in AWS. |
+| **"Is this really multi-agent?"** | No — and we don't claim it is. It's **one GPT-4o structured-output call + a deterministic graph traversal**. We deliberately collapsed 7 calls → 1 to hit sub-4s latency (see version history below). Honest naming: prompt-engineered single-shot synthesis, not a 7-agent swarm. |
 
 <br/>
 
@@ -176,7 +194,7 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 | 🗣️ Natural language → instant cart | **✅ Live** | GPT-4o single-shot pipeline |
 | 🎤 Voice input | **✅ Live** | Web Speech API |
 | 📸 Vision AI (fridge photo → restock) | **✅ Live** | GPT-4o Vision endpoint |
-| 🕸️ Product knowledge graph | **✅ Real** | In-process weighted co-occurrence graph (deterministic, 0ms) |
+| 🕸️ Product association graph | **✅ Real** | In-process weighted co-occurrence graph (deterministic, 0ms) |
 | 👤 Purchase history personalisation | **✅ Real** | 5 demo profiles, real order history lookup |
 | ⚡ Ready-to-Go Occasion Packs | **✅ Live** | Hardcoded zero-latency carts (Movie Night, Italian Dinner, etc.) |
 | 🌡️ Weather-aware smart banner | **✅ Live** | Browser Geolocation + open-meteo.com, pre-fills AI prompt |
@@ -514,6 +532,7 @@ python -m pytest tests/ -v
 | Upload a fridge photo | GPT-4o Vision detects missing items → replenishment cart |
 | Click **Movie Night** pack | Instant pre-filled cart, zero AI latency |
 | Weather banner (if shown) | Tapping pre-fills context-aware query (hot/cold/rainy) |
+| `"I need sushi ingredients"` (not in catalog) | Graceful degradation — returns closest available items, never invents fake products |
 
 <br/>
 
@@ -526,7 +545,7 @@ amazon-now-ai/
 ├── ai_engine/
 │   ├── agents/
 │   │   ├── graph_agent/
-│   │   │   └── graph_query.py        ← Real product knowledge graph
+│   │   │   └── graph_query.py        ← Real Product association graph
 │   │   └── consumption_agent/
 │   │       └── history.py            ← Purchase history store
 │   └── workflow/

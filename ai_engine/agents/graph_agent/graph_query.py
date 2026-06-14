@@ -1,5 +1,5 @@
 """
-Product Knowledge Graph — REAL in-process graph traversal.
+Product Association Graph — REAL in-process graph traversal.
 
 This is NOT an LLM call. It builds a weighted co-occurrence graph from the
 product catalog (products that share tags / complementary categories are
