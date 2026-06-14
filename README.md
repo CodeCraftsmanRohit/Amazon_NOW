@@ -33,6 +33,34 @@
 
 <br/>
 
+## 🚀 The Paradigm Shift
+
+> *"AI-referred traffic grew 805–1,200% in 2025. Traditional search declined 10%. 2026 is the tipping point."*
+> — *Adobe / Previsible, 2026*
+
+Every commerce era has been defined by **reducing how much the customer has to do**:
+
+```
+Physical Retail        →  you memorise the store
+Catalog Commerce       →  you search the catalog
+Algorithmic Commerce   →  you browse recommendations
+Intent Commerce (now)  →  you describe the need, AI builds the cart
+```
+
+> *"Q-commerce customers arrive with predetermined needs and sub-5-minute sessions. Yet they still search, browse, and compare. That friction is the last mile of the shopping problem."*
+> — *Bain & Company, 2026*
+
+**Amazon Now AI eliminates that last mile.**
+
+> *"Shopping is moving from 'search and browse' to 'describe and get' — a 5-step journey collapsing to 2 steps."*
+> — *Bain & Stord, 2026*
+
+<br/>
+
+---
+
+<br/>
+
 ## 🎯 The Problem — Working Backwards from Priya
 
 <table>
@@ -67,6 +95,36 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 </td>
 </tr>
 </table>
+
+<br/>
+
+<br/>
+
+---
+
+## ⚔️ Competitive Positioning
+
+> *"Ask Instacart answers your shopping questions. Blinkit's Recipe Rover adds recipe ingredients. Amazon Now AI understands your intent — 'I have a fever', 'hosting dinner for 4', 'movie night' — and builds the complete, personalised cart instantly. That's not a search improvement. That's a paradigm shift."*
+
+<br/>
+
+| Capability | Ask Instacart | Blinkit Recipe Rover | **Amazon Now AI** |
+|---|---|---|---|
+| Natural language intent | ✅ Search Q&A | ❌ Recipe name only | ✅ **Any intent** |
+| Auto-builds full cart | ❌ Still manual | ✅ Recipe only | ✅ **Any intent** |
+| Purchase history personalisation | ❌ | ❌ | ✅ **Real order data** |
+| Product knowledge graph | ❌ | ❌ | ✅ **Real graph traversal** |
+| Budget constraint + split bill | ❌ | ❌ | ✅ |
+| Headcount scaling | ❌ | ❌ | ✅ |
+| Smart Saver near-expiry deals | ❌ | ❌ | ✅ |
+| Vision AI (fridge/list scan) | ❌ | ❌ | ✅ |
+| Weather-aware context | ❌ | ❌ | ✅ |
+| Zero-latency occasion packs | ❌ | ❌ | ✅ |
+| Works natively in the app | ❌ ChatGPT only | ✅ | ✅ |
+| India Q-commerce focus | ❌ US only | ✅ | ✅ |
+| Processing time visible | ❌ | ❌ | ✅ **⚡ Built in X.Xs** |
+
+**The gap:** Instacart and Blinkit solve *discovery*. Amazon Now AI solves the complete *need-fulfillment* loop — from intent to cart to checkout in under 5 seconds.
 
 <br/>
 
@@ -183,6 +241,20 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 
 <br/>
 
+### The Three-Component Agent (Charle / commercetools Framework)
+
+> *"Every effective shopping agent relies on three core capabilities: Memory, Reasoning, and Tools."* — Charle Agency, 2026
+
+| Component | Definition | This Project |
+|-----------|-----------|--------------|
+| 🧠 **Memory** | Retains preferences, past purchases, brand affinities | `history.py` — real order history, brand preferences, inventory gaps |
+| 💡 **Reasoning** | Breaks down complex requests into structured, actionable steps | GPT-4o single-shot structured output |
+| 🔧 **Tools** | Takes action — searches catalog, applies discounts, builds cart | Product graph + catalog + budget fitter + Smart Saver |
+
+> *"Purpose-built agents, not a monolithic AI — each component has a specific job. Human stays in the loop at checkout."* — commercetools, 2026
+
+<br/>
+
 ### The Product Graph Is Real
 
 ```
@@ -289,6 +361,10 @@ sequenceDiagram
 > *"Traditional e-retail platforms will continue to thrive, protected by brand trust, product fulfillment, and personalisation."* — Bain & Company
 >
 > Amazon Now AI is the conversational layer that makes those moats actionable.
+
+**6-month target:** Migrate to Amazon Bedrock, implement UCP for protocol-native discovery, connect AP2 for verifiable payments — making Amazon Now AI the first Q-commerce agent compliant with 2026 industry standards.
+
+> *"UCP (Universal Commerce Protocol, co-developed by Google + Shopify) + AP2 (Agent Payment Protocol, backed by Mastercard, Visa, PayPal) are the 2026 open standards for agentic commerce. Merchants implementing UCP once are discoverable across ChatGPT, Gemini, Copilot, and Perplexity simultaneously."* — Ekamoira / Charle, 2026
 
 ```mermaid
 graph TD
@@ -503,6 +579,43 @@ amazon-now-ai/
 
 <div align="center">
 
+## 🔭 Future Scope — Beyond Agentic Commerce
+
+### The Next Paradigm: Anticipatory Commerce
+
+Every commerce paradigm shift reduces cognitive load on the buyer. The endpoint of this curve is the human making **zero decisions**:
+
+```
+Generation 1 — Catalog Commerce:      User types product name
+Generation 2 — Algorithmic Commerce:  User visits homepage
+Generation 3 — Intent Commerce (now): User describes a situation
+Generation 4 — Anticipatory Commerce: No trigger — system acts first
+Generation 5 — Autonomous Commerce:   Set rules once, AI manages forever
+```
+
+**Anticipatory Commerce** means the system knows you need milk before you open the fridge and find it empty. It predicts consumption from purchase cadence, ambient sensors, calendar events, and wearable biometrics — then surfaces a ready cart (or auto-orders with pre-set rules) at exactly the right moment.
+
+</div>
+
+**The foundation is already in this project:**
+
+| Signal | Current state | Anticipatory extension |
+|--------|--------------|----------------------|
+| Purchase history | `likely_out_of` detects 14-day gaps | Background job surfaces *"You're likely out of coffee"* proactively |
+| Weather API | Shows banner when hot/cold/rainy | Push notification before user opens app |
+| Intent pipeline | Responds to user message | Triggered by sensor/calendar, not user input |
+| Occasion packs | User taps to fill cart | Pre-staged cart appears on lock screen before user thinks of it |
+
+> *"An AI agent could detect low inventory through a refrigerator sensor and automatically reorder items based on budget, brand, and timing preferences."* — Stord State of AI, 2026
+
+**The trust bridge:** The winning design is not full autonomy — 30% of consumers would never allow AI to shop without asking (Stord, 2026). The right model is **AI does 95% of the work, human confirms in one tap**. Amazon Now AI is already designed this way — the AI builds the cart, the human approves at checkout.
+
+<br/>
+
+---
+
+<div align="center">
+
 ## 🏆 Judging Criteria Checklist
 
 | Criterion | Evidence |
@@ -510,7 +623,7 @@ amazon-now-ai/
 | **Customer obsession** | Priya's persona, 5 personas with real history, weather context, emergency mode |
 | **Quality of implementation** | End-to-end working prototype, 22 passing tests, verifiable in 5 minutes |
 | **Scalability & system design** | AWS-native architecture diagram, explicit current vs roadmap split |
-| **Futuristic vision** | Bedrock + Neptune + Personalize + Prime Air + UCP protocol roadmap |
+| **Futuristic vision** | Bedrock + Neptune + Personalize + Prime Air + UCP/AP2 protocol compliance + Anticipatory Commerce roadmap |
 
 <br/>
 
@@ -518,6 +631,10 @@ amazon-now-ai/
 
 ### *"AI is the next paradigm shift in e-commerce. Just as we moved from catalogs to online, from online to mobile, and from mobile to platforms — AI will fundamentally change how customers shop and how we serve them."*
 ### *— McKinsey, 2026*
+
+<br/>
+
+> **The numbers:** AI recs convert **4.4× better** than traditional search (McKinsey) · Gen Z **38% uplift** from AI recommendations (Stord) · Microsoft Copilot users **194% more likely** to buy when intent is present · India Q-commerce **$65–70B by 2030** (Bain)
 
 <br/>
 
