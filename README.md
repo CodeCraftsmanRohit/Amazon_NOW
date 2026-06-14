@@ -61,7 +61,19 @@ Intent Commerce (now)  →  you describe the need, AI builds the cart
 
 <br/>
 
-## 🎯 The Problem — Working Backwards from Priya
+## 🎯 The Problem — Working Backwards from the Customer
+
+> *Amazon's first principle: start with the customer and work backwards.*
+
+| Question | Answer |
+|----------|--------|
+| **Who is the customer?** | Quick-commerce shoppers with an urgent, predetermined need — a working parent at 6 PM, a sick person at midnight, a host with guests arriving in 30 minutes. |
+| **What problem are we solving?** | Q-commerce solved *delivery* (10 min) but not *shopping*. Customers still search, compare, and manually build carts — 25 minutes of friction for a 10-minute delivery. |
+| **Why does it matter?** | This is the **last unsolved mile** of Q-commerce. Removing it converts the 8× higher intent of Q-commerce shoppers (Bain) directly into completed orders — and it's a moat only Amazon, with its catalog + fulfilment, can fully own. |
+
+<br/>
+
+### Meet Priya — a day in the life
 
 <table>
 <tr>
@@ -95,8 +107,6 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 </td>
 </tr>
 </table>
-
-<br/>
 
 <br/>
 
@@ -242,26 +252,6 @@ AI reads her history (she always buys Barilla + Rao's), traverses the product gr
 | 🧠 **Memory** | Retains preferences, past purchases, brand affinities | `history.py` — real order history, brand preferences, inventory gaps |
 | 💡 **Reasoning** | Breaks down complex requests into structured, actionable steps | GPT-4o single-shot structured output |
 | 🔧 **Tools** | Takes action — searches catalog, applies discounts, builds cart | Product graph + catalog + budget fitter + Smart Saver |
-
-<br/>
-
-### The Product Graph Is Real
-
-```
-ai_engine/agents/graph_agent/graph_query.py
-│
-├── Builds weighted co-occurrence graph from 50-product catalog
-│   Edges = shared tags + complementary category pairs
-│
-├── Example traversal:
-│   "pasta for dinner" →
-│     P016 Barilla Spaghetti  ──(weight: 5.0)──▶  P017 Rao's Marinara
-│     P016 Barilla Spaghetti  ──(weight: 3.0)──▶  P019 Parmesan
-│     P017 Rao's Marinara     ──(weight: 4.0)──▶  P020 Garlic Bread
-│
-└── Export: python -m ai_engine.agents.graph_agent.graph_query
-    → neo4j/product_graph.json (50 nodes, real adjacency list)
-```
 
 <br/>
 
