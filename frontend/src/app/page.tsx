@@ -416,10 +416,10 @@ function FullScreenLoader() {
       <div className="w-14 h-14 border-4 border-[#FF9900] border-t-transparent rounded-full animate-spin mb-5" />
       <div className="text-white font-bold text-xl mb-2">AI Building Your Cart…</div>
       <div className="text-gray-400 text-sm text-center max-w-sm px-4">
-        6 AI agents (4 in parallel) — intent → context · consumption · inventory · graph → cart
+        One grounded GPT-4o pass + a real product graph — reasoning over intent, context, your history, inventory & associations
       </div>
       <div className="flex flex-wrap justify-center gap-2 mt-5 max-w-sm px-4">
-        {["Intent","Context","Consumption","Inventory","Graph","Cart"].map((a,i) => (
+        {["Intent","Context","History","Inventory","Graph","Cart"].map((a,i) => (
           <div key={a} className="text-[10px] text-[#FF9900] font-bold bg-[#FF9900]/10 px-2 py-1 rounded border border-[#FF9900]/30 animate-pulse"
             style={{ animationDelay: `${i*200}ms` }}>{a}</div>
         ))}
@@ -861,7 +861,7 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 px-4 sm:px-8 py-3 sm:py-5">
           <div className="flex-1 text-center sm:text-left">
             <div className="inline-flex items-center gap-1.5 bg-[#FF9900]/20 border border-[#FF9900]/40 rounded-full px-3 py-1 text-[#FF9900] text-xs font-bold mb-2 sm:mb-3">
-              <Sparkles size={12} /> Powered by LangGraph · GPT-4o · Parallel AI Agents
+              <Sparkles size={12} /> Powered by GPT-4o · Real-time Product Graph
             </div>
             <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-white mb-1 sm:mb-1.5 leading-tight">
               Meet <span className="text-[#FF9900]">Amazon Now AI</span>
@@ -1020,7 +1020,7 @@ function AIInputView({ onSubmit, onBack, onScanImage, initialQuery = "" }: {
 
       <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
         <div className="inline-flex items-center gap-2 bg-[#FF9900]/20 border border-[#FF9900]/40 rounded-full px-3 sm:px-4 py-1.5 text-[#FF9900] text-xs sm:text-sm font-bold mb-4 sm:mb-6">
-          <Sparkles size={13} /> Need-Centric Shopping · 7-Agent AI Pipeline
+          <Sparkles size={13} /> Need-Centric Shopping · One-Shot AI Cart
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white text-center mb-3 sm:mb-4 leading-tight">
           What do you<br /><span className="text-[#FF9900]">need right now?</span>
@@ -1220,7 +1220,7 @@ function ResultsView({ cart, localCart, onAdd, onInc, onDec, onCheckout, onReset
         {/* AI trace */}
         <div className="bg-[#131921] rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <span className="bg-[#FF9900] text-[#131921] text-[9px] font-black px-1.5 py-0.5 rounded">LANGGRAPH</span>
+            <span className="bg-[#FF9900] text-[#131921] text-[9px] font-black px-1.5 py-0.5 rounded">GPT-4o</span>
             <span className="text-white text-xs font-bold">AI Pipeline Reasoning</span>
           </div>
           <div className="space-y-1.5">
@@ -1380,7 +1380,7 @@ function CartView({ entries, onInc, onDec, onRemove, aiEntries, onAiInc, onAiDec
                   <div className="flex items-center gap-2 px-1 mb-2">
                     <span className="bg-[#FF9900] text-[#131921] text-[9px] font-black px-1.5 py-0.5 rounded">AI BUILT</span>
                     <span className="text-xs font-bold text-[#0F1111]">AI-Recommended Items</span>
-                    <span className="text-xs text-[#565959] ml-auto">Powered by LangGraph</span>
+                    <span className="text-xs text-[#565959] ml-auto">Powered by GPT-4o</span>
                   </div>
                   {(aiEntries ?? []).map(e => (
                     <div key={e.id} className="bg-white rounded-xl border-2 border-[#FF9900]/30 p-3 sm:p-4 flex gap-3 sm:gap-4 hover:shadow-sm transition-shadow mb-2">

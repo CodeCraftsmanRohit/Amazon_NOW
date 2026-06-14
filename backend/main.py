@@ -77,8 +77,8 @@ class SmartCartResponse(BaseModel):
 app = FastAPI(
     title="Amazon Now AI — Backend API",
     description=(
-        "2-hop parallel pipeline: "
-        "(intent + context + consumption + inventory + graph) concurrently → cart."
+        "Single-shot synthesis: one grounded GPT-4o call + a deterministic "
+        "product association graph → cart, in one pass."
     ),
     version="3.0.0",
     lifespan=lifespan,
@@ -109,9 +109,9 @@ def get_users():
 @app.post("/api/chat", response_model=SmartCartResponse, tags=["ai"])
 async def chat_interaction(req: MessageRequest):
     """
-    Natural language → 2-hop parallel pipeline → smart cart.
-    Hop 1: intent + context + consumption + inventory + graph (concurrent).
-    Hop 2: cart synthesis (gpt-4o).
+    Natural language → single-shot AI synthesis → smart cart.
+    One grounded GPT-4o call (intent + context + history + inventory + cart +
+    explainability) runs concurrently with a deterministic product graph lookup.
     Returns processing_time_ms for demo transparency.
     """
     result = await aprocess_message(

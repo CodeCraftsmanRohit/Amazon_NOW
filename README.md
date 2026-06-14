@@ -20,7 +20,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Next.js](https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![OpenAI](https://img.shields.io/badge/GPT--4o-Vision-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com)
-[![LangGraph](https://img.shields.io/badge/LangGraph-Pipeline-FF6B35?style=for-the-badge)](https://langchain.com)
+[![Architecture](https://img.shields.io/badge/Architecture-Single--Shot%20%2B%20Graph-FF6B35?style=for-the-badge)](#-the-ai-pipeline)
 [![Tests](https://img.shields.io/badge/Tests-22%20passing-22C55E?style=for-the-badge&logo=pytest&logoColor=white)](./tests)
 
 <br/>
