@@ -642,9 +642,10 @@ function HomeProductCard({ id, name, price, rating, reviews, ss, disc, orig, qty
 // ═══════════════════════════════════════════════════════════════════
 // FIX 5+6: HOME VIEW — More products, no Snack/Dairy banners
 // ═══════════════════════════════════════════════════════════════════
-function HomeView({ onAIClick, onPackClick, homeCart, onAddToCart, onIncCart, onDecCart, onViewCart }: {
+function HomeView({ onAIClick, onPackClick, onWeatherClick, homeCart, onAddToCart, onIncCart, onDecCart, onViewCart }: {
   onAIClick: () => void;
   onPackClick: (pack: OccasionPack) => void;
+  onWeatherClick: (query: string) => void;
   homeCart: LocalCart;
   onAddToCart: (p: HomeProduct) => void;
   onIncCart: (id: string) => void;
@@ -652,7 +653,7 @@ function HomeView({ onAIClick, onPackClick, homeCart, onAddToCart, onIncCart, on
   onViewCart: () => void;
 }) {
   // ── Weather-aware banner ──────────────────────────────────────────────────
-  const [weather, setWeather] = React.useState<{temp: number; desc: string} | null>(null);
+  const [weather, setWeather] = React.useState<{temp: number; desc: string; query: string} | null>(null);
 
   React.useEffect(() => {
     if (!navigator.geolocation) return;
@@ -663,12 +664,21 @@ function HomeView({ onAIClick, onPackClick, homeCart, onAddToCart, onIncCart, on
         .then(d => {
           const temp = Math.round(d.current.temperature_2m);
           const code = d.current.weathercode;
-          let desc = "";
-          if (temp >= 35)      desc = "It's scorching out 🥵 — want cold drinks & ice cream?";
-          else if (temp >= 28) desc = "Warm afternoon 🌤️ — staying hydrated?";
-          else if (code >= 61) desc = "Rainy outside 🌧️ — perfect for hot soup & tea";
-          else if (temp <= 15) desc = "It's chilly ❄️ — how about hot coffee & comfort food?";
-          if (desc) setWeather({ temp, desc });
+          let desc = "", query = "";
+          if (temp >= 35) {
+            desc  = "It's scorching out 🥵 — want cold drinks & ice cream?";
+            query = "It's very hot outside, I need cold drinks, ice cream and something refreshing";
+          } else if (temp >= 28) {
+            desc  = "Warm afternoon 🌤️ — staying hydrated?";
+            query = "It's warm outside, I need cold drinks and snacks to stay hydrated and refreshed";
+          } else if (code >= 61) {
+            desc  = "Rainy outside 🌧️ — perfect for hot soup & tea";
+            query = "It's raining outside, I need hot soup, tea and comfort food to stay cosy";
+          } else if (temp <= 15) {
+            desc  = "It's chilly ❄️ — how about hot coffee & comfort food?";
+            query = "It's cold outside, I need hot coffee, warm soup and comfort food";
+          }
+          if (desc) setWeather({ temp, desc, query });
         })
         .catch(() => {});
     }, () => {});
@@ -724,7 +734,7 @@ function HomeView({ onAIClick, onPackClick, homeCart, onAddToCart, onIncCart, on
       {/* ── Weather-aware smart banner ── */}
       {weather && (
         <div className="mx-2 sm:mx-4 mt-2 rounded-xl overflow-hidden cursor-pointer"
-          onClick={onAIClick}
+          onClick={() => onWeatherClick(weather.query)}
           style={{ background: "linear-gradient(135deg, #0d47a1, #1565c0)" }}>
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-2.5">
@@ -859,11 +869,12 @@ function HomeView({ onAIClick, onPackClick, homeCart, onAddToCart, onIncCart, on
 // ═══════════════════════════════════════════════════════════════════
 // AI INPUT VIEW — Responsive centered prompt
 // ═══════════════════════════════════════════════════════════════════
-function AIInputView({ onSubmit, onBack }: {
+function AIInputView({ onSubmit, onBack, initialQuery = "" }: {
   onSubmit: (q: string, b?: number, p?: number, userId?: string) => void;
   onBack: () => void;
+  initialQuery?: string;
 }) {
-  const [query,       setQuery]       = useState("");
+  const [query,       setQuery]       = useState(initialQuery);
   const [budget,      setBudget]      = useState("");
   const [people,      setPeople]      = useState("1");
   const [showPrefs,   setShowPrefs]   = useState(false);
@@ -1376,13 +1387,14 @@ export default function Home() {
   const [isLoading,      setIsLoading]     = useState(false);
   const [cart,           setCart]          = useState<SmartCartResponse | null>(null);
   const [localCart,      setLocalCart]     = useState<LocalCart>({});
-  const [homeCart,       setHomeCart]      = useState<LocalCart>({});  // homepage cart
-  const [homeCatalog,    setHomeCatalog]   = useState<HomeProduct[]>([]); // product lookup
+  const [homeCart,       setHomeCart]      = useState<LocalCart>({});
+  const [homeCatalog,    setHomeCatalog]   = useState<HomeProduct[]>([]);
   const [toast,          setToast]         = useState<string | null>(null);
   const [showPay,        setShowPay]       = useState(false);
   const [showTracking,   setShowTracking]  = useState(false);
   const [orderId,        setOrderId]       = useState("");
   const [activeBudget,   setActiveBudget]  = useState<number | undefined>();
+  const [aiInitialQuery, setAiInitialQuery] = useState("");
   const [activePeople,   setActivePeople]  = useState(1);
 
   // Home cart helpers
@@ -1495,9 +1507,8 @@ export default function Home() {
 
       {mode === "home" && (
         <HomeView
-          onAIClick={() => setMode("ai")}
+          onAIClick={() => { setAiInitialQuery(""); setMode("ai"); }}
           onPackClick={(pack) => {
-            // Instantly pre-fill cart from pack — no API call needed
             pack.items.forEach(item => {
               addToHomeCart({ id: item.id, name: item.name, price: item.price,
                 rating: 4.5, reviews: 1000 });
@@ -1506,6 +1517,7 @@ export default function Home() {
             });
             setMode("cart");
           }}
+          onWeatherClick={(query) => { setAiInitialQuery(query); setMode("ai"); }}
           homeCart={homeCart}
           onAddToCart={p => { addToHomeCart(p); }}
           onIncCart={incHomeCart}
@@ -1513,7 +1525,7 @@ export default function Home() {
           onViewCart={() => setMode("cart")}
         />
       )}
-      {mode === "ai"   && <AIInputView onSubmit={fetchCart} onBack={() => setMode("home")} />}
+      {mode === "ai" && <AIInputView initialQuery={aiInitialQuery} onSubmit={fetchCart} onBack={() => setMode("home")} />}
       {mode === "results" && cart && !isLoading && (
         <ResultsView
           cart={cart} localCart={localCart}
