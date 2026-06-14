@@ -858,12 +858,12 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart
       {/* ── AI Trigger Button ── */}
       <div className="mx-2 sm:mx-4 mt-2 rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer group" onClick={onAIClick}
         style={{ background: "linear-gradient(135deg, #131921 0%, #1a2a3a 50%, #131921 100%)", border: "2px solid #FF9900" }}>
-        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 px-4 sm:px-8 py-5 sm:py-7">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 px-4 sm:px-8 py-3 sm:py-5">
           <div className="flex-1 text-center sm:text-left">
             <div className="inline-flex items-center gap-1.5 bg-[#FF9900]/20 border border-[#FF9900]/40 rounded-full px-3 py-1 text-[#FF9900] text-xs font-bold mb-2 sm:mb-3">
               <Sparkles size={12} /> Powered by LangGraph · GPT-4o · Parallel AI Agents
             </div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-1.5 sm:mb-2 leading-tight">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-white mb-1 sm:mb-1.5 leading-tight">
               Meet <span className="text-[#FF9900]">Amazon Now AI</span>
             </h2>
             <div className="text-gray-300 text-xs sm:text-sm max-w-lg min-h-[3rem] flex items-start flex-col justify-center gap-0.5">
@@ -940,7 +940,7 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart
             <button className="text-xs text-[#007185] hover:underline whitespace-nowrap ml-4 mt-1">See all →</button>
           </div>
           {/* Responsive grid: 2 col on mobile, 3 on sm, 4 on md, 6 on xl */}
-          <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
             {section.products.map(p => (
               <HomeProductCard key={p.id} {...p}
                 qty={homeCart[p.id] ?? 0}
