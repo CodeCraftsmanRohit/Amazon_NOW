@@ -653,6 +653,58 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart
   onDecCart: (id: string) => void;
   onViewCart: () => void;
 }) {
+  // ── Typewriter hero taglines ────────────────────────────────────────────────
+  const HERO_LINES = [
+    "\"I have a fever\" → perfect cart in seconds.",
+    "\"Italian dinner for 4 tonight\" → done in 3 seconds.",
+    "\"Movie night, budget ₹1500\" → cart built & split.",
+    "\"Bake a cake, Meera\" → sugar added — you're running low.",
+    "\"Hosting a party for 10\" → bulk cart, scaled automatically.",
+    "\"Early morning breakfast run\" → coffee, eggs & bread ready.",
+    "\"Baby essentials, quick!\" → Pampers & formula in one tap.",
+  ];
+  const [heroLineIdx, setHeroLineIdx] = React.useState(0);
+  const [typedText, setTypedText]     = React.useState("");
+  const [isErasing, setIsErasing]     = React.useState(false);
+  const [showCursor, setShowCursor]   = React.useState(true);
+
+  // Blinking cursor
+  React.useEffect(() => {
+    const t = setInterval(() => setShowCursor(v => !v), 530);
+    return () => clearInterval(t);
+  }, []);
+
+  // Typewriter engine
+  React.useEffect(() => {
+    const full = HERO_LINES[heroLineIdx];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!isErasing) {
+      if (typedText.length < full.length) {
+        // Still typing
+        timeout = setTimeout(() => {
+          setTypedText(full.slice(0, typedText.length + 1));
+        }, 45);
+      } else {
+        // Fully typed — pause then start erasing
+        timeout = setTimeout(() => setIsErasing(true), 1800);
+      }
+    } else {
+      if (typedText.length > 0) {
+        // Erasing
+        timeout = setTimeout(() => {
+          setTypedText(full.slice(0, typedText.length - 1));
+        }, 22);
+      } else {
+        // Fully erased — advance to next line
+        setIsErasing(false);
+        setHeroLineIdx(i => (i + 1) % HERO_LINES.length);
+      }
+    }
+    return () => clearTimeout(timeout);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [typedText, isErasing, heroLineIdx]);
+
   // ── Weather-aware banner ──────────────────────────────────────────────────
   const [weather, setWeather] = React.useState<{temp: number; desc: string; query: string} | null>(null);
 
@@ -814,10 +866,47 @@ function HomeView({ onAIClick, onPackClick, onWeatherClick, onScanList, homeCart
             <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-1.5 sm:mb-2 leading-tight">
               Meet <span className="text-[#FF9900]">Amazon Now AI</span>
             </h2>
-            <p className="text-gray-400 text-xs sm:text-sm max-w-lg">
-              Don't search for products. Just tell us <em className="text-gray-200">what you're doing</em>.
-              "I have a fever" → perfect cart in seconds.
-            </p>
+            <div className="text-gray-300 text-xs sm:text-sm max-w-lg min-h-[3rem] flex items-start flex-col justify-center gap-0.5">
+              <span className="text-gray-500 text-[11px]">Don&apos;t search. Just describe what you need:</span>
+              <p className="font-mono text-sm sm:text-base text-white leading-snug">
+                {(() => {
+                  // Split at " → " to colour the outcome amber
+                  const arrow = typedText.indexOf(" → ");
+                  if (arrow === -1) {
+                    return (
+                      <>
+                        <span className="text-gray-200">{typedText}</span>
+                        <span
+                          className="inline-block w-[2px] h-[1.1em] align-middle ml-[2px] rounded-sm"
+                          style={{
+                            backgroundColor: "#FF9900",
+                            opacity: showCursor ? 1 : 0,
+                            transition: "opacity 0.1s",
+                          }}
+                        />
+                      </>
+                    );
+                  }
+                  const prompt  = typedText.slice(0, arrow);
+                  const outcome = typedText.slice(arrow + 3);
+                  return (
+                    <>
+                      <span className="text-gray-200">{prompt}</span>
+                      <span className="text-[#FF9900]"> → </span>
+                      <span className="text-[#FF9900] font-semibold">{outcome}</span>
+                      <span
+                        className="inline-block w-[2px] h-[1.1em] align-middle ml-[2px] rounded-sm"
+                        style={{
+                          backgroundColor: "#FF9900",
+                          opacity: showCursor ? 1 : 0,
+                          transition: "opacity 0.1s",
+                        }}
+                      />
+                    </>
+                  );
+                })()}
+              </p>
+            </div>
             <div className="flex flex-wrap gap-1.5 mt-2 sm:mt-3 justify-center sm:justify-start items-center">
               {["🏷️ Smart Saver","💰 Budget-aware","👥 Headcount scaling"].map(f => (
                 <span key={f} className="bg-white/10 text-gray-300 text-[10px] px-2 py-0.5 rounded-full border border-white/20">{f}</span>
