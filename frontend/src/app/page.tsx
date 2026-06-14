@@ -319,7 +319,7 @@ function FullScreenLoader() {
         6 AI agents (4 in parallel) — intent → context · consumption · inventory · graph → cart
       </div>
       <div className="flex flex-wrap justify-center gap-2 mt-5 max-w-sm px-4">
-        {["Intent","Context","Consumption","Inventory","Graph","Cart","Explain"].map((a,i) => (
+        {["Intent","Context","Consumption","Inventory","Graph","Cart"].map((a,i) => (
           <div key={a} className="text-[10px] text-[#FF9900] font-bold bg-[#FF9900]/10 px-2 py-1 rounded border border-[#FF9900]/30 animate-pulse"
             style={{ animationDelay: `${i*200}ms` }}>{a}</div>
         ))}

@@ -1,4 +1,7 @@
 import os
+import asyncio
+import logging
+from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(__file__), '../.env'))
 
@@ -8,39 +11,71 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict
 import uvicorn
 
-# ─── Models ──────────────────────────────────────────────────────────────────
+logger = logging.getLogger("amazon_now_ai")
+
+# ─── AI pipeline import ───────────────────────────────────────────────────────
+from ai_engine.workflow.langgraph_flow import aprocess_message
+from backend.services.inventory_service import analyze_inventory_image
+
+# ─── Startup pre-warmer ───────────────────────────────────────────────────────
+# Fires a background request at boot time so the cold-start cost
+# (LangChain import + first OpenAI TCP connection) is paid once, silently.
+# Without this, the FIRST user request takes ~18s. With it: ~3-5s every time.
+
+async def _prewarm():
+    try:
+        logger.info("Pre-warming AI pipeline…")
+        await aprocess_message("coffee and breakfast")
+        logger.info("Pipeline pre-warmed ✓")
+    except Exception as e:
+        logger.warning(f"Pre-warm skipped: {e}")
+
+
+@asynccontextmanager
+async def lifespan(application: FastAPI):
+    # Background task — server is immediately ready, warm-up runs in parallel.
+    asyncio.create_task(_prewarm())
+    yield
+
+
+# ─── Models ───────────────────────────────────────────────────────────────────
 
 class MessageRequest(BaseModel):
     message:      str
-    budget:       Optional[float] = None   # INR — None means no limit
+    budget:       Optional[float] = None   # INR
     people_count: Optional[int]   = 1
 
 class CartItem(BaseModel):
     id:             str
     name:           str
-    price:          float           # discounted price
+    price:          float
     quantity:       int
     image_url:      str
-    reasoning:      Optional[str]  = None
-    original_price: Optional[float] = None  # pre-discount
-    savings:        Optional[float] = 0.0   # per-unit saving
+    reasoning:      Optional[str]   = None
+    original_price: Optional[float] = None
+    savings:        Optional[float] = 0.0
     is_smart_saver: Optional[bool]  = False
 
 class SmartCartResponse(BaseModel):
-    intent:        str
-    context:       Dict[str, str]
-    items:         List[CartItem]
-    explainability: List[str]
-    total_cost:    Optional[float] = 0.0
-    total_savings: Optional[float] = 0.0
-    processing_time_ms: Optional[int] = None
+    intent:             str
+    context:            Dict[str, str]
+    items:              List[CartItem]
+    explainability:     List[str]
+    total_cost:         Optional[float] = 0.0
+    total_savings:      Optional[float] = 0.0
+    processing_time_ms: Optional[int]   = None
 
-# ─── App ─────────────────────────────────────────────────────────────────────
+
+# ─── App ──────────────────────────────────────────────────────────────────────
 
 app = FastAPI(
     title="Amazon Now AI — Backend API",
-    description="7-Agent parallel LangGraph pipeline with budget constraints and Smart Saver deals.",
-    version="2.0.0",
+    description=(
+        "2-hop parallel pipeline: "
+        "(intent + context + consumption + inventory + graph) concurrently → cart."
+    ),
+    version="3.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -51,24 +86,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ─── Core imports ─────────────────────────────────────────────────────────────
 
-from ai_engine.workflow.langgraph_flow import aprocess_message
-from backend.services.inventory_service import analyze_inventory_image
-
-# ─── Routes ──────────────────────────────────────────────────────────────────
+# ─── Routes ───────────────────────────────────────────────────────────────────
 
 @app.get("/", tags=["health"])
 def health_check():
-    return {"status": "healthy", "service": "Amazon Now AI", "version": "2.0.0"}
+    return {"status": "healthy", "service": "Amazon Now AI", "version": "3.0.0"}
 
 
 @app.post("/api/chat", response_model=SmartCartResponse, tags=["ai"])
 async def chat_interaction(req: MessageRequest):
     """
-    Primary endpoint: natural language → 7-agent parallel LangGraph pipeline.
-    Supports optional budget (INR) and people_count for scaling.
-    Smart Saver deals applied automatically for near-expiry catalog items.
+    Natural language → 2-hop parallel pipeline → smart cart.
+    Hop 1: intent + context + consumption + inventory + graph (concurrent).
+    Hop 2: cart synthesis (gpt-4o).
+    Returns processing_time_ms for demo transparency.
     """
     result = await aprocess_message(
         message=req.message,
@@ -77,11 +109,8 @@ async def chat_interaction(req: MessageRequest):
     )
     items = [
         CartItem(
-            id=i["id"],
-            name=i["name"],
-            price=i["price"],
-            quantity=i["quantity"],
-            image_url=i["image_url"],
+            id=i["id"], name=i["name"], price=i["price"],
+            quantity=i["quantity"], image_url=i["image_url"],
             reasoning=i.get("reasoning"),
             original_price=i.get("original_price"),
             savings=i.get("savings", 0.0),
@@ -122,6 +151,7 @@ async def upload_inventory_photo(file: UploadFile = File(...)):
         explainability=result.get("explainability", []),
     )
 
+
 # ─── Additional routers ───────────────────────────────────────────────────────
 
 from backend.routes.cart_routes import router as cart_router
@@ -131,6 +161,7 @@ from backend.routes.recommendation_routes import router as recommendation_router
 app.include_router(cart_router)
 app.include_router(checkout_router)
 app.include_router(recommendation_router)
+
 
 # ─── Entry point ─────────────────────────────────────────────────────────────
 
