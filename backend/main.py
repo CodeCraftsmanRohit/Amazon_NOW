@@ -44,6 +44,7 @@ class MessageRequest(BaseModel):
     message:      str
     budget:       Optional[float] = None   # INR
     people_count: Optional[int]   = 1
+    user_id:      Optional[str]   = None   # real purchase history lookup
 
 class CartItem(BaseModel):
     id:             str
@@ -64,6 +65,7 @@ class SmartCartResponse(BaseModel):
     total_cost:         Optional[float] = 0.0
     total_savings:      Optional[float] = 0.0
     processing_time_ms: Optional[int]   = None
+    personalised:       Optional[bool]  = False
 
 
 # ─── App ──────────────────────────────────────────────────────────────────────
@@ -94,6 +96,13 @@ def health_check():
     return {"status": "healthy", "service": "Amazon Now AI", "version": "3.0.0"}
 
 
+@app.get("/api/users", tags=["users"])
+def get_users():
+    """Return the list of demo user personas for the UI picker."""
+    from ai_engine.agents.consumption_agent.history import all_users
+    return {"users": all_users()}
+
+
 @app.post("/api/chat", response_model=SmartCartResponse, tags=["ai"])
 async def chat_interaction(req: MessageRequest):
     """
@@ -106,6 +115,7 @@ async def chat_interaction(req: MessageRequest):
         message=req.message,
         budget=req.budget,
         people_count=req.people_count or 1,
+        user_id=req.user_id,
     )
     items = [
         CartItem(
@@ -126,6 +136,7 @@ async def chat_interaction(req: MessageRequest):
         total_cost=result.get("total_cost", 0.0),
         total_savings=result.get("total_savings", 0.0),
         processing_time_ms=result.get("processing_time_ms"),
+        personalised=result.get("personalised", False),
     )
 
 

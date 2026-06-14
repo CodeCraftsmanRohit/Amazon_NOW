@@ -96,6 +96,12 @@ interface SmartCartResponse {
   items: CartItem[]; explainability: string[];
   total_cost?: number; total_savings?: number;
   processing_time_ms?: number;
+  personalised?: boolean;
+}
+
+interface UserPersona {
+  user_id: string; name: string; avatar: string;
+  label: string; bio: string;
 }
 type LocalCart = Record<string, number>;
 type PageMode = "home" | "ai" | "results" | "cart";
@@ -690,7 +696,7 @@ function HomeView({ onAIClick, homeCart, onAddToCart, onIncCart, onDecCart, onVi
 // AI INPUT VIEW — Responsive centered prompt
 // ═══════════════════════════════════════════════════════════════════
 function AIInputView({ onSubmit, onBack }: {
-  onSubmit: (q: string, b?: number, p?: number) => void;
+  onSubmit: (q: string, b?: number, p?: number, userId?: string) => void;
   onBack: () => void;
 }) {
   const [query,       setQuery]       = useState("");
@@ -698,13 +704,23 @@ function AIInputView({ onSubmit, onBack }: {
   const [people,      setPeople]      = useState("1");
   const [showPrefs,   setShowPrefs]   = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [personas,    setPersonas]    = useState<UserPersona[]>([]);
+  const [activeUser,  setActiveUser]  = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Load personas from backend on mount
+  useEffect(() => {
+    fetch("http://localhost:8000/api/users")
+      .then(r => r.json())
+      .then(d => setPersonas(d.users || []))
+      .catch(() => {});
+  }, []);
 
   const submit = (q: string) => {
     if (!q.trim()) return;
     const b = budget.trim() ? parseFloat(budget) : undefined;
     const p = Math.max(1, parseInt(people) || 1);
-    onSubmit(q, b, p);
+    onSubmit(q, b, p, activeUser || undefined);
   };
 
   const handleVoice = () => {
@@ -801,7 +817,33 @@ function AIInputView({ onSubmit, onBack }: {
             style={{ background: query.trim() ? "linear-gradient(135deg, #FF9900 0%, #e47911 100%)" : "#555", color: "#131921" }}>
             🤖 Build My Cart
           </button>
-        </div>
+
+          {/* ── Persona Picker ── */}
+          {personas.length > 0 && (
+            <div className="mt-5">
+              <p className="text-center text-xs text-gray-500 mb-2.5 flex items-center justify-center gap-1.5">
+                <span className="text-[#FF9900]">👤</span>
+                Shopping as <span className="text-gray-400 ml-1">(uses real purchase history)</span>
+              </p>
+              <div className="flex flex-wrap justify-center gap-2">
+                <button onClick={() => setActiveUser(null)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${activeUser === null ? "bg-[#FF9900] text-[#131921] border-[#FF9900]" : "bg-white/5 text-gray-400 border-white/10 hover:border-[#FF9900]/40"}`}>
+                  🛒 Guest
+                </button>
+                {personas.map(u => (
+                  <button key={u.user_id} onClick={() => setActiveUser(activeUser === u.user_id ? null : u.user_id)} title={u.bio}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${activeUser === u.user_id ? "bg-[#FF9900] text-[#131921] border-[#FF9900]" : "bg-white/5 text-gray-400 border-white/10 hover:border-[#FF9900]/40"}`}>
+                    {u.avatar} {u.name}
+                  </button>
+                ))}
+              </div>
+              {activeUser && (
+                <p className="text-center text-[10px] text-[#FF9900]/80 mt-2 px-4">
+                  {personas.find(u => u.user_id === activeUser)?.bio}
+                </p>
+              )}
+            </div>
+          )}
 
         {/* Divider + scenarios */}
         <div className="flex items-center gap-3 w-full max-w-2xl my-6 sm:my-8">
@@ -858,6 +900,11 @@ function ResultsView({ cart, localCart, onAdd, onInc, onDec, onCheckout, onReset
             {cart.processing_time_ms != null && (
               <span className="text-[10px] sm:text-sm bg-[#FFF3E0] text-[#B25000] font-bold px-1.5 sm:px-2 py-0.5 rounded flex items-center gap-1" title="End-to-end AI pipeline time">
                 <Zap size={11} /> Built in {(cart.processing_time_ms / 1000).toFixed(1)}s
+              </span>
+            )}
+            {cart.personalised && (
+              <span className="text-[10px] sm:text-sm bg-[#E8F4FD] text-[#0066C0] font-bold px-1.5 sm:px-2 py-0.5 rounded flex items-center gap-1" title="Cart built using your real purchase history">
+                👤 Personalised
               </span>
             )}
           </div>
@@ -1184,7 +1231,7 @@ export default function Home() {
   const homeCartTotal = homeCartEntries.reduce((s, e) => s + toINR(e.price) * e.qty, 0);
   const homeCartSave  = homeCartEntries.reduce((s, e) => s + (e.orig ? (toINR(e.orig) - toINR(e.price)) * e.qty : 0), 0);
 
-  const fetchCart = useCallback(async (query: string, budget?: number, people = 1) => {
+  const fetchCart = useCallback(async (query: string, budget?: number, people = 1, userId?: string) => {
     setActiveBudget(budget);
     setActivePeople(people);
     setIsLoading(true);
@@ -1195,7 +1242,7 @@ export default function Home() {
       const res = await fetch("http://localhost:8000/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: query, budget: budget ?? null, people_count: people }),
+        body: JSON.stringify({ message: query, budget: budget ?? null, people_count: people, user_id: userId ?? null }),
       });
       if (!res.ok) throw new Error();
       const data: SmartCartResponse = await res.json();

@@ -36,6 +36,7 @@ from langchain_openai import ChatOpenAI
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from ai_engine.agents.graph_agent.graph_query import PRODUCT_GRAPH, extract_keywords
+from ai_engine.agents.consumption_agent.history import get_consumption_signals
 
 # ── LLM client (lazy init — no API key needed at import time) ─────────────────
 CART_MODEL = "gpt-4o"
@@ -155,24 +156,25 @@ async def aprocess_message(
     message:      str,
     budget:       Optional[float] = None,   # INR
     people_count: int = 1,
+    user_id:      Optional[str] = None,     # real purchase history lookup
 ) -> Dict[str, Any]:
     """
     Single-hop async pipeline:
-      - Graph traversal (instant, in-process) runs concurrently with a
-        SINGLE gpt-4o call that handles everything: intent, signals, cart,
-        and explainability in one structured-output response.
-      - Total LLM calls: 1.  Warm latency: ~2-4s.
+      - Graph traversal (instant) + real purchase history lookup (instant)
+        both run before the single gpt-4o call.
+      - When user_id is provided, the LLM sees REAL consumption history
+        and inventory gaps instead of guessing.
+      - Total LLM calls: 1. Warm latency: ~2-4s.
     """
     start = time.perf_counter()
 
-    # Graph traversal is CPU-bound + instant. Run it concurrently with the LLM.
-    graph_task = asyncio.to_thread(_graph_traversal, message)
+    # ── Instant signals (no network) ─────────────────────────────────────
+    graph_task   = asyncio.to_thread(_graph_traversal, message)
+    history_task = asyncio.to_thread(get_consumption_signals, user_id or "")
 
-    # The LLM call (we fire it before awaiting graph so they overlap).
-    # Build a minimal prompt skeleton — we'll inject graph results once ready.
-    # But since graph is ~0ms, it'll be done before LLM returns.
-    # So we fire both and await together.
+    graph_associations, history = await asyncio.gather(graph_task, history_task)
 
+    # ── Build prompt with real history injected ───────────────────────────
     budget_note = (
         f"\nBUDGET: total cart must stay under ₹{budget:.0f} INR (1 USD ≈ ₹83.5). "
         "Prefer cheap / smart_saver items to fit."
@@ -183,29 +185,36 @@ async def aprocess_message(
         "the system multiplies by people_count automatically."
         if people_count > 1 else ""
     )
-
-    # We need graph results INSIDE the prompt, so resolve graph first
-    # (it's instant, no meaningful delay).
-    graph_associations = await graph_task
+    history_section = (
+        f"\nCUSTOMER PURCHASE HISTORY (REAL DATA — use this, not guesses):\n"
+        f"  Summary: {history['order_summary']}\n"
+        f"  Frequently bought: {history['frequently_bought']}\n"
+        f"  Likely running low on: {history['likely_out_of']}\n"
+        f"  Brand preferences: {history['brand_affinities']}"
+    ) if user_id and history["frequently_bought"] else (
+        "\nCUSTOMER: New/guest customer — no purchase history."
+    )
 
     prompt = f"""You are Amazon Now AI — a need-centric smart shopping assistant.
-Given the user's message, infer their intent and build the perfect cart instantly.
+Given the user's message and their real purchase history, build the perfect cart instantly.
 
 USER MESSAGE: "{message}"{budget_note}{people_note}
+{history_section}
 
-PRODUCT GRAPH ASSOCIATIONS (real co-purchase pairs from catalog — use these to add complementary items):
+PRODUCT GRAPH ASSOCIATIONS (real co-purchase pairs — use to add complementary items):
 {json.dumps(graph_associations)}
 
 PRODUCT CATALOG (50 items — use EXACT IDs and price_usd):
 {CATALOG_SUMMARY}
 
 RULES:
-1. The user's message is the primary driver — understand the NEED, not just keywords.
-2. Use graph associations to add complementary items (pasta → sauce, popcorn → soda).
-3. Prefer smart_saver=true items when they match the intent (near-expiry discounts).
-4. Match complexity to the need: single item=low(3), meal/activity=medium(4-5), event=high(6-7).
-5. Each item must come from the catalog with the correct ID.
-6. Write 3 short, friendly bullets explaining WHY this cart (mention savings if applicable).
+1. User message is the primary driver — understand the NEED, not just keywords.
+2. Honour brand preferences from purchase history when relevant (e.g. prefer Barilla if they always buy it).
+3. If customer is "likely running low" on something that fits the need, include it.
+4. Use graph associations for complementary items (pasta → sauce, popcorn → soda).
+5. Prefer smart_saver=true items when they match the intent.
+6. Match complexity: single item=low(3), meal/activity=medium(4-5), event=high(6-7).
+7. Write 3 short, friendly bullets — mention personalisation if history was used.
 """
 
     res = await get_llm().with_structured_output(SingleShotOutput).ainvoke(prompt)
@@ -276,6 +285,8 @@ RULES:
         "explainability":       [log],
         "explainability_summary": bullets[:4],
         "processing_time_ms":   elapsed,
+        "user_id":              user_id,
+        "personalised":         bool(user_id and history["frequently_bought"]),
     }
 
 
@@ -283,6 +294,7 @@ def process_message(
     message:      str,
     budget:       Optional[float] = None,
     people_count: int = 1,
+    user_id:      Optional[str] = None,
 ) -> Dict[str, Any]:
     """Sync wrapper — for scripts/tests. Use aprocess_message inside async."""
-    return asyncio.run(aprocess_message(message, budget, people_count))
+    return asyncio.run(aprocess_message(message, budget, people_count, user_id))

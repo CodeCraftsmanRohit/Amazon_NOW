@@ -1,0 +1,232 @@
+[
+  {
+    "user_id": "priya_sharma",
+    "name": "Priya",
+    "avatar": "👩‍💼",
+    "label": "Working Professional",
+    "bio": "Busy professional, cooks Italian twice a week, movie nights on Fridays",
+    "orders": [
+      {
+        "date": "2026-06-08",
+        "items": [
+          {"id": "P016", "name": "Barilla Spaghetti Pasta", "qty": 2},
+          {"id": "P017", "name": "Rao's Homemade Marinara Sauce", "qty": 1},
+          {"id": "P019", "name": "Kraft Parmesan Cheese Shaker", "qty": 1}
+        ]
+      },
+      {
+        "date": "2026-06-06",
+        "items": [
+          {"id": "P010", "name": "Orville Redenbacher Movie Theater Butter Popcorn", "qty": 2},
+          {"id": "P012", "name": "Coca-Cola Classic 12-Pack Cans", "qty": 1},
+          {"id": "P048", "name": "Ben & Jerry's Chunky Monkey Ice Cream", "qty": 1}
+        ]
+      },
+      {
+        "date": "2026-06-01",
+        "items": [
+          {"id": "P016", "name": "Barilla Spaghetti Pasta", "qty": 2},
+          {"id": "P017", "name": "Rao's Homemade Marinara Sauce", "qty": 1},
+          {"id": "P020", "name": "DeLallo Garlic Bread Loaf", "qty": 1},
+          {"id": "P009", "name": "Organic Valley Whole Milk", "qty": 1}
+        ]
+      },
+      {
+        "date": "2026-05-28",
+        "items": [
+          {"id": "P033", "name": "Starbucks Pike Place Ground Coffee", "qty": 1},
+          {"id": "P037", "name": "Tropicana Orange Juice No Pulp", "qty": 2},
+          {"id": "P034", "name": "Nature's Own Honey Wheat Bread", "qty": 1}
+        ]
+      },
+      {
+        "date": "2026-05-24",
+        "items": [
+          {"id": "P026", "name": "Advil Ibuprofen 200mg", "qty": 1},
+          {"id": "P031", "name": "Campbell's Chicken Noodle Soup", "qty": 2},
+          {"id": "P030", "name": "Gatorade Thirst Quencher Variety 12-Pack", "qty": 1},
+          {"id": "P032", "name": "Lipton Tea Bags", "qty": 1}
+        ]
+      }
+    ],
+    "preferences": {
+      "brands": ["Barilla", "Rao's", "Starbucks", "Orville Redenbacher"],
+      "dietary": [],
+      "avg_order_inr": 2200
+    }
+  },
+  {
+    "user_id": "rahul_new_parent",
+    "name": "Rahul",
+    "avatar": "👨‍👧",
+    "label": "New Parent",
+    "bio": "First-time dad, always stocking up on baby essentials and quick meals",
+    "orders": [
+      {
+        "date": "2026-06-10",
+        "items": [
+          {"id": "P042", "name": "Pampers Swaddlers Diapers Size 1", "qty": 2},
+          {"id": "P041", "name": "Amazon Fresh Baby Wipes", "qty": 3},
+          {"id": "P044", "name": "Enfamil NeuroPro Baby Formula", "qty": 1}
+        ]
+      },
+      {
+        "date": "2026-06-05",
+        "items": [
+          {"id": "P044", "name": "Enfamil NeuroPro Baby Formula", "qty": 2},
+          {"id": "P043", "name": "Johnson's Baby Shampoo", "qty": 1},
+          {"id": "P041", "name": "Amazon Fresh Baby Wipes", "qty": 2}
+        ]
+      },
+      {
+        "date": "2026-06-01",
+        "items": [
+          {"id": "P024", "name": "DiGiorno Pepperoni Pizza", "qty": 2},
+          {"id": "P012", "name": "Coca-Cola Classic 12-Pack Cans", "qty": 1},
+          {"id": "P042", "name": "Pampers Swaddlers Diapers Size 1", "qty": 1}
+        ]
+      },
+      {
+        "date": "2026-05-28",
+        "items": [
+          {"id": "P034", "name": "Nature's Own Honey Wheat Bread", "qty": 2},
+          {"id": "P035", "name": "Skippy Creamy Peanut Butter", "qty": 1},
+          {"id": "P009", "name": "Organic Valley Whole Milk", "qty": 2}
+        ]
+      }
+    ],
+    "preferences": {
+      "brands": ["Pampers", "Enfamil", "DiGiorno"],
+      "dietary": [],
+      "avg_order_inr": 3100
+    }
+  },
+  {
+    "user_id": "aisha_student",
+    "name": "Aisha",
+    "avatar": "🎓",
+    "label": "College Student",
+    "bio": "Engineering student, late-night study sessions, tight budget, loves snacks",
+    "orders": [
+      {
+        "date": "2026-06-11",
+        "items": [
+          {"id": "P025", "name": "Red Bull Energy Drink 4-Pack", "qty": 2},
+          {"id": "P011", "name": "Doritos Nacho Cheese Party Size", "qty": 1},
+          {"id": "P022", "name": "Lay's Classic Potato Chips", "qty": 2}
+        ]
+      },
+      {
+        "date": "2026-06-07",
+        "items": [
+          {"id": "P033", "name": "Starbucks Pike Place Ground Coffee", "qty": 1},
+          {"id": "P039", "name": "Quaker Instant Oatmeal Variety Pack", "qty": 1},
+          {"id": "P034", "name": "Nature's Own Honey Wheat Bread", "qty": 1}
+        ]
+      },
+      {
+        "date": "2026-06-03",
+        "items": [
+          {"id": "P025", "name": "Red Bull Energy Drink 4-Pack", "qty": 1},
+          {"id": "P010", "name": "Orville Redenbacher Movie Theater Butter Popcorn", "qty": 1},
+          {"id": "P023", "name": "M&Ms Party Size Milk Chocolate", "qty": 1},
+          {"id": "P012", "name": "Coca-Cola Classic 12-Pack Cans", "qty": 1}
+        ]
+      },
+      {
+        "date": "2026-05-30",
+        "items": [
+          {"id": "P035", "name": "Skippy Creamy Peanut Butter", "qty": 1},
+          {"id": "P034", "name": "Nature's Own Honey Wheat Bread", "qty": 2},
+          {"id": "P036", "name": "Smucker's Strawberry Jam", "qty": 1}
+        ]
+      }
+    ],
+    "preferences": {
+      "brands": ["Red Bull", "Doritos", "Starbucks"],
+      "dietary": ["budget-conscious"],
+      "avg_order_inr": 900
+    }
+  },
+  {
+    "user_id": "krishna_host",
+    "name": "Krishna",
+    "avatar": "🎉",
+    "label": "Party Host",
+    "bio": "Loves hosting, orders for large groups, always stocking snacks and drinks",
+    "orders": [
+      {
+        "date": "2026-06-09",
+        "items": [
+          {"id": "P014", "name": "Ferrero Rocher Chocolate Box", "qty": 2},
+          {"id": "P015", "name": "Planters Mixed Nuts", "qty": 3},
+          {"id": "P021", "name": "Sparkling Ice Variety Pack", "qty": 2},
+          {"id": "P023", "name": "M&Ms Party Size Milk Chocolate", "qty": 2}
+        ]
+      },
+      {
+        "date": "2026-06-04",
+        "items": [
+          {"id": "P012", "name": "Coca-Cola Classic 12-Pack Cans", "qty": 3},
+          {"id": "P013", "name": "Pepsi 12-Pack Cans", "qty": 2},
+          {"id": "P010", "name": "Orville Redenbacher Movie Theater Butter Popcorn", "qty": 4},
+          {"id": "P011", "name": "Doritos Nacho Cheese Party Size", "qty": 3}
+        ]
+      },
+      {
+        "date": "2026-05-25",
+        "items": [
+          {"id": "P024", "name": "DiGiorno Pepperoni Pizza", "qty": 4},
+          {"id": "P022", "name": "Lay's Classic Potato Chips", "qty": 3},
+          {"id": "P048", "name": "Ben & Jerry's Chunky Monkey Ice Cream", "qty": 2}
+        ]
+      }
+    ],
+    "preferences": {
+      "brands": ["Ferrero Rocher", "Coca-Cola", "Planters"],
+      "dietary": [],
+      "avg_order_inr": 4500
+    }
+  },
+  {
+    "user_id": "meera_baker",
+    "name": "Meera",
+    "avatar": "🧁",
+    "label": "Home Baker",
+    "bio": "Bakes every weekend, always needs baking staples, dairy, and chocolate",
+    "orders": [
+      {
+        "date": "2026-06-07",
+        "items": [
+          {"id": "P001", "name": "Ghirardelli Semi-Sweet Chocolate Chips", "qty": 2},
+          {"id": "P007", "name": "Hershey's Unsweetened Cocoa Powder", "qty": 1},
+          {"id": "P003", "name": "Kerrygold Unsalted Butter", "qty": 2},
+          {"id": "P004", "name": "Vital Farms Pasture-Raised Eggs", "qty": 2}
+        ]
+      },
+      {
+        "date": "2026-05-31",
+        "items": [
+          {"id": "P002", "name": "King Arthur All-Purpose Flour", "qty": 2},
+          {"id": "P005", "name": "Domino Granulated Sugar", "qty": 1},
+          {"id": "P008", "name": "Nielsen-Massey Pure Vanilla Extract", "qty": 1},
+          {"id": "P009", "name": "Organic Valley Whole Milk", "qty": 2}
+        ]
+      },
+      {
+        "date": "2026-05-24",
+        "items": [
+          {"id": "P001", "name": "Ghirardelli Semi-Sweet Chocolate Chips", "qty": 3},
+          {"id": "P003", "name": "Kerrygold Unsalted Butter", "qty": 2},
+          {"id": "P006", "name": "Clabber Girl Double Acting Baking Powder", "qty": 1},
+          {"id": "P005", "name": "Domino Granulated Sugar", "qty": 2}
+        ]
+      }
+    ],
+    "preferences": {
+      "brands": ["Ghirardelli", "King Arthur", "Kerrygold", "Nielsen-Massey"],
+      "dietary": ["vegetarian"],
+      "avg_order_inr": 2800
+    }
+  }
+]
