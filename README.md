@@ -153,9 +153,9 @@ The reasoning pipeline never imports a vendor directly — it asks `ai_engine/ll
 | Question | Honest answer |
 |----------|---------------|
 | **"What if the user asks for something not in the catalog?"** | Graceful degradation — the post-processor drops any LLM-returned ID not in the catalog (`langgraph_flow.py`). The cart returns the closest available items; it **never invents a fake product or price**. |
-| **"Is this *really* multi-agent?"** | No — and we don't claim it is. It's **one GPT-4o structured-output call + a deterministic graph traversal**. We deliberately collapsed 7 calls → 1 to hit sub-4s latency (see version history below). Honest naming: prompt-engineered single-shot synthesis, not a 7-agent swarm. |
+| **"Why collapse everything into 1 LLM call?"** | **Speed.** We iterated from 7 sequential calls (60s) → 1 call + graph (3s). For Q-commerce where sessions are sub-5 minutes, latency IS the product. Modularity returns at scale via the Bedrock adapter + separate retrieval stage in the roadmap. |
 
-> The "how do we scale to 1M+ products / migrate off OpenAI" questions are answered concretely in the [6-Month Roadmap](#-target-scale-architecture-6-month-roadmap) below.
+> The "how do we scale to 1M+ products / migrate off OpenAI" questions are answered in the [6-Month Roadmap](#%EF%B8%8F-target-scale-architecture-6-month-roadmap) below.
 
 <br/>
 
@@ -534,7 +534,7 @@ python -m pytest tests/ -v
 | `"Italian dinner for 4, Priya's profile"` | Uses Barilla + Rao's (her actual preferred brands) |
 | `"Bake a cake, Meera's profile"` | Includes sugar + bullet: *"you're likely running low"* |
 | `"Movie night for 4, budget ₹2000"` | Budget respected, Smart Saver badges, split bill shows |
-| Upload a fridge photo | GPT-4o Vision detects missing items → replenishment cart |
+| Upload a fridge photo | Vision AI detects missing items → replenishment cart |
 | Click **Movie Night** pack | Instant pre-filled cart, zero AI latency |
 | Weather banner (if shown) | Tapping pre-fills context-aware query (hot/cold/rainy) |
 | `"I need sushi ingredients"` (not in catalog) | Graceful degradation — returns closest available items, never invents fake products |
