@@ -92,36 +92,36 @@ const PIMG: Record<string, string> = {
   // ── Indian Essentials (I001–I025) ─────────────────────────────────────────
   // Medicine — tablets/strips & rubs (reuse verified pharma images)
   I001: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop", // Crocin tablets
-  I002: "https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=400&fit=crop", // Dolo tablets
-  I003: "https://images.unsplash.com/photo-1550572017-edd951b55104?w=400&h=400&fit=crop", // Combiflam tablets
+  I002: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop", // Dolo tablets
+  I003: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop", // Combiflam tablets
   I004: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=400&fit=crop", // Vicks Vaporub
-  I005: "https://loremflickr.com/400/400/electrolyte,sachet?lock=5", // Electral ORS sachets
-  I006: "https://loremflickr.com/400/400/lozenge,throat?lock=6", // Strepsils lozenges
-  I007: "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=400&h=400&fit=crop", // Cetirizine tablets
-  // Women's hygiene
-  I008: "https://loremflickr.com/400/400/sanitary,napkin?lock=8", // Whisper Ultra
-  I009: "https://loremflickr.com/400/400/sanitary,pads?lock=9", // Stayfree
+  I005: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=400&fit=crop", // Electral ORS (hydration)
+  I006: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop", // Strepsils lozenges
+  I007: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop", // Cetirizine tablets
+  // Women's hygiene — clean branded placeholders (no reliable stock photo)
+  I008: "https://placehold.co/400x400/f3f4f6/0F1111?text=Whisper+Ultra", // Whisper Ultra
+  I009: "https://placehold.co/400x400/f3f4f6/0F1111?text=Stayfree+XL", // Stayfree
   // Baby care
   I010: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop", // Pampers Size 2
   I011: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop", // Pampers Size 3
-  I012: "https://loremflickr.com/400/400/baby,powder?lock=12", // Johnson's powder
-  I013: "https://loremflickr.com/400/400/baby,cereal?lock=13", // Cerelac
+  I012: "https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=400&h=400&fit=crop", // Johnson's powder (baby care)
+  I013: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop", // Cerelac (baby feeding)
   // Indian staples
-  I014: "https://loremflickr.com/400/400/instant,noodles?lock=14", // Maggi
-  I015: "https://loremflickr.com/400/400/biscuits,cookies?lock=15", // Parle-G
+  I014: "https://placehold.co/400x400/f3f4f6/0F1111?text=Maggi+Noodles", // Maggi noodles
+  I015: "https://placehold.co/400x400/f3f4f6/0F1111?text=Parle-G", // Parle-G biscuits
   I016: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=400&h=400&fit=crop", // Amul butter
-  I017: "https://loremflickr.com/400/400/rice,bowl?lock=17", // MTR curd rice
-  I018: "https://loremflickr.com/400/400/ayurveda,jar?lock=18", // Chyawanprash
+  I017: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=400&fit=crop", // MTR curd rice (bowl meal)
+  I018: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&h=400&fit=crop", // Chyawanprash (jar)
   // Beverages
-  I019: "https://loremflickr.com/400/400/coconut,water?lock=19", // coconut water
+  I019: "https://placehold.co/400x400/f3f4f6/0F1111?text=Coconut+Water", // coconut water
   I020: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop", // Tata Tea
-  I021: "https://loremflickr.com/400/400/chocolate,drink?lock=21", // Bournvita
-  // Personal care
-  I022: "https://loremflickr.com/400/400/toothpaste?lock=22", // Colgate
-  I023: "https://loremflickr.com/400/400/soap,bar?lock=23", // Dettol soap
-  I024: "https://loremflickr.com/400/400/shampoo,bottle?lock=24", // Head & Shoulders
+  I021: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=400&fit=crop", // Bournvita (cocoa drink)
+  // Personal care — clean branded placeholders
+  I022: "https://placehold.co/400x400/f3f4f6/0F1111?text=Colgate", // Colgate
+  I023: "https://placehold.co/400x400/f3f4f6/0F1111?text=Dettol+Soap", // Dettol soap
+  I024: "https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=400&h=400&fit=crop", // Head & Shoulders (shampoo)
   // Snacks
-  I025: "https://loremflickr.com/400/400/namkeen,snack?lock=25", // Haldiram's Bhujia
+  I025: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&h=400&fit=crop", // Haldiram's Bhujia (namkeen)
 };
 
 function getImg(id: string) {
