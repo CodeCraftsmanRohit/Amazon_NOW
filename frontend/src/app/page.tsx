@@ -88,10 +88,47 @@ const PIMG: Record<string, string> = {
   P042: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop", // diapers pack
   P043: "https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=400&h=400&fit=crop", // baby shampoo bottle
   P044: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop", // baby formula tin
+
+  // ── Indian Essentials (I001–I025) ─────────────────────────────────────────
+  // Medicine — tablets/strips & rubs (reuse verified pharma images)
+  I001: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop", // Crocin tablets
+  I002: "https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=400&fit=crop", // Dolo tablets
+  I003: "https://images.unsplash.com/photo-1550572017-edd951b55104?w=400&h=400&fit=crop", // Combiflam tablets
+  I004: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=400&fit=crop", // Vicks Vaporub
+  I005: "https://loremflickr.com/400/400/electrolyte,sachet?lock=5", // Electral ORS sachets
+  I006: "https://loremflickr.com/400/400/lozenge,throat?lock=6", // Strepsils lozenges
+  I007: "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=400&h=400&fit=crop", // Cetirizine tablets
+  // Women's hygiene
+  I008: "https://loremflickr.com/400/400/sanitary,napkin?lock=8", // Whisper Ultra
+  I009: "https://loremflickr.com/400/400/sanitary,pads?lock=9", // Stayfree
+  // Baby care
+  I010: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop", // Pampers Size 2
+  I011: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop", // Pampers Size 3
+  I012: "https://loremflickr.com/400/400/baby,powder?lock=12", // Johnson's powder
+  I013: "https://loremflickr.com/400/400/baby,cereal?lock=13", // Cerelac
+  // Indian staples
+  I014: "https://loremflickr.com/400/400/instant,noodles?lock=14", // Maggi
+  I015: "https://loremflickr.com/400/400/biscuits,cookies?lock=15", // Parle-G
+  I016: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=400&h=400&fit=crop", // Amul butter
+  I017: "https://loremflickr.com/400/400/rice,bowl?lock=17", // MTR curd rice
+  I018: "https://loremflickr.com/400/400/ayurveda,jar?lock=18", // Chyawanprash
+  // Beverages
+  I019: "https://loremflickr.com/400/400/coconut,water?lock=19", // coconut water
+  I020: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop", // Tata Tea
+  I021: "https://loremflickr.com/400/400/chocolate,drink?lock=21", // Bournvita
+  // Personal care
+  I022: "https://loremflickr.com/400/400/toothpaste?lock=22", // Colgate
+  I023: "https://loremflickr.com/400/400/soap,bar?lock=23", // Dettol soap
+  I024: "https://loremflickr.com/400/400/shampoo,bottle?lock=24", // Head & Shoulders
+  // Snacks
+  I025: "https://loremflickr.com/400/400/namkeen,snack?lock=25", // Haldiram's Bhujia
 };
 
 function getImg(id: string) {
-  return PIMG[id] || `https://picsum.photos/seed/${parseInt(id.replace("P",""))*17}/400/400`;
+  if (PIMG[id]) return PIMG[id];
+  // Stable, non-NaN fallback for any unmapped id (works for P###, I###, v#, etc.)
+  const seed = id.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0) || 1;
+  return `https://picsum.photos/seed/${seed}/400/400`;
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
