@@ -84,13 +84,17 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# CORS: Allow localhost + production Vercel + preview deployments
+def is_vercel_origin(origin: str) -> bool:
+    """Check if origin is from Vercel (production or preview)"""
+    return origin.endswith(".vercel.app")
+
 app.add_middleware(
     CORSMiddleware,
+    allow_origin_regex=r"https://.*\.vercel\.app",  # All Vercel deployments
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://amazon-now-sigma.vercel.app",
-        "https://*.vercel.app",  # Allow all Vercel preview deployments
     ],
     allow_credentials=True,
     allow_methods=["*"],
