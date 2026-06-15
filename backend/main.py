@@ -105,6 +105,7 @@ app.add_middleware(
 # ─── Routes ───────────────────────────────────────────────────────────────────
 
 @app.get("/", tags=["health"])
+@app.head("/", tags=["health"])
 def health_check():
     return {"status": "healthy", "service": "Amazon Now AI", "version": "3.0.0"}
 
