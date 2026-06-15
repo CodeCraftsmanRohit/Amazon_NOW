@@ -1,69 +1,56 @@
-# Quick Start Guide
+# Amazon Now AI - Quick Start Guide
 
-## Prerequisites
-- Python 3.10+
-- Node.js 18+
-- OpenAI API key
+## ⚡ Fastest Way to Run (5 Minutes)
 
-## Backend (Terminal 1)
+### Step 1: Get OpenAI API Key
+1. Go to https://platform.openai.com/api-keys
+2. Create new secret key
+3. Copy the key (starts with `sk-...`)
 
+### Step 2: Configure Environment
 ```bash
-# 1. Create virtual environment
-python -m venv venv
-
-# 2. Activate (Windows)
-venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Configure API key
-copy .env.example .env
-# Edit .env and add your OPENAI_API_KEY=sk-...
-
-# 5. Run backend
-uvicorn backend.main:app --reload
-
-# Backend runs at http://localhost:8000
-# API docs at http://localhost:8000/docs
+# Create .env file
+echo OPENAI_API_KEY=sk-your-key-here > .env
 ```
 
-## Frontend (Terminal 2 — keep backend running)
+### Step 3: Choose Your Method
 
+#### 🐳 Option A: Docker (Recommended for Demo)
 ```bash
+docker-compose up -d --build
+```
+**Access:** http://localhost:3000
+
+#### 💻 Option B: Local Development
+```bash
+# Backend (Terminal 1)
+python -m venv venv
+venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+uvicorn backend.main:app --reload
+
+# Frontend (Terminal 2)
 cd frontend
 npm install
 npm run dev
-
-# Frontend runs at http://localhost:3000
 ```
+**Access:** http://localhost:3000
 
-## Testing
+## 🎬 Quick Demo Test Scenarios
 
-```bash
-# Activate venv first
-venv\Scripts\activate
+1. **Sick Emergency:** Type `"I have high fever and body aches"`
+2. **Weather:** Click weather banner (if location enabled)
+3. **Personalization:** Select Priya → `"Italian dinner for 4"`
+4. **Vision AI:** Upload handwritten list photo
 
-# Install test dependency
-pip install pytest
+## 🌐 Cloud Deployment
 
-# Run tests (no API key needed for graph/budget tests)
-python -m pytest tests/ -v
-```
+See `DEPLOYMENT.md` for Vercel + Render free hosting guide.
 
-## Docker (alternative)
+## ❓ Troubleshooting
 
-```bash
-# Set OPENAI_API_KEY in .env first
-docker-compose up
+- **Connection refused:** Check backend at http://localhost:8000/health
+- **OpenAI error:** Verify API key in `.env`
+- **Port in use:** Kill process on port 8000/3000
 
-# Frontend: http://localhost:3000
-# Backend:  http://localhost:8000
-```
-
-## Common issues
-
-**"No module named X"** → `pip install -r requirements.txt`  
-**Backend fails** → Check `.env` has valid `OPENAI_API_KEY`  
-**Frontend can't reach backend** → Ensure backend is running on port 8000  
-**Tests import errors** → Activate venv: `venv\Scripts\activate`
+**Full guide:** See `DEPLOYMENT.md`
