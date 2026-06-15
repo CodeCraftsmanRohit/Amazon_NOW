@@ -8,6 +8,9 @@ import {
   Menu, Wand2, ChevronRight, ChevronDown, Package,
 } from "lucide-react";
 
+// ─── API Configuration ──────────────────────────────────────────────────────
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const toINR   = (usd: number) => Math.round(usd * 83.5);
 const fmtINR  = (usd: number) => `₹${toINR(usd).toLocaleString("en-IN")}`;
@@ -1576,7 +1579,7 @@ export default function Home() {
     setLocalCart({});
     setMode("results");
     try {
-      const res = await fetch("http://localhost:8000/api/chat", {
+      const res = await fetch(`${API_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: query, budget: budget ?? null, people_count: people, user_id: userId ?? null }),
@@ -1602,7 +1605,7 @@ export default function Home() {
     setLocalCart({});
     setMode("results");
     try {
-      const res = await fetch("http://localhost:8000/api/inventory/upload", {
+      const res = await fetch(`${API_URL}/api/inventory/upload`, {
         method: "POST",
         body: formData,
       });
