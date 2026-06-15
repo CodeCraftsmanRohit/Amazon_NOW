@@ -48,5 +48,37 @@
   { "id": "P047", "name": "Hellmann's Real Mayonnaise (30oz)", "price": 5.79, "category": "condiments", "tags": ["mayo", "mayonnaise", "sandwich", "condiment"] },
   { "id": "P048", "name": "Ben & Jerry's Chunky Monkey Ice Cream (16oz)", "price": 5.99, "category": "frozen", "tags": ["ice cream", "dessert", "treat", "sweet", "movie night"], "expiry_days": 12, "discount_percentage": 15 },
   { "id": "P049", "name": "Häagen-Dazs Vanilla Ice Cream (14oz)", "price": 5.49, "category": "frozen", "tags": ["ice cream", "vanilla", "dessert", "sweet"], "expiry_days": 15, "discount_percentage": 15 },
-  { "id": "P050", "name": "Welch's Fruit Snacks Mixed Fruit (40 pouches)", "price": 8.99, "category": "snacks", "tags": ["fruit snacks", "snack", "kids", "sweet"] }
+  { "id": "P050", "name": "Welch's Fruit Snacks Mixed Fruit (40 pouches)", "price": 8.99, "category": "snacks", "tags": ["fruit snacks", "snack", "kids", "sweet"] },
+
+  { "id": "I001", "name": "Crocin 650mg Paracetamol (15 tablets)", "price": 2.15, "category": "medicine", "tags": ["fever", "headache", "pain relief", "paracetamol", "sick", "emergency"] },
+  { "id": "I002", "name": "Dolo 650 Paracetamol (15 tablets)", "price": 1.80, "category": "medicine", "tags": ["fever", "pain relief", "headache", "paracetamol", "sick", "emergency"] },
+  { "id": "I003", "name": "Combiflam Ibuprofen+Paracetamol (20 tablets)", "price": 2.40, "category": "medicine", "tags": ["pain relief", "fever", "body ache", "inflammation", "sick"] },
+  { "id": "I004", "name": "Vicks Vaporub 50ml", "price": 2.25, "category": "medicine", "tags": ["cold", "congestion", "chest rub", "breathing", "sick", "comfort"] },
+  { "id": "I005", "name": "Electral ORS Orange Flavour (21 sachets)", "price": 1.60, "category": "medicine", "tags": ["dehydration", "electrolytes", "fever", "sick", "recovery", "diarrhea"] },
+  { "id": "I006", "name": "Strepsils Honey Lemon Lozenges (24 pieces)", "price": 1.95, "category": "medicine", "tags": ["sore throat", "cough", "throat infection", "sick", "comfort"] },
+  { "id": "I007", "name": "Cetirizine 10mg Allergy Relief (10 tablets)", "price": 0.60, "category": "medicine", "tags": ["allergy", "antihistamine", "rash", "itching", "runny nose"] },
+
+  { "id": "I008", "name": "Whisper Ultra Clean XL (30 pads)", "price": 4.20, "category": "hygiene", "tags": ["periods", "sanitary pads", "women", "menstruation", "emergency", "hygiene"] },
+  { "id": "I009", "name": "Stayfree Secure XL Cottony (28 pads)", "price": 3.90, "category": "hygiene", "tags": ["periods", "sanitary pads", "women", "menstruation", "emergency"] },
+
+  { "id": "I010", "name": "Pampers Baby Dry Size 2 (44 diapers)", "price": 10.75, "category": "baby", "tags": ["diapers", "baby", "new parent", "infant", "size 2"] },
+  { "id": "I011", "name": "Pampers Baby Dry Size 3 (38 diapers)", "price": 10.75, "category": "baby", "tags": ["diapers", "baby", "toddler", "size 3", "new parent"] },
+  { "id": "I012", "name": "Johnson's Baby Powder 400g", "price": 3.60, "category": "baby", "tags": ["baby", "powder", "baby care", "rash prevention", "hygiene"] },
+  { "id": "I013", "name": "Cerelac Wheat Apple (300g)", "price": 4.20, "category": "baby", "tags": ["baby food", "cereal", "infant nutrition", "6+ months", "feeding"] },
+
+  { "id": "I014", "name": "Maggi 2-Minute Noodles Masala (12 pack)", "price": 1.70, "category": "food", "tags": ["noodles", "quick meal", "comfort food", "instant", "masala", "student"] },
+  { "id": "I015", "name": "Parle-G Glucose Biscuits (799g)", "price": 1.80, "category": "snacks", "tags": ["biscuits", "glucose", "tea time", "comfort", "affordable", "classic"] },
+  { "id": "I016", "name": "Amul Butter 500g", "price": 3.00, "category": "dairy", "tags": ["butter", "cooking", "bread", "indian", "breakfast"], "expiry_days": 21, "discount_percentage": 12 },
+  { "id": "I017", "name": "MTR Ready to Eat Curd Rice (300g)", "price": 2.40, "category": "food", "tags": ["ready to eat", "comfort food", "south indian", "sick", "easy digest"] },
+  { "id": "I018", "name": "Patanjali Chyawanprash 500g", "price": 3.60, "category": "health", "tags": ["immunity", "ayurveda", "health supplement", "winter", "cough", "cold prevention"] },
+
+  { "id": "I019", "name": "Real Coconut Water (1 litre)", "price": 1.20, "category": "beverages", "tags": ["coconut water", "natural", "electrolytes", "hydration", "fever", "healthy"] },
+  { "id": "I020", "name": "Tata Tea Gold 1kg", "price": 5.40, "category": "beverages", "tags": ["tea", "chai", "morning", "comfort", "indian", "caffeine"] },
+  { "id": "I021", "name": "Bournvita Health Drink 500g", "price": 3.00, "category": "beverages", "tags": ["health drink", "chocolate", "nutrition", "kids", "milk", "energy"] },
+
+  { "id": "I022", "name": "Colgate Strong Teeth Toothpaste (200g)", "price": 1.80, "category": "personal care", "tags": ["toothpaste", "oral care", "hygiene", "daily", "fresh breath"] },
+  { "id": "I023", "name": "Dettol Original Soap (125g × 4)", "price": 2.40, "category": "personal care", "tags": ["soap", "antiseptic", "hygiene", "bathing", "protection"] },
+  { "id": "I024", "name": "Head & Shoulders Shampoo 650ml", "price": 4.80, "category": "personal care", "tags": ["shampoo", "dandruff", "hair care", "scalp care"] },
+
+  { "id": "I025", "name": "Haldiram's Bhujia 400g", "price": 2.40, "category": "snacks", "tags": ["namkeen", "bhujia", "spicy", "snack", "party", "indian", "crunchy"] }
 ]

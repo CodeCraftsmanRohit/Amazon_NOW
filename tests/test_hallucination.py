@@ -172,3 +172,36 @@ async def test_smart_saver_discount_correct():
                 f"Smart Saver price wrong for {item['id']}: "
                 f"got {item['price']}, expected {expected}"
             )
+
+
+@pytest.mark.asyncio
+async def test_sick_emergency_indian_medicines():
+    """Indian medical emergency should return proper medicines with safety guidance."""
+    r = await aprocess_message("I have high fever, body aches, and sore throat")
+    _validate_response(r, "sick_emergency_indian")
+    
+    cart_ids = {i["id"] for i in r["items"]}
+    indian_med_ids = {"I001", "I002", "I003", "I004", "I005", "I006", "I007"}  # Crocin, Dolo, Combiflam, Vicks, ORS, Strepsils, Cetirizine
+    
+    # Must contain at least 2 Indian medical products for comprehensive care
+    assert len(cart_ids & indian_med_ids) >= 2, (
+        f"Sick emergency should include Indian medicines; got: {cart_ids}"
+    )
+    
+    # Should include safety guidance in explainability
+    bullets = r.get("explainability_summary", [])
+    safety_mentioned = any("doctor" in bullet.lower() or "consult" in bullet.lower() 
+                          for bullet in bullets)
+    assert safety_mentioned, "Medical cart should include doctor consultation advice"
+
+
+@pytest.mark.asyncio
+async def test_period_emergency_indian_products():
+    """Period emergency should return proper sanitary products."""
+    r = await aprocess_message("urgent - my period started, need pads immediately")
+    _validate_response(r, "period_emergency")
+    
+    cart_ids = {i["id"] for i in r["items"]}
+    pad_ids = {"I008", "I009"}  # Whisper Ultra, Stayfree
+    
+    assert cart_ids & pad_ids, f"Period emergency should include pads; got: {cart_ids}"

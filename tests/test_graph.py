@@ -15,7 +15,7 @@ from ai_engine.agents.graph_agent.graph_query import (
 
 
 def test_graph_builds_nodes_and_edges():
-    assert len(PRODUCT_GRAPH.catalog) == 50
+    assert len(PRODUCT_GRAPH.catalog) == 75  # 50 original + 25 Indian essentials
     # Every catalog product should have an adjacency entry.
     assert set(PRODUCT_GRAPH.adjacency.keys()) == {p["id"] for p in PRODUCT_GRAPH.catalog}
     # Graph is not empty — there are real co-tag / complementary edges.

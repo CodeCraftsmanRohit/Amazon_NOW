@@ -216,17 +216,32 @@ USER MESSAGE: "{message}"{budget_note}{people_note}
 PRODUCT GRAPH ASSOCIATIONS (real co-purchase pairs — use to add complementary items):
 {json.dumps(graph_associations)}
 
-PRODUCT CATALOG (50 items — use EXACT IDs and price_usd):
+PRODUCT CATALOG (75 items — use EXACT IDs and price_usd):
 {CATALOG_SUMMARY}
+
+MEDICAL GUIDANCE (when applicable):
+- FEVER/PAIN: Prefer paracetamol-based medicines (Crocin I001, Dolo I002) over ibuprofen for general fever. Combiflam I003 for severe body ache.
+- DEHYDRATION/FEVER: Always include ORS (Electral I005) + natural hydration (coconut water I019).
+- COLD/CONGESTION: Vicks Vaporub I004 for chest congestion, Strepsils I006 for sore throat.
+- COMFORT FOODS FOR SICK: MTR Curd Rice I017 (easy digest), Maggi I014 (quick), Parle-G I015 (with tea).
+- SAFETY: For fever >101°F or symptoms persisting >3 days, always add explainability bullet: "Consult a doctor if symptoms worsen."
+
+WOMEN'S EMERGENCY:
+- PERIOD EMERGENCY: Whisper Ultra I008 or Stayfree I009 — both XL size for heavy flow days.
+
+BABY CARE:
+- Size guide: Size 2 (I010) for 4-8kg babies, Size 3 (I011) for 6-11kg toddlers.
+- Include Johnson's powder I012 for rash prevention if buying diapers.
 
 RULES:
 1. User message is the primary driver — understand the NEED, not just keywords.
 2. Honour brand preferences from purchase history when relevant (e.g. prefer Barilla if they always buy it).
 3. If customer is "likely running low" on something that fits the need, include it.
 4. Use graph associations for complementary items (pasta → sauce, popcorn → soda).
-5. Prefer smart_saver=true items when they match the intent.
-6. Match complexity: single item=low(3), meal/activity=medium(4-5), event=high(6-7).
-7. Write 3 short, friendly bullets — mention personalisation if history was used.
+5. For MEDICAL needs, prioritize Indian brands and include safety guidance in explainability.
+6. Prefer smart_saver=true items when they match the intent.
+7. Match complexity: single item=low(3), meal/activity=medium(4-5), emergency/event=high(6-7).
+8. Write 3 short, friendly bullets — mention personalisation if history was used, medical safety if applicable.
 """
 
     res = await get_llm().with_structured_output(SingleShotOutput).ainvoke(prompt)
