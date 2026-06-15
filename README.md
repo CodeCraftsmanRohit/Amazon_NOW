@@ -27,6 +27,35 @@
 
 **Built for Amazon HackOn Season 6 · Theme: Amazon Now – Reimagining Urgent Shopping**
 
+<br/>
+
+---
+
+## 🌐 Live Demo
+
+<table>
+<tr>
+<td align="center"><strong>🚀 Frontend</strong></td>
+<td><a href="https://amazon-now-sigma.vercel.app" target="_blank">https://amazon-now-sigma.vercel.app</a></td>
+</tr>
+<tr>
+<td align="center"><strong>⚡ Backend API</strong></td>
+<td><a href="https://amazon-now-backend.onrender.com" target="_blank">https://amazon-now-backend.onrender.com</a></td>
+</tr>
+<tr>
+<td align="center"><strong>📚 API Docs</strong></td>
+<td><a href="https://amazon-now-backend.onrender.com/docs" target="_blank">https://amazon-now-backend.onrender.com/docs</a></td>
+</tr>
+<tr>
+<td align="center"><strong>💻 GitHub</strong></td>
+<td><a href="https://github.com/CodeCraftsmanRohit/Amazon_NOW" target="_blank">https://github.com/CodeCraftsmanRohit/Amazon_NOW</a></td>
+</tr>
+</table>
+
+**Try it now:** Open the frontend URL → Click "Try AI Shopping" → Type `"I have high fever and body aches"` → See AI-built cart in ~5s! 🎉
+
+---
+
 </div>
 
 ---
